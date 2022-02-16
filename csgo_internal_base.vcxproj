@@ -85,7 +85,7 @@
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\netvars.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="core\main.cpp" />
     <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="memory\interface.cpp" />
     <ClCompile Include="render\menu\controls.cpp" />

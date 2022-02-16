@@ -31,28 +31,28 @@ struct d2 {
         return *this;
     }
 
-    constexpr d2& operator+=(const float rhs) noexcept
+    constexpr d2& operator+=(const int rhs) noexcept
     {
         x += rhs;
         y += rhs;
         return *this;
     }
 
-    constexpr d2& operator-=(const float rhs) noexcept
+    constexpr d2& operator-=(const int rhs) noexcept
     {
         x -= rhs;
         y -= rhs;
         return *this;
     }
 
-    constexpr d2& operator*=(const float rhs) noexcept
+    constexpr d2& operator*=(const int rhs) noexcept
     {
         x *= rhs;
         y *= rhs;
         return *this;
     }
 
-    constexpr d2& operator/=(const float rhs) noexcept
+    constexpr d2& operator/=(const int rhs) noexcept
     {
         x /= rhs;
         y /= rhs;

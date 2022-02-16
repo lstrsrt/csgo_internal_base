@@ -136,9 +136,9 @@ struct studio_hdr_t {
     int hitbox_set_count{ };
     int hitbox_set_index{ };
     int local_anim_count{ };
-	int local_anim_index{ };
-	int local_seq_count{ };
-	int local_seq_index{ };
+    int local_anim_index{ };
+    int local_seq_count{ };
+    int local_seq_index{ };
 
     inline auto get_bone(int i) const noexcept
     {

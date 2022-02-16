@@ -2,6 +2,6 @@
 
 namespace se {
 
-    struct server_dll;
+struct server_dll;
 
 }

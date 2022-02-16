@@ -1,7 +1,5 @@
 #pragma once
 
-/* View/display related enums and structs. */
-
 namespace cs {
 
 struct base_entity;
