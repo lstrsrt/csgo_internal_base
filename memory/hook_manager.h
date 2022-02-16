@@ -20,7 +20,7 @@ namespace hooks {
     void end() noexcept;
 
     template<class ty, class fn>
-    inline void set(c_interface<ty*>& vmt, int index, void* hook, fn& original, std::string_view name) noexcept
+    inline void set(interface_holder<ty*>& vmt, int index, void* hook, fn& original, std::string_view name) noexcept
     {
         vmt.replacement_vmt[index + 1] = reinterpret_cast<uintptr_t>(hook);
         original = reinterpret_cast<fn>(vmt.real_vmt[index]);

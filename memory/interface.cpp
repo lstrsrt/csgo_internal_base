@@ -3,9 +3,9 @@
 
 static void collect_interfaces(dll_t& dll) noexcept;
 template<class ty>
-static void get_cached_interface(c_interface<ty*>& ptr, std::string_view version_string) noexcept;
+static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept;
 template<class ty>
-static void find_interface(c_interface<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept;
+static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept;
 
 void interfaces::initialize() noexcept
 {
@@ -127,7 +127,7 @@ static void collect_interfaces(dll_t& dll) noexcept
 // Version strings may be partial.
 
 template<class ty>
-static void find_interface(c_interface<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept
+static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept
 {
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
         if (std::string(cur->name).contains(version_string)) {
@@ -140,7 +140,7 @@ static void find_interface(c_interface<ty*>& ptr, dll_t& dll, std::string_view v
 }
 
 template<class ty>
-static void get_cached_interface(c_interface<ty*>& ptr, std::string_view version_string) noexcept
+static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept
 {
     for (const auto& a : interfaces::list) {
         if (a.first.contains(version_string.data())) {
