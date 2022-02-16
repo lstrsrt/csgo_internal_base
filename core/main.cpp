@@ -15,7 +15,7 @@ static DWORD WINAPI on_attach(LPVOID instance)
 {
     cheat::initialize();
 
-    while (!cheat::should_detach)
+    while (!cheat::should_unhook)
         std::this_thread::sleep_for(100ms);
 
     cheat::end();

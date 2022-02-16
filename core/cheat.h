@@ -12,7 +12,7 @@ namespace cheat {
     inline cs::local_player* local_player{ };
     inline cs::user_cmd* cmd{ };
     inline angle view{ };
-    inline bool should_detach{ };
+    inline bool should_unhook{ };
 
     inline void initialize() noexcept
     {

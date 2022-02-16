@@ -54,7 +54,7 @@ void menu::run() noexcept
     case tab_id::config:
         button(L"Write default", []() { config::write(L"default.cfg"); }, { 100, 125 }, { 100, 30 });
         button(L"Read default", []() { config::read(L"default.cfg"); }, { 100, 160 }, { 100, 30 });
-        button(L"Unhook", []() { cheat::should_detach = true; }, { 100, 195 }, { 55, 30 });
+        button(L"Unhook", []() { cheat::should_unhook = true; }, { 100, 195 }, { 55, 30 });
         break;
     }
 }
