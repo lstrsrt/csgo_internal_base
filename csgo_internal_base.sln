@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "celsius", "celsius\celsius.vcxproj", "{723020FB-4470-440B-80E8-A0249CC3348B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injector", "injector\injector.vcxproj", "{854C521D-806B-4F5E-8756-D60740137736}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{723020FB-4470-440B-80E8-A0249CC3348B}.Debug|x86.ActiveCfg = Debug|Win32
+		{723020FB-4470-440B-80E8-A0249CC3348B}.Debug|x86.Build.0 = Debug|Win32
+		{723020FB-4470-440B-80E8-A0249CC3348B}.Release|x86.ActiveCfg = Release|Win32
+		{723020FB-4470-440B-80E8-A0249CC3348B}.Release|x86.Build.0 = Release|Win32
+		{854C521D-806B-4F5E-8756-D60740137736}.Debug|x86.ActiveCfg = Debug|Win32
+		{854C521D-806B-4F5E-8756-D60740137736}.Debug|x86.Build.0 = Debug|Win32
+		{854C521D-806B-4F5E-8756-D60740137736}.Release|x86.ActiveCfg = Release|Win32
+		{854C521D-806B-4F5E-8756-D60740137736}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {716E0305-13B6-4390-AD4A-50820DAB3370}
+	EndGlobalSection
+EndGlobal

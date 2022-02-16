@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="base\base.h" />
+    <ClInclude Include="base\logger.h" />
+    <ClInclude Include="base\math.h" />
+    <ClInclude Include="base\types\angle.h" />
+    <ClInclude Include="base\types\bitfield.h" />
+    <ClInclude Include="base\types\color.h" />
+    <ClInclude Include="base\types\dimension.h" />
+    <ClInclude Include="base\types\matrix.h" />
+    <ClInclude Include="base\types\vector.h" />
+    <ClInclude Include="base\winapi.h" />
+    <ClInclude Include="core\config.h" />
+    <ClInclude Include="core\cheat.h" />
+    <ClInclude Include="core\features\events.h" />
+    <ClInclude Include="core\features\features.h" />
+    <ClInclude Include="core\features\variables.h" />
+    <ClInclude Include="core\hooks.h" />
+    <ClInclude Include="core\input.h" />
+    <ClInclude Include="core\netvars.h" />
+    <ClInclude Include="crypt\fnv1a.h" />
+    <ClInclude Include="crypt\xorstr.h" />
+    <ClInclude Include="memory\address.h" />
+    <ClInclude Include="memory\dll.h" />
+    <ClInclude Include="memory\memory.h" />
+    <ClInclude Include="memory\iat.h" />
+    <ClInclude Include="memory\interface.h" />
+    <ClInclude Include="memory\hook_manager.h" />
+    <ClInclude Include="render\menu\controls.h" />
+    <ClInclude Include="render\menu\menu.h" />
+    <ClInclude Include="render\render.h" />
+    <ClInclude Include="valve\cs\animations.h" />
+    <ClInclude Include="valve\cs\client_class.h" />
+    <ClInclude Include="valve\cs\convar.h" />
+    <ClInclude Include="valve\cs\cs.h" />
+    <ClInclude Include="valve\cs\datatables.h" />
+    <ClInclude Include="valve\cs\game_event.h" />
+    <ClInclude Include="valve\cs\key_values.h" />
+    <ClInclude Include="valve\cs\leaf_system.h" />
+    <ClInclude Include="valve\cs\material.h" />
+    <ClInclude Include="valve\cs\model.h" />
+    <ClInclude Include="valve\cs\player.h" />
+    <ClInclude Include="valve\cs\entity.h" />
+    <ClInclude Include="valve\cs\studio.h" />
+    <ClInclude Include="valve\cs\trace.h" />
+    <ClInclude Include="valve\cs\cmd.h" />
+    <ClInclude Include="valve\cs\util.h" />
+    <ClInclude Include="valve\cs\utl_vector.h" />
+    <ClInclude Include="valve\cs\view.h" />
+    <ClInclude Include="valve\se\client.h" />
+    <ClInclude Include="valve\se\datacache.h" />
+    <ClInclude Include="valve\se\engine.h" />
+    <ClInclude Include="valve\se\file_system.h" />
+    <ClInclude Include="valve\se\matchmaking.h" />
+    <ClInclude Include="valve\se\material_system.h" />
+    <ClInclude Include="valve\se\mem_alloc.h" />
+    <ClInclude Include="valve\se\input_system.h" />
+    <ClInclude Include="valve\se\localize.h" />
+    <ClInclude Include="valve\cs\net.h" />
+    <ClInclude Include="valve\se\server.h" />
+    <ClInclude Include="valve\se\vgui2.h" />
+    <ClInclude Include="valve\se\studio_render.h" />
+    <ClInclude Include="valve\se\surface.h" />
+    <ClInclude Include="valve\se\vphysics.h" />
+    <ClInclude Include="valve\se\vstdlib.h" />
+    <ClInclude Include="valve\se\se.h" />
+    <ClInclude Include="valve\steam\steam.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="base\math.cpp" />
+    <ClCompile Include="core\config.cpp" />
+    <ClCompile Include="core\features\misc.cpp" />
+    <ClCompile Include="core\features\prediction.cpp" />
+    <ClCompile Include="core\hooks.cpp" />
+    <ClCompile Include="core\input.cpp" />
+    <ClCompile Include="core\netvars.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="memory\memory.cpp" />
+    <ClCompile Include="memory\interface.cpp" />
+    <ClCompile Include="render\menu\controls.cpp" />
+    <ClCompile Include="render\menu\menu.cpp" />
+    <ClCompile Include="render\render.cpp" />
+    <ClCompile Include="valve\cs\entity.cpp" />
+    <ClCompile Include="valve\cs\player.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{723020fb-4470-440b-80e8-a0249cc3348b}</ProjectGuid>
+    <RootNamespace>celsius</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
+    <IntDir>int\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
+    <IntDir>int\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;WIN32;WIN32_LEAN_AND_MEAN;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ExceptionHandling>false</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;WIN32;WIN32_LEAN_AND_MEAN;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ExceptionHandling>false</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
