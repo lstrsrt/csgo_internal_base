@@ -98,7 +98,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{723020fb-4470-440b-80e8-a0249cc3348b}</ProjectGuid>
-    <RootNamespace>celsius</RootNamespace>
+    <RootNamespace>csgo_internal_base</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
