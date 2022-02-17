@@ -82,9 +82,7 @@ void interfaces::initialize() noexcept
     game_coordinator = static_cast<steam::game_coordinator*>(steam_client->get_generic_interface(steam::user, steam::pipe, "SteamGameCoordinator001"));
     steam_friends    = steam_api_ctx->steam_friends;
     matchmaking      = steam_api_ctx->steam_matchmaking;
-    // TODO - these result in different addresses, test
     user_stats       = steam_api_ctx->steam_user_stats;
-    // user_stats    = static_cast<steam::user_stats*>(steam_client->get_generic_interface(steam_user, steam_pipe, "STEAMUSERSTATS_INTERFACE_VERSION011"));
 
     mem_alloc         = *reinterpret_cast<se::mem_alloc**>(GetProcAddress(dlls::get(dll::tier0).hmod, "g_pMemAlloc"));
     key_values_system = reinterpret_cast<se::key_values_system_fn>(GetProcAddress(dlls::get(dll::vstdlib).hmod, "KeyValuesSystem"))();

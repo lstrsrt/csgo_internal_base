@@ -32,7 +32,7 @@ void hooks::initialize() noexcept
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
-    events::initialize({ "bullet_impact" });
+    // events::initialize({ "bullet_impact" });
 }
 
 void hooks::end() noexcept
@@ -48,7 +48,7 @@ void hooks::end() noexcept
     
     unhook_func(hooked_fns[fnv1a::ct("cull_beam")], false);
     
-    events::end();
+    // events::end();
 
     SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));
 }

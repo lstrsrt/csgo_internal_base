@@ -28,11 +28,13 @@ namespace logger {
         error
     };
     
+    // Use the LOG macros instead of accessing these directly
+
     template<class... va_args>
     inline void add(level lvl, std::string_view fmt, const va_args&... args) noexcept
     {
     #ifdef _DEBUG
-        const auto time = std::format("[%T] ", std::chrono::system_clock::now());
+        const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         const auto msg = std::format(fmt, args...);
         
         std::cout << "[ ";
@@ -52,7 +54,7 @@ namespace logger {
         }
 
         SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-        std::cout << " ] " << time;
+        std::cout << " ] " << std::put_time(std::localtime(&time), "[%T] ");
         std::cout << msg << std::endl;
         
         std::fstream out{ "log.txt", std::fstream::out | std::fstream::app };
@@ -67,7 +69,7 @@ namespace logger {
     inline void add(level lvl, std::wstring_view fmt, const va_args&... args) noexcept
     {
     #ifdef _DEBUG
-        const auto time = std::format(L"[%T] ", std::chrono::system_clock::now());
+        const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         const auto msg = std::format(fmt, args...);
         
         std::wcout << L"[ ";
@@ -87,7 +89,7 @@ namespace logger {
         }
 
         SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-        std::wcout << L" ] " << time;
+        std::wcout << L" ] " << std::put_time(std::localtime(&time), L"[%T] ");
         std::wcout << msg << std::endl;
         
         std::wfstream out{ "log.txt", std::wfstream::out | std::wfstream::app };
