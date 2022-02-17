@@ -63,40 +63,40 @@ struct recv_prop {
 };
 
 enum class offset_type {
-	normal,
-	packed
+    normal,
+    packed
 };
 
 enum class field_type {
-	_void,
-	_float,
-	string,
-	vector,
-	quaternion,
-	integer,
-	boolean,
-	_short,
-	character,
-	color32,
-	embedded,
-	custom,
-	classptr,
-	ehandle,
-	edict,
-	position_vector,
-	time,
-	tick,
-	modelname,
-	soundname,
-	input,
-	function,
-	vmatrix,
-	vmatrix_worldspace,
-	matrix3x4_worldspace,
-	interval,
-	modelindex,
-	materialindex,
-	vector2d
+    _void,
+    _float,
+    string,
+    vector,
+    quaternion,
+    integer,
+    boolean,
+    _short,
+    character,
+    color32,
+    embedded,
+    custom,
+    classptr,
+    ehandle,
+    edict,
+    position_vector,
+    time,
+    tick,
+    modelname,
+    soundname,
+    input,
+    function,
+    vmatrix,
+    vmatrix_worldspace,
+    matrix3x4_worldspace,
+    interval,
+    modelindex,
+    materialindex,
+    vector2d
 };
 
 struct datamap;
@@ -105,32 +105,32 @@ struct input_data;
 using input_fn = void(*)(input_data&);
 
 struct type_description {
-	field_type type{ };
-	const char* field_name{ };
-	int field_offset{ };
-	uint16_t field_size{ };
-	uint16_t flags{ };
-	const char* external_name{ };
-	uintptr_t* save_restore_ops{ };
-	input_fn input_fn{ };
-	datamap* data_map{ };
-	uint32_t field_size_in_bytes{ };
-	type_description* override_field{ };
-	uint32_t override_count{ };
-	float field_tolerance{ };
-	int flat_offset[2]{ };
-	uint16_t flat_group{ };
+    field_type type{ };
+    const char* field_name{ };
+    int field_offset{ };
+    uint16_t field_size{ };
+    uint16_t flags{ };
+    const char* external_name{ };
+    uintptr_t* save_restore_ops{ };
+    input_fn input_fn{ };
+    datamap* data_map{ };
+    uint32_t field_size_in_bytes{ };
+    type_description* override_field{ };
+    uint32_t override_count{ };
+    float field_tolerance{ };
+    int flat_offset[2]{ };
+    uint16_t flat_group{ };
 };
 
 struct datamap {
-	type_description* data_description{ };
-	int data_fields_count{ };
-	char const* data_class_name{ };
-	datamap* base_map{ };
+    type_description* data_description{ };
+    int data_fields_count{ };
+    char const* data_class_name{ };
+    datamap* base_map{ };
 
-	bool chains_validated{ };
-	bool packed_offsets_computed{ };
-	int packed_size{ };
+    bool chains_validated{ };
+    bool packed_offsets_computed{ };
+    int packed_size{ };
 };
 
 }

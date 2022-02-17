@@ -101,20 +101,20 @@ using pose_params = std::array<float, max_pose_param>;
 struct base_animating;
 
 struct anim_layer_t {
-	float layer_anim_time{ };
-	float layer_fadeout_time{ };
-	studio_hdr* dispatched_studio_hdr{ };
-	int dispatched_src{ };
-	int dispatched_dest{ };
-	int order{ };
-	int sequence{ };
-	float prev_cycle{ };
-	float weight{ };
-	float weight_delta_rate{ };
-	float playback_rate{ };
-	float cycle{ };
-	base_animating* owner{ };
-	int invalidate_physics_bits{ };
+    float layer_anim_time{ };
+    float layer_fadeout_time{ };
+    studio_hdr* dispatched_studio_hdr{ };
+    int dispatched_src{ };
+    int dispatched_dest{ };
+    int order{ };
+    int sequence{ };
+    float prev_cycle{ };
+    float weight{ };
+    float weight_delta_rate{ };
+    float playback_rate{ };
+    float cycle{ };
+    base_animating* owner{ };
+    int invalidate_physics_bits{ };
 };
 
 struct anim_state {

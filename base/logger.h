@@ -101,7 +101,7 @@ namespace logger {
     #endif
     }
     
-    inline void initialize(std::wstring_view console_title, std::wstring_view filename) noexcept
+    inline void initialize(std::wstring_view console_title, std::wstring_view log_filename) noexcept
     {
     #ifdef _DEBUG
         AllocConsole();
@@ -111,7 +111,7 @@ namespace logger {
         freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout);
         console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
         
-        log_name = filename;
+        log_name = log_filename;
         winapi::scoped_handle f = CreateFileW(log_name.c_str(), 0, 0, nullptr, CREATE_NEW, 0, nullptr);
 
         add(level::info, "Initialized logger.");
