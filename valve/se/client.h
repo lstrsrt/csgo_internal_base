@@ -135,6 +135,13 @@ struct game_movement {
     VIRTUAL_FUNCTION(reset, void, 2, (), (this))
 };
 
+struct game_rules {
+    NETVAR(is_warmup_period, bool, "CCSGameRulesProxy->m_bWarmupPeriod")
+    NETVAR(is_freeze_period, bool, "CCSGameRulesProxy->m_bFreezePeriod")
+    NETVAR(is_valve_ds, bool, "CCSGameRulesProxy->m_bIsValveDS")
+    NETVAR(is_bomb_planted, bool, "CCSGameRulesProxy->m_bBombPlanted")
+};
+
 struct game_ui {
     VIRTUAL_FUNCTION(create_command_msg_box, void, 19, (const char* title, const char* message, bool show_ok = true, bool show_cancel = false,
         const char* ok_command = nullptr, const char* cancel_command = nullptr, const char* closed_command = nullptr, const char* legend = nullptr,
@@ -182,8 +189,8 @@ struct move_helper {
 
 struct player_resource {
     NETVAR(get_c4_carrier, int, "CCSPlayerResource->m_iPlayerC4")
-    NETVAR(bombsite_a, vec3, "CCSPlayerResource->m_bombsiteCenterA")
-    NETVAR(bombsite_b, vec3, "CCSPlayerResource->m_bombsiteCenterB")
+    NETVAR(bombsite_a_pos, vec3, "CCSPlayerResource->m_bombsiteCenterA")
+    NETVAR(bombsite_b_pos, vec3, "CCSPlayerResource->m_bombsiteCenterB")
 };
 
 struct prediction {

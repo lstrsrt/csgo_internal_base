@@ -76,6 +76,7 @@ inline interface_holder<se::event_manager*>          event_manager{ };
 inline interface_holder<se::file_system*>            file_system{ };
 inline interface_holder<se::game_console*>           console{ };
 inline interface_holder<se::game_movement*>          movement{ };
+inline interface_holder<se::game_rules*>             game_rules{ };
 inline interface_holder<se::game_types*>             game_types{ };
 inline interface_holder<se::game_ui*>                ui{ };
 inline interface_holder<se::global_vars_base*>       globals{ };

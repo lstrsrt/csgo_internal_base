@@ -2,7 +2,6 @@
 
 #include <type_traits>
 
-/* Convenience operators for bitfields. Only a couple here, add more if you wish. */
 namespace bitfield_operators {
 
 template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
@@ -57,7 +56,7 @@ public:
 
     constexpr operator ty() const noexcept
     {
-        return bits;
+        return to_underlying();
     }
 
     constexpr auto to_int() const noexcept

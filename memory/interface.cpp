@@ -65,6 +65,7 @@ void interfaces::initialize() noexcept
     input.initialize<false>(*memory::get_virtual(client, 16).offset(0x1).cast<se::client_input**>());
     client_state.initialize<false>(**memory::get_virtual(engine, 12).offset(0x10).cast<se::client_state***>());
 
+    game_rules.initialize<false>(*memory::find_bytes(dll::client, "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A").offset(0x1).cast<se::game_rules**>());
     glow_manager.initialize<false>(*memory::find_bytes(dll::client, "0F 11 05 ? ? ? ? 83 C8 01").offset(0x3).cast<se::glow_manager**>());
     move_helper.initialize<false>(**memory::find_bytes(dll::client, "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01").offset(0x2).cast<se::move_helper***>());
     player_resource.initialize<false>(*memory::find_bytes(dll::client, "8B 1D ? ? ? ? 89 5C 24 40").offset(0x2).cast<se::player_resource**>());
