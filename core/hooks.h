@@ -31,7 +31,6 @@ namespace hooks {
     DECLARE_VF_HOOK(create_move, bool, se::client_mode, 24, float, cs::user_cmd*)
     DECLARE_VF_HOOK(get_viewmodel_fov, float, se::client_mode, 35)
     DECLARE_VF_HOOK(is_connected, bool, se::engine_client, 27)
-    DECLARE_VF_HOOK(build_renderables_list, void, se::leaf_system, 16, cs::setup_render_info&)
     DECLARE_VF_HOOK(override_config, bool, se::material_system, 21, cs::material_system_config*, bool)
     DECLARE_VF_HOOK(draw_model_execute, void, se::model_render, 21, cs::mat_render_context*, 
                     const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)

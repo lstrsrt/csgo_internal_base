@@ -142,38 +142,6 @@ bool __fastcall hooks::is_connected::fn(se::engine_client* ecx, int)
     return original(ecx);
 }
 
-void __fastcall hooks::build_renderables_list::fn(se::leaf_system* ecx, int, cs::setup_render_info& info)
-{
-    original(ecx, info);
-    
-    constexpr int max_group_entities = 4096;
-    auto& groups = info.render_list->render_groups;
-    
-    // use algorithm/ranges instead of looping?
-    for (int i = 0; i < max_group_entities; i++) {
-        // FIXME - pointer is invalid
-        const auto renderable = groups[cs::render_group::opaque][i].renderable;
-        if (!renderable)
-            continue;
-    
-        const auto unknown = renderable->get_client_unknown();
-        if (!unknown)
-            continue;
-    
-        const auto entity = unknown->get_base_entity();
-        if (!entity) {
-            if (unknown->get_networkable()->get_client_class()->id == cs::class_id::particle_smoke_grenade)
-                std::swap(groups[cs::render_group::translucent][i], groups[cs::render_group::opaque][i]);
-            else 
-                continue;
-        }
-        
-        if (entity->is_player())
-                std::swap(groups[cs::render_group::opaque][i], groups[cs::render_group::translucent_ignore_z][i]);
-    }
-
-}
-
 bool __fastcall hooks::override_config::fn(se::material_system* ecx, int, cs::material_system_config* config, bool force_update)
 {
     config->fullbright = config::get<bool>(vars::fullbright);
