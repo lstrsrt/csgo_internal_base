@@ -32,7 +32,7 @@ void hooks::initialize() noexcept
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
-    // events::initialize({ "bullet_impact" });
+    events::initialize({ "bullet_impact" });
 }
 
 void hooks::end() noexcept
@@ -48,7 +48,7 @@ void hooks::end() noexcept
     
     unhook_func(hooked_fns[fnv1a::ct("cull_beam")], false);
     
-    // events::end();
+    events::end();
 
     SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));
 }
@@ -165,7 +165,7 @@ static auto init_material() noexcept
         "$wireframe"	"0"
     })#");
 
-    return interfaces::material_system->create_material("celsius_default.vmt", kv);
+    return interfaces::material_system->create_material("cheat_default.vmt", kv);
 }
 
 static void override_material(bool xqz) noexcept

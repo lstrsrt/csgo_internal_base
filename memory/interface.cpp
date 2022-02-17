@@ -32,7 +32,7 @@ void interfaces::initialize() noexcept
     get_cached_interface(effects_client, "IEffects0");
     get_cached_interface(engine, "VEngineClient0");
     get_cached_interface(entity_list, "VClientEntityList0");
-    // get_cached_interface(event_manager, "GAMEEVENTSMANAGER002");
+    get_cached_interface(event_manager, "GAMEEVENTSMANAGER002");
     get_cached_interface(file_system, "VFileSystem0");
     get_cached_interface(game_types, "VENGINE_GAMETYPES_VERSION0");
     get_cached_interface(input_system, "InputSystemVersion0");

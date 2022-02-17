@@ -2,10 +2,10 @@
 
 void config::initialize() noexcept
 {
-    if (!std::filesystem::exists("celsius"))
-        std::filesystem::create_directory("celsius");
+    if (!std::filesystem::exists("csgo_internal_base"))
+        std::filesystem::create_directory("csgo_internal_base");
 
-    path = std::filesystem::current_path() / "celsius";
+    path = std::filesystem::current_path() / "csgo_internal_base";
 
     if (!std::filesystem::exists(path / "default.cfg"))
         write(L"default.cfg");

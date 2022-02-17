@@ -2,7 +2,7 @@
 
 #include <any>
 #include <filesystem>
-#include <map>
+#include <unordered_map>
 
 #include "../base/base.h"
 #include "../crypt/fnv1a.h"
@@ -35,7 +35,7 @@ namespace config {
     inline std::vector<item> items{ }; // Currently used variables
     inline std::vector<std::string> list{ }; // Config names
     inline std::filesystem::path path{ };
-    const inline std::map<std::string, item_type> type_table{ 
+    const inline std::unordered_map<std::string, item_type> type_table{ 
         { "i32", item_type::i32 },
         { "f32", item_type::f32 },
         { "bool", item_type::boolean },
