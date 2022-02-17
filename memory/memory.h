@@ -39,6 +39,6 @@ inline ret name params noexcept \
 #define VIRTUAL_FUNCTION_SIG(name, ret, dll, sig, args, ... /* params */) \
 inline ret name(__VA_ARGS__) noexcept \
 { \
-    static const ret(__thiscall* name##_fn)(void*, __VA_ARGS__) = memory::find_bytes(dll, sig).cast<decltype(name##_fn)>(); \
+    static ret(__thiscall* name##_fn)(void*, __VA_ARGS__) = memory::find_bytes(dll, sig).cast<decltype(name##_fn)>(); \
     return name##_fn##args; \
 }
