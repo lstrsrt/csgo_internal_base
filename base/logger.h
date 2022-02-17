@@ -20,6 +20,7 @@
 namespace logger {
 
     inline HANDLE console_handle{ };
+    inline std::wstring log_name{ };
     
     enum class level
     {
@@ -57,7 +58,7 @@ namespace logger {
         std::cout << " ] " << std::put_time(std::localtime(&time), "[%T] ");
         std::cout << msg << std::endl;
         
-        std::fstream out{ "log.txt", std::fstream::out | std::fstream::app };
+        std::fstream out{ log_name, std::fstream::out | std::fstream::app };
         if (out.good()) {
             out << msg << '\n';
             out.flush();
@@ -92,7 +93,7 @@ namespace logger {
         std::wcout << L" ] " << std::put_time(std::localtime(&time), L"[%T] ");
         std::wcout << msg << std::endl;
         
-        std::wfstream out{ "log.txt", std::wfstream::out | std::wfstream::app };
+        std::wfstream out{ log_name, std::wfstream::out | std::wfstream::app };
         if (out.good()) {
             out << msg << '\n';
             out.flush();
@@ -100,7 +101,7 @@ namespace logger {
     #endif
     }
     
-    inline void initialize(std::wstring_view console_title, std::wstring_view log_name) noexcept
+    inline void initialize(std::wstring_view console_title, std::wstring_view filename) noexcept
     {
     #ifdef _DEBUG
         AllocConsole();
@@ -109,7 +110,9 @@ namespace logger {
 
         freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout);
         console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-        winapi::scoped_handle f = CreateFileW(log_name.data(), 0, 0, nullptr, CREATE_NEW, 0, nullptr);
+        
+        log_name = filename;
+        winapi::scoped_handle f = CreateFileW(log_name.c_str(), 0, 0, nullptr, CREATE_NEW, 0, nullptr);
 
         add(level::info, "Initialized logger.");
     #endif
