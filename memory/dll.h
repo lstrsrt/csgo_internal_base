@@ -45,10 +45,6 @@ namespace dlls {
 
     inline void initialize() noexcept
     {
-        list = { "client.dll", "datacache.dll", "engine.dll", "filesystem_stdio.dll", "gameoverlayrenderer.dll", "inputsystem.dll",
-        "localize.dll", "materialsystem.dll", "matchmaking.dll", "server.dll", "shaderapidx9.dll", "steam_api.dll", "studiorender.dll", 
-        "tier0.dll", "vguimatsurface.dll", "vgui2.dll", "vphysics.dll", "vstdlib.dll" };
-
         while (!GetModuleHandleA("serverbrowser.dll"))
             std::this_thread::sleep_for(100ms);
 
