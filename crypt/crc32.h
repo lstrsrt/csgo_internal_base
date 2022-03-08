@@ -108,13 +108,9 @@ inline namespace crypt {
                 crc ^= *reinterpret_cast<const crc32_t*>(buffer);
                 quad_update_crc();
             }
-            else if (len == 2) {
-                update_crc();
-                update_crc();
-            }
-            else if (len == 1) {
-                update_crc();
-            }
+            else if (len < 4)
+                while (len--)
+                    update_crc();
         }
 
     }

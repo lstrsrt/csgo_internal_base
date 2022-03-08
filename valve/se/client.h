@@ -41,6 +41,7 @@ struct client_input {
     vec3 camera_offset{ };
     PAD(0x38)
     cs::user_cmd* cmds{ };
+    cs::verified_user_cmd* verified_cmds{ };
 };
 
 struct hud_chat;

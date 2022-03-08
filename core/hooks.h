@@ -28,7 +28,7 @@ namespace hooks {
 
     DECLARE_VF_HOOK(frame_stage_notify, void, se::client_dll, 37, cs::frame_stage)
     DECLARE_VF_HOOK(override_view, void, se::client_mode, 18, cs::view_setup*)
-    DECLARE_VF_HOOK(create_move, bool, se::client_mode, 24, float, cs::user_cmd*)
+    DECLARE_VF_HOOK(create_move_proxy, void, se::client_dll, 22, int, float, bool)
     DECLARE_VF_HOOK(get_viewmodel_fov, float, se::client_mode, 35)
     DECLARE_VF_HOOK(is_connected, bool, se::engine_client, 27)
     DECLARE_VF_HOOK(override_config, bool, se::material_system, 21, cs::material_system_config*, bool)
@@ -44,5 +44,6 @@ namespace hooks {
 
 }
 
-#undef DECLARE_SIG_HOOK
 #undef DECLARE_VF_HOOK
+#undef DECLARE_SIG_HOOK
+#undef DECLARE_PROXY

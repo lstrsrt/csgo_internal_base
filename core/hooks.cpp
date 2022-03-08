@@ -18,8 +18,8 @@ void hooks::initialize() noexcept
     unhook_func = memory::find_bytes(dll::game_overlay_renderer, "E8 ? ? ? ? 83 C4 08 FF 15").absolute<decltype(unhook_func)>();
     
     SET_VF_HOOK(interfaces::client, frame_stage_notify);
+    SET_VF_HOOK(interfaces::client, create_move_proxy);
     SET_VF_HOOK(interfaces::client_mode, override_view);
-    SET_VF_HOOK(interfaces::client_mode, create_move);
     SET_VF_HOOK(interfaces::client_mode, get_viewmodel_fov);
     SET_VF_HOOK(interfaces::engine, is_connected);
     SET_VF_HOOK(interfaces::material_system, override_config);
@@ -100,29 +100,57 @@ void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_set
     return original(ecx, view);
 }
 
-bool __fastcall hooks::create_move::fn(se::client_mode* ecx, int, float input_sample_time, cs::user_cmd* cmd)
+static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
 {
-    if (!cmd || !cmd->number) // Return calls from CInput::ExtraMouseSample().
-        return original(ecx, input_sample_time, cmd);
+    using hooks::create_move_proxy::original;
+    
+    original(interfaces::client, sequence_nr, input_sample_time, is_active);
 
-    if (original(ecx, input_sample_time, cmd))
-        interfaces::prediction->set_local_view_angles(cmd->view_angles);
+    if (!interfaces::engine->is_in_game_and_connected())
+        return;
 
-    cheat::local_player->update();
+    if (!cheat::local_player->update())
+        return;
+
+    auto cmd = &interfaces::input->cmds[sequence_nr % cs::multiplayer_backup];
+    auto verified_cmd = &interfaces::input->verified_cmds[sequence_nr % cs::multiplayer_backup];
+
+    if (!cmd || !verified_cmd || !is_active)
+        return;
+
     cheat::cmd = cmd;
-
-    auto stack_frame = memory::get_frame_address().dereference();
-    auto& send_packet = *stack_frame.offset(-0x1c).cast<bool*>(); // Captured from CL_Move().
     
     if (config::get<bool>(vars::infinite_crouch))
         cmd->buttons.set(cs::cmd_button::bullrush);
-
+    
     prediction::start(cmd);
     // aimbot::run(cmd);
     prediction::end();
 
-    // Prevent view angles from being changed.
-    return false;
+    cheat::view = cmd->view_angles;
+
+    verified_cmd->cmd = *cmd;
+    verified_cmd->crc = cmd->get_checksum();
+}
+
+__declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* ecx, int, int sequence_nr, 
+    float input_sample_time, bool is_active)
+{
+    __asm {
+        push ebp
+        mov  ebp, esp
+
+        push  ebx // send_packet
+        push  esp
+        push  dword ptr[ebp + 16]
+        push  dword ptr[ebp + 12]
+        push  dword ptr[ebp + 8]
+        call  create_move
+        pop   ebx
+
+        pop   ebp
+        ret   12
+    }
 }
 
 float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)

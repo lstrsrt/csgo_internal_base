@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../base/base.h"
+#include "../../crypt/crc32.h"
 
 namespace cs {
 
@@ -49,6 +50,31 @@ struct user_cmd {
     short mouse_dx{ };
     short mouse_dy{ };
     bool has_been_predicted{ };
+
+    inline const crc32_t get_checksum() noexcept
+    {
+        crc32_t ret{ 0xffffffff };
+
+        crc32::process_data(ret, &number, sizeof(number));
+        crc32::process_data(ret, &tick_count, sizeof(tick_count));
+        crc32::process_data(ret, &view_angles, sizeof(view_angles));
+        crc32::process_data(ret, &aim_direction, sizeof(aim_direction));
+        crc32::process_data(ret, &move_direction, sizeof(move_direction));
+        crc32::process_data(ret, &buttons, sizeof(buttons));
+        crc32::process_data(ret, &impulse, sizeof(impulse));
+        crc32::process_data(ret, &weapon_select, sizeof(weapon_select));
+        crc32::process_data(ret, &weapon_subtype, sizeof(weapon_subtype));
+        crc32::process_data(ret, &random_seed, sizeof(random_seed));
+        crc32::process_data(ret, &mouse_dx, sizeof(mouse_dx));
+        crc32::process_data(ret, &mouse_dy, sizeof(mouse_dy));
+
+        return (~ret);
+    }
+};
+
+struct verified_user_cmd {
+    user_cmd cmd{ };
+    crc32_t crc{ };
 };
 
 struct move_data {
