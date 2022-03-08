@@ -46,13 +46,7 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
     interfaces::globals->tick_count = local_player->get_tick_base();
     interfaces::prediction->is_in_prediction = true;
     interfaces::prediction->is_first_time_predicted = false;
-
-    if (cmd->weapon_select != 0) {
-        if (const auto weapon = interfaces::entity_list->get(cmd->weapon_select))
-            if (const auto info = weapon->get_weapon_info())
-                local_player->select_item(info->weapon_name, cmd->weapon_subtype);
-    }
-
+    
     update_button_state(cmd->buttons);
 
     interfaces::prediction->check_moving_ground(local_player, interfaces::globals->frame_time);
@@ -73,25 +67,6 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
     interfaces::prediction->setup_move(local_player, cmd, interfaces::move_helper, &move_data);
     interfaces::movement->process_movement(local_player, &move_data);
     interfaces::prediction->finish_move(local_player, cmd, &move_data);
-
-    interfaces::move_helper->process_impacts();
-
-    se::mdl_cache_critical_section cs(interfaces::mdl_cache);
-
-    if (local_player->is_alive()) {
-        local_player->update_collision_bounds();
-
-        if (local_player->get_flags().is_set(cs::entity_flag::on_ground))
-            local_player->get_fall_velocity() = 0.0f;
-
-        if (local_player->get_sequence() == -1)
-            local_player->set_sequence(0);
-
-        local_player->studio_frame_advance();
-        local_player->post_think_v_physics();
-    }
-
-    local_player->simulate_player_simulated_entities();
 
     if (const auto weapon = local_player->get_active_weapon())
         weapon->update_accuracy_penalty();
@@ -115,7 +90,4 @@ void features::prediction::end() noexcept
     *player = nullptr;
 
     interfaces::movement->reset();
-
-    if (!interfaces::prediction->is_engine_paused && interfaces::globals->frame_time > 0.0f)
-        local_player->get_tick_base()++;
 }
