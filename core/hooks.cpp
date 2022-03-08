@@ -68,6 +68,59 @@ LRESULT CALLBACK hooks::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
     return CallWindowProcA(original_wnd_proc, hwnd, msg, wparam, lparam);
 }
 
+static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
+{
+    using hooks::create_move_proxy::original;
+    
+    original(interfaces::client, sequence_nr, input_sample_time, is_active);
+
+    if (!interfaces::engine->is_in_game_and_connected())
+        return;
+
+    if (!cheat::local_player->update())
+        return;
+
+    auto cmd = &interfaces::input->cmds[sequence_nr % cs::multiplayer_backup];
+    auto verified_cmd = &interfaces::input->verified_cmds[sequence_nr % cs::multiplayer_backup];
+
+    if (!cmd || !verified_cmd || !is_active)
+        return;
+
+    local_player->cur_cmd = cmd;
+    
+    if (config::get<bool>(vars::infinite_crouch))
+        cmd->buttons.set(cs::cmd_button::bullrush);
+    
+    prediction::start(cmd);
+    // aimbot::run(cmd);
+    prediction::end();
+
+    local_player->view = cmd->view_angles;
+
+    verified_cmd->cmd = *cmd;
+    verified_cmd->crc = cmd->get_checksum();
+}
+
+__declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* ecx, int, int sequence_nr, 
+    float input_sample_time, bool is_active)
+{
+    __asm {
+        push ebp
+        mov  ebp, esp
+
+        push  ebx // send_packet
+        push  esp
+        push  dword ptr[ebp + 16]
+        push  dword ptr[ebp + 12]
+        push  dword ptr[ebp + 8]
+        call  create_move
+        pop   ebx
+
+        pop   ebp
+        ret   12
+    }
+}
+
 void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::frame_stage frame_stage)
 {
     if (!interfaces::engine->is_in_game_and_connected())
@@ -98,59 +151,6 @@ void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_set
     }
 
     return original(ecx, view);
-}
-
-static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
-{
-    using hooks::create_move_proxy::original;
-    
-    original(interfaces::client, sequence_nr, input_sample_time, is_active);
-
-    if (!interfaces::engine->is_in_game_and_connected())
-        return;
-
-    if (!cheat::local_player->update())
-        return;
-
-    auto cmd = &interfaces::input->cmds[sequence_nr % cs::multiplayer_backup];
-    auto verified_cmd = &interfaces::input->verified_cmds[sequence_nr % cs::multiplayer_backup];
-
-    if (!cmd || !verified_cmd || !is_active)
-        return;
-
-    cheat::cmd = cmd;
-    
-    if (config::get<bool>(vars::infinite_crouch))
-        cmd->buttons.set(cs::cmd_button::bullrush);
-    
-    prediction::start(cmd);
-    // aimbot::run(cmd);
-    prediction::end();
-
-    cheat::view = cmd->view_angles;
-
-    verified_cmd->cmd = *cmd;
-    verified_cmd->crc = cmd->get_checksum();
-}
-
-__declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* ecx, int, int sequence_nr, 
-    float input_sample_time, bool is_active)
-{
-    __asm {
-        push ebp
-        mov  ebp, esp
-
-        push  ebx // send_packet
-        push  esp
-        push  dword ptr[ebp + 16]
-        push  dword ptr[ebp + 12]
-        push  dword ptr[ebp + 8]
-        call  create_move
-        pop   ebx
-
-        pop   ebp
-        ret   12
-    }
 }
 
 float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)

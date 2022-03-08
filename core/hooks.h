@@ -26,9 +26,9 @@ namespace hooks {
     inline WNDPROC original_wnd_proc{ };
     extern LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+    DECLARE_VF_HOOK(create_move_proxy, void, se::client_dll, 22, int, float, bool)
     DECLARE_VF_HOOK(frame_stage_notify, void, se::client_dll, 37, cs::frame_stage)
     DECLARE_VF_HOOK(override_view, void, se::client_mode, 18, cs::view_setup*)
-    DECLARE_VF_HOOK(create_move_proxy, void, se::client_dll, 22, int, float, bool)
     DECLARE_VF_HOOK(get_viewmodel_fov, float, se::client_mode, 35)
     DECLARE_VF_HOOK(is_connected, bool, se::engine_client, 27)
     DECLARE_VF_HOOK(override_config, bool, se::material_system, 21, cs::material_system_config*, bool)

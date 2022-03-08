@@ -120,6 +120,9 @@ struct player : public base_player {
 };
 
 struct local_player : public player {
+    user_cmd* cur_cmd{ };
+    angle view{ };
+    
     bool update() noexcept;
 };
 

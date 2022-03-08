@@ -57,12 +57,12 @@ struct spatial_query;
 struct net_channel_info;
 
 struct engine_client {
-    VIRTUAL_FUNCTION(get_screen_size, void, 5, (int* width, int* height), (this, width, height))
+    VIRTUAL_FUNCTION(get_screen_size, void, 5, (int& width, int& height), (this, std::ref(width), std::ref(height)))
     VIRTUAL_FUNCTION(get_player_info, bool, 8, (int entity_index, cs::player_info* player_info), (this, entity_index, player_info))
     VIRTUAL_FUNCTION(get_player_for_uid, int, 9, (int uid), (this, uid))
     VIRTUAL_FUNCTION(get_local_player, int, 12, (), (this))
-    VIRTUAL_FUNCTION(get_view_angles, void, 18, (angle& angles), (this, angles))
-    VIRTUAL_FUNCTION(set_view_angles, void, 19, (angle& angles), (this, angles))
+    VIRTUAL_FUNCTION(get_view_angles, void, 18, (angle& angles), (this, std::ref(angles)))
+    VIRTUAL_FUNCTION(set_view_angles, void, 19, (angle& angles), (this, std::ref(angles)))
     VIRTUAL_FUNCTION(get_max_clients, int, 20, (), (this))
     VIRTUAL_FUNCTION(is_in_game, bool, 26, (), (this))
     VIRTUAL_FUNCTION(is_connected, bool, 27, (), (this))
@@ -80,6 +80,20 @@ struct engine_client {
         (this, cmd, from_console_or_keybind))
     VIRTUAL_FUNCTION(get_steam_api_context, steam::api_context*, 185, (), (this))
     VIRTUAL_FUNCTION(is_voice_recording, bool, 224, (), (this))
+
+    d2 get_screen_size() noexcept
+    {
+        int x{ }, y{ };
+        get_screen_size(x, y);
+        return d2{ x, y };
+    }
+
+    angle& get_view_angles() noexcept
+    {
+        angle ret{ };
+        get_view_angles(ret);
+        return ret;
+    }
 
     bool is_in_game_and_connected() noexcept
     {
