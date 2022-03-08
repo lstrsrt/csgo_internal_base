@@ -66,7 +66,7 @@
     <ClInclude Include="valve\se\file_system.h" />
     <ClInclude Include="valve\se\matchmaking.h" />
     <ClInclude Include="valve\se\material_system.h" />
-    <ClInclude Include="valve\se\mem_alloc.h" />
+    <ClInclude Include="valve\se\tier0.h" />
     <ClInclude Include="valve\se\input_system.h" />
     <ClInclude Include="valve\se\localize.h" />
     <ClInclude Include="valve\cs\net.h" />
