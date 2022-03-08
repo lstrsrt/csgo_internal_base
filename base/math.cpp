@@ -71,8 +71,7 @@ w2s_result math::world_to_screen(const vec3& world) noexcept
 
     const auto& matrix = interfaces::engine->world_to_screen_matrix();
     const float width = matrix[3][0] * world.x + matrix[3][1] * world.y + matrix[3][2] * world.z + matrix[3][3];
-    d2 screen_size{ };
-    interfaces::engine->get_screen_size(&screen_size.x, &screen_size.y);
+    const d2 screen_size = interfaces::engine->get_screen_size();
 
     if (width > 0.001f)
         ret.successful = true;
