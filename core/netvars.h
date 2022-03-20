@@ -17,7 +17,7 @@ namespace netvars {
     void set_proxy(hash_t name, cs::recv_proxy_fn proxy, cs::recv_proxy_fn& original) noexcept;
     uint32_t get_datamap_offset(cs::datamap* map, const hash_t field_name) noexcept;
 
-    inline std::uint32_t get(hash_t hash) noexcept
+    inline hash_t get(hash_t hash) noexcept
     {
         return var_map.at(hash).first;
     };
