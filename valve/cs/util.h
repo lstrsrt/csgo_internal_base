@@ -53,7 +53,7 @@ namespace util {
             if (filter.is_set(player_filter::dead))
                 if (!player->is_alive())
                     continue;
-            if (filter.is_set(player_filter::team)
+            if (filter.is_set(player_filter::team))
                 if (!player->is_enemy())
                     continue;
             
