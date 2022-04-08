@@ -22,7 +22,7 @@ namespace util {
     }
     
     enum class player_filter {
-        dormant,
+        dormant = 1,
         dead,
         team /* Based on is_enemy(), not just the team id */
     };
@@ -38,7 +38,7 @@ namespace util {
         }
     }
     
-    inline void iterate_players(std::function<void(player*)> callback, bitfield<player_filter> filter) noexcept
+    inline void iterate_players(std::function<void(player*)> callback, bitfield<player_filter> filter = { }) noexcept
     {
         for (int i = 1; i <= cs::max_players; i++) {
             auto entity = interfaces::entity_list->get(i);
