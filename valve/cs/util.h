@@ -23,8 +23,8 @@ namespace util {
     
     enum class player_filter {
         dormant = 1,
-        dead,
-        team /* Based on is_enemy(), not just the team id */
+        dead = 2,
+        team = 4 /* Based on is_enemy(), not just the team id */
     };
     
     inline void iterate_entities(std::function<void(base_entity*)> callback) noexcept
