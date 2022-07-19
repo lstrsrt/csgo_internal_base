@@ -50,6 +50,7 @@ struct user_cmd {
     short mouse_dx{ };
     short mouse_dy{ };
     bool has_been_predicted{ };
+    PAD(0x18)
 
     inline const crc32_t get_checksum() noexcept
     {

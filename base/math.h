@@ -49,7 +49,7 @@ namespace math {
         template<class ty> requires std::is_enum_v<ty>
         inline ty enumerator(ty min, ty max) noexcept
         {
-            return static_cast<ty>(integral(std::to_underlying(min), std::to_underlying(max)));
+            return static_cast<ty>(integral(to_underlying(min), to_underlying(max)));
         }
 
     }

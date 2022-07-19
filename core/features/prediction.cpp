@@ -13,10 +13,10 @@ static void update_button_state(bitfield<cs::cmd_button>& cmd_buttons) noexcept
     local_player->get_button_last() = *buttons;
 
     *buttons = cmd_buttons;
-    const auto buttons_changed = local_player->get_button_last().to_underlying() ^ buttons->to_underlying();
+    const auto buttons_changed = local_player->get_button_last().raw() ^ buttons->raw();
     
-    local_player->get_button_pressed() = buttons_changed & buttons->to_underlying();
-    local_player->get_button_released() = buttons_changed & (~buttons->to_underlying());
+    local_player->get_button_pressed() = buttons_changed & buttons->raw();
+    local_player->get_button_released() = buttons_changed & (~buttons->raw());
 }
 
 void features::prediction::start(cs::user_cmd* cmd) noexcept

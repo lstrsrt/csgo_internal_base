@@ -107,7 +107,7 @@ static auto get_interface_regs(dll_t& dll) noexcept
         dll.create_interface = reinterpret_cast<uintptr_t>(GetProcAddress(dll.hmod, "CreateInterface"));
 
     // Follow jmp instruction inside function to get to CreateInterfaceInternal(), where the global interface list is moved into ESI.
-    auto jmp = address(dll.create_interface).offset(0x5);
+    auto& jmp = address(dll.create_interface).offset(0x5);
     const auto reg_list = **jmp.absolute<se::interface_reg***>(0x6);
     if (!reg_list)
         LOG_ERROR("Could not get s_pInterfaceRegs in {}!", dll.name);
@@ -129,7 +129,7 @@ template<class ty>
 static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept
 {
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
-        if (std::string(cur->name).contains(version_string)) {
+        if (std::string(cur->name).starts_with(version_string)) {
             LOG_SUCCESS("Found interface {}.", cur->name);
             ptr.initialize(static_cast<ty*>(cur->create_fn()));
             return;
@@ -142,7 +142,7 @@ template<class ty>
 static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept
 {
     for (const auto& a : interfaces::list) {
-        if (a.first.contains(version_string.data())) {
+        if (a.first.starts_with(version_string.data())) {
             ptr.initialize(static_cast<ty*>(a.second));
             return;
         }

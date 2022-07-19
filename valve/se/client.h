@@ -31,11 +31,7 @@ struct client_dll {
 };
 
 struct client_input {
-    PAD(0xc)
-    bool is_track_ir_available{ };
-    bool is_mouse_initialized{ };
-    bool is_mouse_active{ };
-    PAD(0x9e)
+    PAD(0xa9)
     bool is_camera_in_thirdperson{ };
     PAD(0x2)
     vec3 camera_offset{ };

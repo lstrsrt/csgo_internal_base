@@ -498,7 +498,7 @@ struct base_entity : public i::client_entity {
     VIRTUAL_FUNCTION(get_abs_angles, angle&, 11, (), (this))
     VIRTUAL_FUNCTION(set_model_index, void, 75, (int index), (this, index))
     VIRTUAL_FUNCTION(get_attachment, bool, 84, (int index, vec3* origin), (this, index, origin))
-    VIRTUAL_FUNCTION(on_latch_interpolated_variables, void, 107, (bitfield<interpolation_flag> flags), (this, flags.to_int()))
+    VIRTUAL_FUNCTION(on_latch_interpolated_variables, void, 107, (bitfield<interpolation_flag> flags), (this, flags.raw()))
     VIRTUAL_FUNCTION(think, void, 138, (), (this))
     VIRTUAL_FUNCTION(is_alive, bool, 156, (), (this))
     VIRTUAL_FUNCTION(is_player, bool, 158, (), (this))

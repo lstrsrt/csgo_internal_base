@@ -12,7 +12,7 @@ bool render::initialize() noexcept
 void render::create_font(hfont& font, std::string_view name, int height, int weight, bitfield<font_flag> flags) noexcept
 {
     font = interfaces::surface->create_font();
-    interfaces::surface->set_font_glyph_set(font, name.data(), height, weight, 0, 0, flags.to_int());
+    interfaces::surface->set_font_glyph_set(font, name.data(), height, weight, 0, 0, flags.raw());
 }
 
 void render::line(int x0, int y0, int x1, int y1, const clr4& clr) noexcept

@@ -71,10 +71,10 @@ LRESULT CALLBACK hooks::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
 {
     using hooks::create_move_proxy::original;
-    
+
     original(interfaces::client, sequence_nr, input_sample_time, is_active);
 
-    if (!interfaces::engine->is_in_game_and_connected())
+    if (!send_packet || !is_active)
         return;
 
     if (!cheat::local_player->update())
@@ -83,14 +83,14 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
     auto cmd = &interfaces::input->cmds[sequence_nr % cs::multiplayer_backup];
     auto verified_cmd = &interfaces::input->verified_cmds[sequence_nr % cs::multiplayer_backup];
 
-    if (!cmd || !verified_cmd || !is_active)
+    if (!cmd || !verified_cmd)
         return;
 
     local_player->cur_cmd = cmd;
-    
+
     if (config::get<bool>(vars::infinite_crouch))
         cmd->buttons.set(cs::cmd_button::bullrush);
-    
+
     prediction::start(cmd);
     // aimbot::run(cmd);
     prediction::end();
@@ -180,9 +180,9 @@ static auto init_material() noexcept
 {
     // return interfaces::material_system->find_material("debug/debugambientcube", cs::texture_group[cs::tg_model]);
 
-    const auto kv = interfaces::mem_alloc->alloc<cs::key_values*>(sizeof(cs::key_values));
+    const auto kv = static_cast<cs::key_values*>(new cs::key_values[36]);
     kv->init("VertexLitGeneric");
-    kv->load_from_buffer("celsius_default.vmt", R"#("VertexLitGeneric" {
+    kv->load_from_buffer("default.vmt", R"#("VertexLitGeneric" {
         "$basetexture"  "vgui/white_additive"
         "$ignorez"      "0"
         "$model"		"1"
@@ -193,7 +193,7 @@ static auto init_material() noexcept
         "$wireframe"	"0"
     })#");
 
-    return interfaces::material_system->create_material("cheat_default.vmt", kv);
+    return interfaces::material_system->create_material("default.vmt", kv);
 }
 
 static void override_material(bool xqz) noexcept

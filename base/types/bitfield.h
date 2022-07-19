@@ -2,95 +2,115 @@
 
 #include <type_traits>
 
+template<class ty>
+inline constexpr auto to_underlying(ty v)
+{
+    return static_cast<std::underlying_type_t<ty>>(v);
+}
+
 namespace bitfield_operators {
 
-template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
-constexpr ty operator&(const ty& lhs, const ty& rhs) noexcept
-{
-    return static_cast<ty>(std::to_underlying(lhs) & std::to_underlying(rhs));
-}
+    template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
+    constexpr ty operator&(const ty& lhs, const ty& rhs) noexcept
+    {
+        return static_cast<ty>(to_underlying(lhs) & to_underlying(rhs));
+    }
 
-template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
-constexpr ty operator^(const ty& lhs, const ty& rhs) noexcept
-{
-    return static_cast<ty>(std::to_underlying(lhs) ^ std::to_underlying(rhs));
-}
+    template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
+    constexpr ty operator^(const ty& lhs, const ty& rhs) noexcept
+    {
+        return static_cast<ty>(to_underlying(lhs) ^ to_underlying(rhs));
+    }
 
-template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
-constexpr ty operator|(const ty& lhs, const ty& rhs) noexcept
-{
-    return static_cast<ty>(std::to_underlying(lhs) | std::to_underlying(rhs));
-}
+    template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
+    constexpr ty operator|(const ty& lhs, const ty& rhs) noexcept
+    {
+        return static_cast<ty>(to_underlying(lhs) | to_underlying(rhs));
+    }
 
-template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
-constexpr ty operator~(const ty& bit) noexcept
-{
-    return static_cast<ty>(~std::to_underlying(bit));
-}
+    template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
+    constexpr ty operator~(const ty& bit) noexcept
+    {
+        return static_cast<ty>(~to_underlying(bit));
+    }
 
-template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
-inline ty& operator&=(ty& lhs, const ty& rhs) noexcept
-{
-    return lhs = static_cast<ty>(std::to_underlying(lhs) &= std::to_underlying(rhs));
-}
+    template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
+    inline ty& operator&=(ty& lhs, const ty& rhs) noexcept
+    {
+        return lhs = static_cast<ty>(to_underlying(lhs) &= to_underlying(rhs));
+    }
 
-template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
-inline ty& operator|=(ty& lhs, const ty& rhs) noexcept
-{
-    return lhs = static_cast<ty>(std::to_underlying(lhs) | std::to_underlying(rhs));
-}
+    template<class ty, std::enable_if_t<std::is_enum_v<ty>, int> = 0>
+    inline ty& operator|=(ty& lhs, const ty& rhs) noexcept
+    {
+        return lhs = static_cast<ty>(to_underlying(lhs) | to_underlying(rhs));
+    }
 
 }
 
 using namespace bitfield_operators;
 
 template<class ty>
-class bitfield {
-private:
-    ty bits{ };
-
+class bitfield
+{
 public:
     bitfield() noexcept = default;
+
     bitfield(ty bits) noexcept
-        : bits(bits) { }
-
-    constexpr operator ty() const noexcept
+        : m_bits(bits)
     {
-        return to_underlying();
     }
 
-    constexpr auto to_int() const noexcept
+    constexpr operator ty() noexcept
     {
-        return static_cast<int>(bits);
+        return raw();
     }
 
-    constexpr auto to_underlying() noexcept
+    auto operator=(int rhs) noexcept
     {
-        return bits;
+        m_bits.m_value = static_cast<ty>(rhs);
     }
 
-    constexpr bool is_set(ty bit) const noexcept
+    auto value() noexcept
     {
-        return std::to_underlying(bits) & std::to_underlying(bit);
+        return m_bits.m_value;
+    }
+
+    auto raw() noexcept
+    {
+        return m_bits.m_raw;
     }
 
     constexpr void set(const ty bit) noexcept
     {
-        bits |= bit;
+        m_bits.m_raw |= to_underlying(bit);
     }
 
     constexpr void unset(const ty bit) noexcept
     {
-        bits = bits & ~bit;
+        m_bits.m_raw &= ~to_underlying(bit);
+    }
+
+    constexpr bool is_set(const ty bit) const noexcept
+    {
+        return m_bits.m_raw & to_underlying(bit);
     }
 
     constexpr void empty() noexcept
     {
-        bits = ty();
+        m_bits = ty();
     }
 
     constexpr bool is_empty() noexcept
     {
-        return !std::to_underlying(bits);
+        return !m_bits.m_raw;
     }
+
+private:
+
+    union {
+        ty m_value;
+        std::underlying_type_t<ty> m_raw;
+    } m_bits{};
+
 };

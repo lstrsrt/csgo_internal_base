@@ -36,7 +36,7 @@ namespace logger {
     {
     #ifdef _DEBUG
         const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        const auto msg = std::format(fmt, args...);
+        const auto msg = std::vformat(fmt, std::make_format_args(args...));
         
         std::cout << "[ ";
         switch (lvl) {
@@ -71,7 +71,7 @@ namespace logger {
     {
     #ifdef _DEBUG
         const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        const auto msg = std::format(fmt, args...);
+        const auto msg = std::vformat(fmt, std::make_wformat_args(args...));
         
         std::wcout << L"[ ";
         switch (lvl) {

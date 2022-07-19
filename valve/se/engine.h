@@ -103,8 +103,8 @@ struct engine_client {
 
 class engine_trace {
 private:
-    VIRTUAL_FUNCTION(trace_ray, void, 5, (const cs::ray& ray, bitfield<cs::contents_t> contents_mask, const cs::trace_filter& filter, 
-        cs::trace& trace), (this, std::cref(ray), contents_mask.to_int(), std::cref(filter), std::ref(trace)))
+    VIRTUAL_FUNCTION(trace_ray, void, 5, (const cs::ray& ray, cs::trace_mask_t contents_mask, const cs::trace_filter& filter, 
+        cs::trace& trace), (this, std::cref(ray), contents_mask, std::cref(filter), std::ref(trace)))
 
 public:
     VIRTUAL_FUNCTION(get_point_contents, int, 0, (const vec3& pos, cs::trace_mask_t mask = cs::trace_mask::all, 
@@ -112,7 +112,7 @@ public:
     VIRTUAL_FUNCTION(clip_ray_to_entity, void, 3, (const cs::ray& ray, cs::trace_mask_t mask, cs::base_entity* entity, cs::trace* trace),
         (this, std::cref(ray), mask, entity, trace))
 
-    inline void trace_line(const vec3& src, const vec3& dest, bitfield<cs::contents_t> contents_mask, cs::base_entity* entity,
+    inline void trace_line(const vec3& src, const vec3& dest, cs::trace_mask_t contents_mask, cs::base_entity* entity,
         cs::collision_group group, cs::trace& trace, cs::should_hit_fn extra_should_hit_check = nullptr) noexcept
     {
         trace_ray(cs::ray(src, dest), contents_mask, cs::trace_filter_simple(entity, group, extra_should_hit_check), trace);
