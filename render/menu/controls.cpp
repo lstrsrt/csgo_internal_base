@@ -82,9 +82,8 @@ void menu::controls::slider(std::wstring_view text, int& var, int min, int max, 
 void menu::controls::slider(std::wstring_view text, float& var, float min, float max, const d2& pos, int precision) noexcept
 {
     constexpr d2 region_size = { 100, 18 }; // 125?
-    const float scaled = abs(min / static_cast<float>(region_size.x) - max / static_cast<float>(region_size.x));
-    // FIXME - doesn't work when min is negative and max is positive
-    const float fill_width = std::clamp(region_size.x / (max - min) * (var - min), 0.f, static_cast<float>(region_size.x));
+    const float scalar = (max - min) / region_size.x;
+    const float fill_width = var / scalar - (min / scalar);
 
     render::rectangle(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, render::flag::outlined, { 0, 0, 0, 255 });
     render::rectangle(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, render::flag::filled, inactive_ctrl_color.to_clr4());
@@ -92,7 +91,7 @@ void menu::controls::slider(std::wstring_view text, float& var, float min, float
 
     if (input::is_hovering_item(pos, region_size)) {
         if (input::is_key_active({ VK_LBUTTON, input::key_type::hold }))
-            var = std::clamp(min + static_cast<float>((input::mouse_pos.x - pos.x) * scaled), min, max);
+            var = static_cast<int>((static_cast<float>(input::mouse_pos.x - pos.x)) / region_size.x * (max - min) + min);
     }
 
     std::wostringstream stream{ };

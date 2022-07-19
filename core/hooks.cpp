@@ -180,7 +180,7 @@ static auto init_material() noexcept
 {
     // return interfaces::material_system->find_material("debug/debugambientcube", cs::texture_group[cs::tg_model]);
 
-    const auto kv = static_cast<cs::key_values*>(new cs::key_values[36]);
+    const auto kv = new cs::key_values[36];
     kv->init("VertexLitGeneric");
     kv->load_from_buffer("default.vmt", R"#("VertexLitGeneric" {
         "$basetexture"  "vgui/white_additive"
