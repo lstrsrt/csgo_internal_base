@@ -77,40 +77,9 @@ inline namespace crypt {
                 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
             };
 
-            auto buffer = static_cast<const uint8_t*>(data);
-            bool update_again{ false };
-
-            auto update_crc = [&]() { crc = lookup_table[static_cast<uint8_t>(crc)] ^ (crc >> 8); };
-            auto quad_update_crc = [&]() { update_crc(); update_crc(); update_crc(); update_crc(); };
-            
-            if (len > 7) {
-                auto front = reinterpret_cast<unsigned int>(buffer) & 3;
-                len -= front;
-            
-                if (len <= 3)
-                    while (len--)
-                        update_crc();
-            
-                int main = len >> 3;
-                while (main--) {
-                    crc ^= *reinterpret_cast<const crc32_t*>(buffer);
-                    quad_update_crc();
-                    crc ^= *reinterpret_cast<const crc32_t*>(buffer + 4);
-                    quad_update_crc();
-                    buffer += 8;
-                }
-            
-                len &= 7;
-                update_again = true;
-            }
-            
-            if (len == 4 || update_again) {
-                crc ^= *reinterpret_cast<const crc32_t*>(buffer);
-                quad_update_crc();
-            }
-            else if (len < 4)
-                while (len--)
-                    update_crc();
+            auto* byte = reinterpret_cast< const uint8_t* >(data);
+            while (len--)
+                crc = (crc >> 8) ^ lookup_table[(crc & 0xff) ^ *byte++];
         }
 
     }
