@@ -8,22 +8,22 @@ namespace render {
         inline hfont tab{ };
         inline hfont watermark{ };
     }
-    
+
     enum class text_flag {
         none,
         centered_x = (1 << 0),
         centered_y = (1 << 1),
         centered = (centered_x | centered_y),
     };
-    
+
     enum class flag {
         none,
         filled = (1 << 0),
         outlined = (1 << 1)
     };
-    
+
     bool initialize() noexcept;
-    
+
     void create_font(hfont& font, std::string_view name, int height, int weight, bitfield<font_flag> flags = { }) noexcept;
     void line(int x0, int y0, int x1, int y1, const clr4& clr = { 255, 255, 255, 255 }) noexcept;
     /* Rectangle must be filled or outlined. */

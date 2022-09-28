@@ -1,7 +1,7 @@
 #include "interface.h"
 #include "../crypt/xorstr.h"
 
-static void collect_interfaces(dll_t& dll) noexcept;
+static void collect_interfaces(dll dll_id) noexcept;
 template<class ty>
 static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept;
 template<class ty>
@@ -9,20 +9,20 @@ static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_v
 
 void interfaces::initialize() noexcept
 {
-    collect_interfaces(dlls::get(dll::client));
-    collect_interfaces(dlls::get(dll::datacache));
-    collect_interfaces(dlls::get(dll::engine));
-    collect_interfaces(dlls::get(dll::filesystem));
-    collect_interfaces(dlls::get(dll::input_system));
-    collect_interfaces(dlls::get(dll::localize));
-    collect_interfaces(dlls::get(dll::matchmaking));
-    collect_interfaces(dlls::get(dll::material_system));
-    collect_interfaces(dlls::get(dll::server));
-    collect_interfaces(dlls::get(dll::studio_render));
-    collect_interfaces(dlls::get(dll::vgui_mat_surface));
-    collect_interfaces(dlls::get(dll::vgui2));
-    collect_interfaces(dlls::get(dll::vphysics));
-    collect_interfaces(dlls::get(dll::vstdlib));
+    collect_interfaces(dll::client);
+    collect_interfaces(dll::datacache);
+    collect_interfaces(dll::engine);
+    collect_interfaces(dll::file_system);
+    collect_interfaces(dll::input_system);
+    collect_interfaces(dll::localize);
+    collect_interfaces(dll::matchmaking);
+    collect_interfaces(dll::material_system);
+    collect_interfaces(dll::server);
+    collect_interfaces(dll::studio_render);
+    collect_interfaces(dll::vgui_mat_surface);
+    collect_interfaces(dll::vgui2);
+    collect_interfaces(dll::vphysics);
+    collect_interfaces(dll::vstdlib);
 
     get_cached_interface(client, "VClient0");
     get_cached_interface(console, "GameConsole0");
@@ -55,7 +55,7 @@ void interfaces::initialize() noexcept
     get_cached_interface(trace, "EngineTraceClient0");
     get_cached_interface(ui, "GameUI0");
     get_cached_interface(vgui, "VEngineVGui0");
-    
+
     // Not sure why but these only work manually...
     find_interface(panel, dlls::get(dll::vgui2), "VGUI_Panel0");
     find_interface(surface, dlls::get(dll::vgui_mat_surface), "VGUI_Surface0");
@@ -75,7 +75,7 @@ void interfaces::initialize() noexcept
     dx9_device.initialize(**memory::find_bytes(dll::shader_api_dx9, "A1 ? ? ? ? 50 8B 08 FF 51 0C").offset(0x1).cast<IDirect3DDevice9***>());
 
     bsp_query.initialize(engine->get_bsp_tree_query());
-    
+
     steam::user      = reinterpret_cast<std::add_pointer_t<steam::h_user()>>(GetProcAddress(dlls::get(dll::steam_api).hmod, "SteamAPI_GetHSteamUser"))();
     steam::pipe      = reinterpret_cast<std::add_pointer_t<steam::h_pipe()>>(GetProcAddress(dlls::get(dll::steam_api).hmod, "SteamAPI_GetHSteamPipe"))();
     steam_api_ctx    = engine->get_steam_api_context();
@@ -115,8 +115,9 @@ static auto get_interface_regs(dll_t& dll) noexcept
     return reg_list;
 }
 
-static void collect_interfaces(dll_t& dll) noexcept
+static void collect_interfaces(dll dll_id) noexcept
 {
+    auto& dll = dlls::get(dll_id);
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
         LOG_INFO("{}: found interface {}", dll.name, cur->name);
         interfaces::list.push_back(std::make_pair(cur->name, cur->create_fn()));

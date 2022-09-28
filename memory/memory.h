@@ -5,6 +5,10 @@
 #include "address.h"
 #include "dll.h"
 
+#define CONCAT_IMPL(x, y) x##y
+#define CONCAT(x, y) CONCAT_IMPL(x, y)
+#define PAD(size) private: std::byte CONCAT(pad, __COUNTER__)[size]{ }; public:
+
 namespace memory {
 
     template<class ty, int i, typename... va_args>
@@ -12,13 +16,13 @@ namespace memory {
     {
         return (*static_cast<ty(__thiscall***)(void*, va_args...)>(base))[i](base, args...);
     }
-    
+
     template<class ty = address>
     inline ty get_virtual(void* base, int index) noexcept
     {
         return (*static_cast<ty**>(base))[index];
     }
-    
+
     inline address get_frame_address() noexcept
     {
         return address(reinterpret_cast<uintptr_t>(_AddressOfReturnAddress()) - sizeof(uintptr_t));

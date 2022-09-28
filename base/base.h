@@ -17,7 +17,3 @@ using namespace std::chrono_literals;
 #include "types/dimension.h"
 #include "types/matrix.h"
 #include "types/vector.h"
-
-#define CONCAT_IMPL(x, y) x##y
-#define CONCAT(x, y) CONCAT_IMPL(x, y)
-#define PAD(size) private: std::byte CONCAT(pad, __COUNTER__)[size]{ }; public:
