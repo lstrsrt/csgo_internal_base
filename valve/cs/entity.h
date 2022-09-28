@@ -51,7 +51,7 @@ enum class data_update_type {
 
 }
 
-namespace i {
+namespace cs::i {
 
 struct unknown;
 

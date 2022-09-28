@@ -2,9 +2,9 @@
 
 #include <type_traits>
 
-namespace i { struct networkable; }
-
 namespace cs {
+
+namespace i { struct networkable; }
 
 enum class class_id {
     ai_base_npc,

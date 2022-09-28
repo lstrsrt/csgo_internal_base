@@ -103,7 +103,7 @@ void config::write(std::wstring_view name) noexcept
                 break;
             case item_type::keybind: {
                 const auto& key = var.get<keybind>();
-                cfg << "key " << key.code << ' ' << to_underlying(key.type);
+                cfg << "key " << key.code << ' ' << util::to_underlying(key.type);
                 break;
             }
             }

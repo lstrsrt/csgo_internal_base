@@ -22,6 +22,7 @@
     <ClInclude Include="base\types\matrix.h" />
     <ClInclude Include="base\types\pattern.h" />
     <ClInclude Include="base\types\vector.h" />
+    <ClInclude Include="base\util.h" />
     <ClInclude Include="base\winapi.h" />
     <ClInclude Include="core\config.h" />
     <ClInclude Include="core\cheat.h" />
