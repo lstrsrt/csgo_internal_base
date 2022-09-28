@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../base/base.h"
 #include "../../crypt/crc32.h"
 
 namespace cs {

@@ -65,7 +65,7 @@ void menu::controls::slider(std::wstring_view text, int& var, int min, int max, 
     const float scaled = abs(static_cast<float>(min) / static_cast<float>(region_size.x) - static_cast<float>(max) / static_cast<float>(region_size.x));
     // FIXME: doesn't work when min is negative and max is positive
     const int fill_width = std::clamp(region_size.x / (max - min) * (var - min), 0, region_size.x);
-    
+
     render::rectangle(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, render::flag::outlined, { 0, 0, 0, 255 });
     render::rectangle(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, render::flag::filled, inactive_ctrl_color.to_clr4());
     render::rectangle(pos.x + 2, pos.y + 2, pos.x + fill_width - 2, pos.y + region_size.y - 2, render::flag::filled, accent_color.to_clr4());
@@ -74,7 +74,7 @@ void menu::controls::slider(std::wstring_view text, int& var, int min, int max, 
         if (input::is_key_active({ VK_LBUTTON, input::key_type::hold }))
             var = std::clamp(min + static_cast<int>((input::mouse_pos.x - pos.x) * scaled), min, max);
     }
-    
+
     render::text(render::fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, std::to_wstring(var), render::text_flag::centered);
     render::text(render::fonts::menu, { pos.x + region_size.x + 5, pos.y }, text);
 }
@@ -123,10 +123,10 @@ void menu::controls::combo_box(std::wstring_view text, const std::vector<std::ws
 
     if (is_selected) {
         for (size_t i = 0; i < options.size(); i++) {
-            render::text(render::fonts::menu, { pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i) }, options.at(i));
+            render::text(render::fonts::menu, { pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i) }, options[i]);
             if (input::is_hovering_item({ pos.x, pos.y + static_cast<int>(18 * i) }, region_size))
                 item_color = accent_color;
-            render::rectangle(pos.x + 2, pos.y + region_size.y + 2, pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i), 
+            render::rectangle(pos.x + 2, pos.y + region_size.y + 2, pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i),
                 render::flag::filled, item_color.to_clr4());
         }
     }

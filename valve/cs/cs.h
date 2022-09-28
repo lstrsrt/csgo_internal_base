@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../base/base.h"
+
 #include "animations.h"
 #include "client_class.h"
 #include "cmd.h"
