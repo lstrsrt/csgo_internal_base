@@ -11,7 +11,7 @@
 namespace netvars {
 
     inline std::unordered_map<hash_t, std::pair<uint32_t, cs::recv_prop*>> var_map{ };
-    
+
     void initialize() noexcept;
     void dump_table(std::string_view base_class, cs::recv_table* table, const uint32_t offset) noexcept;
     void set_proxy(hash_t name, cs::recv_proxy_fn proxy, cs::recv_proxy_fn& original) noexcept;
@@ -19,7 +19,7 @@ namespace netvars {
 
     inline hash_t get(hash_t hash) noexcept
     {
-        return var_map.at(hash).first;
+        return var_map[hash].first;
     };
 
 }

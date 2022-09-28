@@ -7,7 +7,7 @@ namespace events {
 // Event list: https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_Events
 
 struct custom_listener : public se::event_listener {
-    void fire_game_event(cs::game_event* evt) noexcept override 
+    void fire_game_event(cs::game_event* evt) noexcept override
     {
         switch (fnv1a::rt(evt->get_name())) {
         case fnv1a::ct("bullet_impact"):

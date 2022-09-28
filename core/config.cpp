@@ -17,7 +17,7 @@ void config::read(std::wstring_view name) noexcept
 {
     const auto index_from_hash = [](const hash_t name) {
         for (size_t i = 0; i < items.size(); i++) {
-            if (items.at(i).name == name)
+            if (items[i].name == name)
                 return i;
         }
         LOG_ERROR("Could not get a config item index for hash {}!", name);
@@ -33,7 +33,7 @@ void config::read(std::wstring_view name) noexcept
             std::istringstream stream{ line };
             hash_t hash{ };
             stream >> hash;
-            item& cur_item = items.at(index_from_hash(hash));
+            item& cur_item = items[index_from_hash(hash)];
 
             std::string token{ };
             stream >> token; // Type

@@ -39,8 +39,8 @@ enum class dll {
 namespace dlls {
 
     // Must be in the same order as the enum!
-    inline std::vector<dll_t> list{ "client.dll", "datacache.dll", "engine.dll", "filesystem_stdio.dll", "gameoverlayrenderer.dll", 
-    "inputsystem.dll", "localize.dll", "materialsystem.dll", "matchmaking.dll", "server.dll", "shaderapidx9.dll", "steam_api.dll", 
+    inline std::vector<dll_t> list{ "client.dll", "datacache.dll", "engine.dll", "filesystem_stdio.dll", "gameoverlayrenderer.dll",
+    "inputsystem.dll", "localize.dll", "materialsystem.dll", "matchmaking.dll", "server.dll", "shaderapidx9.dll", "steam_api.dll",
     "studiorender.dll", "tier0.dll", "vguimatsurface.dll", "vgui2.dll", "vphysics.dll", "vstdlib.dll" };
 
     inline void initialize() noexcept
@@ -65,7 +65,7 @@ namespace dlls {
 
     inline dll_t& get(dll id) noexcept
     {
-        return list.at(static_cast<size_t>(id));
+        return list[static_cast<decltype(list)::size_type>(id)];
     }
 
 };

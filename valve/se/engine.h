@@ -2,7 +2,7 @@
 
 #include "../cs/trace.h"
 
-namespace cs { 
+namespace cs {
 
 struct dlight;
 struct material;
@@ -39,12 +39,12 @@ namespace steam { struct api_context; }
 namespace se {
 
 struct debug_overlay {
-    VIRTUAL_FUNCTION(add_box_overlay, void, 1, (const vec3* origin, const vec3* mins, const vec3* maxs, const angle* angles, const clr4* clr, 
+    VIRTUAL_FUNCTION(add_box_overlay, void, 1, (const vec3* origin, const vec3* mins, const vec3* maxs, const angle* angles, const clr4* clr,
         float duration), (this, origin, mins, maxs, angles, clr, duration))
     VIRTUAL_FUNCTION(add_line_overlay, void, 4, (const vec3* origin, const vec3* dest, const clr4& clr, bool no_depth_test, float duration),
         (this, origin, dest, clr, no_depth_test, duration))
     VIRTUAL_FUNCTION(screen_position, int, 13, (const vec3* point, vec3* screen), (this, point, screen))
-    VIRTUAL_FUNCTION(add_capsule_overlay, void, 23, (const vec3* start, const vec3* end, float* radius, const clr4* clr, float duration, 
+    VIRTUAL_FUNCTION(add_capsule_overlay, void, 23, (const vec3* start, const vec3* end, float* radius, const clr4* clr, float duration,
         bool ignore_z), (this, start, end, radius, clr, duration, ignore_z))
 };
 
@@ -103,11 +103,11 @@ struct engine_client {
 
 class engine_trace {
 private:
-    VIRTUAL_FUNCTION(trace_ray, void, 5, (const cs::ray& ray, cs::trace_mask_t contents_mask, const cs::trace_filter& filter, 
+    VIRTUAL_FUNCTION(trace_ray, void, 5, (const cs::ray& ray, cs::trace_mask_t contents_mask, const cs::trace_filter& filter,
         cs::trace& trace), (this, std::cref(ray), contents_mask, std::cref(filter), std::ref(trace)))
 
 public:
-    VIRTUAL_FUNCTION(get_point_contents, int, 0, (const vec3& pos, cs::trace_mask_t mask = cs::trace_mask::all, 
+    VIRTUAL_FUNCTION(get_point_contents, int, 0, (const vec3& pos, cs::trace_mask_t mask = cs::trace_mask::all,
         cs::base_entity** entity = nullptr), (this, std::cref(pos), mask, entity))
     VIRTUAL_FUNCTION(clip_ray_to_entity, void, 3, (const cs::ray& ray, cs::trace_mask_t mask, cs::base_entity* entity, cs::trace* trace),
         (this, std::cref(ray), mask, entity, trace))
@@ -117,7 +117,7 @@ public:
     {
         trace_ray(cs::ray(src, dest), contents_mask, cs::trace_filter_simple(entity, group, extra_should_hit_check), trace);
     }
-   
+
 };
 
 struct event_listener {
@@ -129,7 +129,7 @@ struct event_listener {
 };
 
 struct event_manager {
-    VIRTUAL_FUNCTION(add_listener, bool, 3, (event_listener* listener, const char* name, bool server_side = false), 
+    VIRTUAL_FUNCTION(add_listener, bool, 3, (event_listener* listener, const char* name, bool server_side = false),
         (this, listener, name, server_side))
     VIRTUAL_FUNCTION(remove_listener, void, 5, (event_listener* listener), (this, listener))
 };
@@ -147,13 +147,13 @@ struct model_info {
 };
 
 struct model_render {
-    VIRTUAL_FUNCTION(forced_material_override, void, 1, (cs::material* material, int override_type = 0, int overrides = 0), 
+    VIRTUAL_FUNCTION(forced_material_override, void, 1, (cs::material* material, int override_type = 0, int overrides = 0),
         (this, material, override_type, overrides))
     VIRTUAL_FUNCTION(is_forced_material_override, bool, 2, (), (this))
 };
 
 struct string_table {
-    VIRTUAL_FUNCTION(add_string, void, 8, (bool is_server, const char* value, int length = -1, const void* user_data = nullptr), 
+    VIRTUAL_FUNCTION(add_string, void, 8, (bool is_server, const char* value, int length = -1, const void* user_data = nullptr),
         (this, is_server, value, length, user_data))
 };
 

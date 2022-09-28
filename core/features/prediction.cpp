@@ -14,7 +14,7 @@ static void update_button_state(bitfield<cs::cmd_button>& cmd_buttons) noexcept
 
     *buttons = cmd_buttons;
     const auto buttons_changed = local_player->get_button_last().raw() ^ buttons->raw();
-    
+
     local_player->get_button_pressed() = buttons_changed & buttons->raw();
     local_player->get_button_released() = buttons_changed & (~buttons->raw());
 }
@@ -46,7 +46,7 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
     interfaces::globals->tick_count = local_player->get_tick_base();
     interfaces::prediction->is_in_prediction = true;
     interfaces::prediction->is_first_time_predicted = false;
-    
+
     update_button_state(cmd->buttons);
 
     interfaces::prediction->check_moving_ground(local_player, interfaces::globals->frame_time);

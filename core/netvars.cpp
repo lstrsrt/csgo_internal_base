@@ -3,7 +3,7 @@
 #include "../crypt/fnv1a.h"
 
 void netvars::initialize() noexcept
-{ 
+{
     for (auto list = interfaces::client->get_all_classes(); list; list = list->next) {
         if (!list->recv_table)
             continue;
@@ -23,7 +23,7 @@ void netvars::dump_table(std::string_view base_class, cs::recv_table* table, con
             continue;
 
         // Follow to the next datatable, provided it has props.
-        if (prop->data_table && prop->recv_type == cs::send_prop_type::dpt_datatable 
+        if (prop->data_table && prop->recv_type == cs::send_prop_type::dpt_datatable
             && prop->data_table->net_table_name[0] == 'D' && prop->data_table->prop_amt > 0)
             dump_table(base_class, prop->data_table, offset + prop->offset);
 

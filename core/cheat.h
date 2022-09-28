@@ -8,7 +8,7 @@
 namespace cs { struct local_player; }
 
 namespace cheat {
-    
+
     inline cs::local_player* local_player{ };
     inline bool should_unhook{ };
 
@@ -23,12 +23,13 @@ namespace cheat {
 
         LOG_SUCCESS("Cheat initialized. Last full build: {} {}", __DATE__, __TIME__);
     }
-    
-    inline void end() noexcept
+
+    inline DWORD end() noexcept
     {
         interfaces::input_system->enable_input();
         hooks::end();
         logger::end();
+        return 0;
     }
-    
+
 }

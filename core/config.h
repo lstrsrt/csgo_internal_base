@@ -19,7 +19,7 @@ namespace config {
         bool_vec,
         keybind
     };
-    
+
     struct item {
         std::any var{ };
         hash_t name{ };
@@ -31,11 +31,11 @@ namespace config {
             return *static_cast<ty*>(std::any_cast<ty>(&var));
         }
     };
-    
+
     inline std::vector<item> items{ }; // Currently used variables
     inline std::vector<std::string> list{ }; // Config names
     inline std::filesystem::path path{ };
-    const inline std::unordered_map<std::string, item_type> type_table{ 
+    const inline std::unordered_map<std::string, item_type> type_table{
         { "i32", item_type::i32 },
         { "f32", item_type::f32 },
         { "bool", item_type::boolean },
@@ -58,7 +58,7 @@ namespace config {
     template<class ty>
     ty& get(const size_t index) noexcept
     {
-        return items.at(index).get<ty>();
+        return items[index].get<ty>();
     }
 
 }

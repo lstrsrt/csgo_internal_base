@@ -9,12 +9,12 @@ bool input::is_key_active(keybind key) noexcept
     case key_type::always:
         return true;
     case key_type::hold:
-        return key_states.at(key.code) == key_state::down || key_states.at(key.code) == key_state::toggled;
+        return key_states[key.code] == key_state::down || key_states[key.code] == key_state::toggled;
     case key_type::release:
-        return key_states.at(key.code) == key_state::up;
+        return key_states[key.code] == key_state::up;
     case key_type::toggle:
-        if (key_states.at(key.code) == key_state::toggled) {
-            key_states.at(key.code) = key_state::up;
+        if (key_states[key.code] == key_state::toggled) {
+            key_states[key.code] = key_state::up;
             return true;
         }
         return false;
@@ -66,14 +66,14 @@ void input::process(UINT msg, WPARAM wparam, LPARAM lparam) noexcept
         return;
     }
 
-    if (key_states.at(key) == key_state::up && state == key_state::down) {
+    if (key_states[key] == key_state::up && state == key_state::down) {
         if (last_state == key_state::down)
-            key_states.at(key) = key_state::down;
-        else 
-            key_states.at(key) = key_state::toggled;
+            key_states[key] = key_state::down;
+        else
+            key_states[key] = key_state::toggled;
     }
     else
-    	key_states.at(key) = state;
+    	key_states[key] = state;
 
     last_state = state;
 }

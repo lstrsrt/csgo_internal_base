@@ -16,7 +16,7 @@ void hooks::initialize() noexcept
 
     hook_func = memory::find_bytes(dll::game_overlay_renderer, "55 8B EC 51 8B 45 10 C7").cast<decltype(hook_func)>();
     unhook_func = memory::find_bytes(dll::game_overlay_renderer, "E8 ? ? ? ? 83 C4 08 FF 15").absolute<decltype(unhook_func)>();
-    
+
     SET_VF_HOOK(interfaces::client, frame_stage_notify);
     SET_VF_HOOK(interfaces::client, create_move_proxy);
     SET_VF_HOOK(interfaces::client_mode, override_view);
@@ -45,9 +45,9 @@ void hooks::end() noexcept
     interfaces::panel.restore();
     interfaces::bsp_query.restore();
     interfaces::surface.restore();
-    
+
     unhook_func(hooked_fns[fnv1a::ct("cull_beam")], false);
-    
+
     events::end();
 
     SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));
@@ -56,7 +56,7 @@ void hooks::end() noexcept
 LRESULT CALLBACK hooks::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     input::process(msg, wparam, lparam);
-    
+
     if (input::is_key_active({ VK_INSERT, input::key_type::toggle }))
         menu::toggle();
 
@@ -101,7 +101,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
     verified_cmd->crc = cmd->get_checksum();
 }
 
-__declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* ecx, int, int sequence_nr, 
+__declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* ecx, int, int sequence_nr,
     float input_sample_time, bool is_active)
 {
     __asm {
@@ -136,7 +136,7 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
         cheat::local_player->update();
         break;
     }
-    
+
     return original(ecx, frame_stage);
 }
 
@@ -205,7 +205,7 @@ static void override_material(bool xqz) noexcept
     interfaces::model_render->forced_material_override(material);
 }
 
-void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::mat_render_context* render_ctx, const cs::draw_model_state& state, 
+void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::mat_render_context* render_ctx, const cs::draw_model_state& state,
     const cs::model_render_info& info, mat3x4* bone_to_world)
 {
     if (ecx->is_forced_material_override())
@@ -235,7 +235,7 @@ void __fastcall hooks::paint_traverse::fn(se::panel* ecx, int, cs::vpanel panel,
         render::text(render::fonts::watermark, { 15, 15 }, L"hello");
         menu::run();
     }
-    
+
     return original(ecx, panel, force_repaint, allow_force);
 }
 
@@ -254,7 +254,7 @@ int __fastcall hooks::list_leaves_in_box::fn(se::spatial_query* ecx, int, const 
     const auto entity = info->renderable->get_client_unknown()->get_base_entity();
     if (!entity)
         return original(ecx, mins, maxs, list, list_max);
-    
+
     // Force into translucent group.
     if (entity->is_player()) {
         info->flags.unset(cs::render_flag::force_opaque_pass);
