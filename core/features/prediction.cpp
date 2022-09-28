@@ -25,8 +25,8 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
         return;
 
     static bool once = []() {
-        seed = *memory::find_bytes(dll::client, "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04").offset(0x2).cast<int**>();
-        player = *memory::find_bytes(dll::client, "89 35 ? ? ? ? F3 0F 10 48 20").offset(0x2).cast<cs::player***>();
+        seed = *memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04")).offset(0x2).cast<int**>();
+        player = *memory::find_bytes(dll::client, PATTERN("89 35 ? ? ? ? F3 0F 10 48 20")).offset(0x2).cast<cs::player***>();
         return true;
     }();
 

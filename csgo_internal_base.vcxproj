@@ -20,6 +20,7 @@
     <ClInclude Include="base\types\color.h" />
     <ClInclude Include="base\types\dimension.h" />
     <ClInclude Include="base\types\matrix.h" />
+    <ClInclude Include="base\types\pattern.h" />
     <ClInclude Include="base\types\vector.h" />
     <ClInclude Include="base\winapi.h" />
     <ClInclude Include="core\config.h" />

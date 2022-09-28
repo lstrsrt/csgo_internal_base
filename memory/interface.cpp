@@ -65,14 +65,14 @@ void interfaces::initialize() noexcept
     input.initialize<false>(*memory::get_virtual(client, 16).offset(0x1).cast<se::client_input**>());
     client_state.initialize<false>(**memory::get_virtual(engine, 12).offset(0x10).cast<se::client_state***>());
 
-    game_rules.initialize<false>(*memory::find_bytes(dll::client, "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A").offset(0x1).cast<se::game_rules**>());
-    glow_manager.initialize<false>(*memory::find_bytes(dll::client, "0F 11 05 ? ? ? ? 83 C8 01").offset(0x3).cast<se::glow_manager**>());
-    move_helper.initialize<false>(**memory::find_bytes(dll::client, "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01").offset(0x2).cast<se::move_helper***>());
-    player_resource.initialize<false>(*memory::find_bytes(dll::client, "8B 1D ? ? ? ? 89 5C 24 40").offset(0x2).cast<se::player_resource**>());
-    render_beams.initialize<false>(*memory::find_bytes(dll::client, "B9 ? ? ? ? FF 50 24 C2 04 00").offset(0x1).cast<se::render_beams**>());
-    weapon_system.initialize<false>(*memory::find_bytes(dll::client, "8B 35 ? ? ? ? FF 10 0F B7 C0").cast<se::weapon_system**>());
-    view_render.initialize(**memory::find_bytes(dll::client, "8B 0D ? ? ? ? D9 5D F0 8B 01").offset(0x2).cast<se::view_render***>());
-    dx9_device.initialize(**memory::find_bytes(dll::shader_api_dx9, "A1 ? ? ? ? 50 8B 08 FF 51 0C").offset(0x1).cast<IDirect3DDevice9***>());
+    game_rules.initialize<false>(*memory::find_bytes(dll::client, PATTERN("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A")).offset(0x1).cast<se::game_rules**>());
+    glow_manager.initialize<false>(*memory::find_bytes(dll::client, PATTERN("0F 11 05 ? ? ? ? 83 C8 01")).offset(0x3).cast<se::glow_manager**>());
+    move_helper.initialize<false>(**memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01")).offset(0x2).cast<se::move_helper***>());
+    player_resource.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 1D ? ? ? ? 89 5C 24 40")).offset(0x2).cast<se::player_resource**>());
+    render_beams.initialize<false>(*memory::find_bytes(dll::client, PATTERN("B9 ? ? ? ? FF 50 24 C2 04 00")).offset(0x1).cast<se::render_beams**>());
+    weapon_system.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).cast<se::weapon_system**>());
+    view_render.initialize(**memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? D9 5D F0 8B 01")).offset(0x2).cast<se::view_render***>());
+    dx9_device.initialize(**memory::find_bytes(dll::shader_api_dx9, PATTERN("A1 ? ? ? ? 50 8B 08 FF 51 0C")).offset(0x1).cast<IDirect3DDevice9***>());
 
     bsp_query.initialize(engine->get_bsp_tree_query());
 

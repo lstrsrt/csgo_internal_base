@@ -483,7 +483,7 @@ struct base_entity : public i::client_entity {
     NETVAR_OFFSET(get_old_simulation_time, float, "CBaseEntity->m_flSimulationTime", 0x4)
     NETVAR_OFFSET(get_move_type, move_type, "CBaseEntity->m_nRenderMode", 0x1)
     NETVAR_OFFSET(get_coordinate_frame, mat3x4, "CBaseEntity->m_CollisionGroup", -0x30)
-    
+
     OFFSET(get_effects, bitfield<effect>, 0xf0)
 
     DATAMAP_FIELD(get_button_last, bitfield<cmd_button>, get_pred_desc_map(), "m_afButtonLast")
@@ -509,11 +509,11 @@ struct base_entity : public i::client_entity {
     VIRTUAL_FUNCTION(update_collision_bounds, void, 340, (), (this))
     VIRTUAL_FUNCTION(get_weapon_info, weapon_info*, 461, (), (this))
 
-    VIRTUAL_FUNCTION_SIG(set_abs_origin, void, dll::client, "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D", 
+    VIRTUAL_FUNCTION_SIG(set_abs_origin, void, dll::client, "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D",
         (this, std::cref(origin)), const vec3& origin)
-    VIRTUAL_FUNCTION_SIG(set_abs_angles, void, dll::client, "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", 
+    VIRTUAL_FUNCTION_SIG(set_abs_angles, void, dll::client, "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1",
         (this, std::cref(angles)), const angle& angles)
-    VIRTUAL_FUNCTION_SIG(physics_run_think, bool, dll::client, "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", 
+    VIRTUAL_FUNCTION_SIG(physics_run_think, bool, dll::client, "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87",
         (this, method), think_method method)
 };
 
@@ -669,7 +669,7 @@ struct planted_c4 : public base_entity {
     NETVAR(get_defuse_countdown, float, "CPlantedC4->m_flDefuseCountDown")
     NETVAR(get_defuse_length, float, "CPlantedC4->m_flDefuseLength")
     NETVAR(get_defuser_handle, base_handle, "CPlantedC4->m_hBombDefuser")
-    
+
     float get_remaining_time() noexcept;
     float get_remaining_defuse_time() noexcept;
 };
@@ -718,10 +718,10 @@ struct glow_object_definition {
 
     bool is_unused() const noexcept
     {
-        return next_free_slot != entry_in_use; 
+        return next_free_slot != entry_in_use;
     }
 
-    void set(const vec4& clr) noexcept 
+    void set(const vec4& clr) noexcept
     {
         color = { clr.x, clr.y, clr.z };
         alpha = clr.w;

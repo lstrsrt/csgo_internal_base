@@ -94,17 +94,17 @@ public:
         return raw();
     }
 
-    auto operator=(int32_t rhs) noexcept
+    constexpr auto operator=(int32_t rhs) noexcept
     {
         m_bits.m_value = static_cast<en>(rhs);
     }
 
-    auto value() noexcept
+    constexpr auto value() noexcept
     {
         return m_bits.m_value;
     }
 
-    auto raw() noexcept
+    constexpr auto raw() noexcept
     {
         return m_bits.m_raw;
     }
@@ -150,7 +150,6 @@ public:
     }
 
 private:
-
     union {
         en m_value;
         std::underlying_type_t<en> m_raw;

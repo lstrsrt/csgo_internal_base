@@ -14,8 +14,8 @@ void hooks::initialize() noexcept
         original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc)));
     }
 
-    hook_func = memory::find_bytes(dll::game_overlay_renderer, "55 8B EC 51 8B 45 10 C7").cast<decltype(hook_func)>();
-    unhook_func = memory::find_bytes(dll::game_overlay_renderer, "E8 ? ? ? ? 83 C4 08 FF 15").absolute<decltype(unhook_func)>();
+    hook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
+    unhook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
 
     SET_VF_HOOK(interfaces::client, frame_stage_notify);
     SET_VF_HOOK(interfaces::client, create_move_proxy);
@@ -46,7 +46,7 @@ void hooks::end() noexcept
     interfaces::bsp_query.restore();
     interfaces::surface.restore();
 
-    unhook_func(hooked_fns[fnv1a::ct("cull_beam")], false);
+    // unhook_func(hooked_fns[fnv1a::ct("cull_beam")], false);
 
     events::end();
 
@@ -126,7 +126,7 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
     if (!interfaces::engine->is_in_game_and_connected())
         return original(ecx, frame_stage);
 
-    static auto override_postprocessing_disable = *memory::find_bytes(dll::client, "83 EC 4C 80 3D").offset(0x5).cast<bool**>();
+    static auto override_postprocessing_disable = *memory::find_bytes(dll::client, PATTERN("83 EC 4C 80 3D")).offset(0x5).cast<bool**>();
 
     switch (frame_stage) {
     case cs::frame_stage::render_start:
@@ -163,7 +163,7 @@ float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)
 
 bool __fastcall hooks::is_connected::fn(se::engine_client* ecx, int)
 {
-    static const auto is_loadout_allowed = memory::find_bytes(dll::client, "84 C0 75 05 B0 01 5F");
+    static const auto is_loadout_allowed = memory::find_bytes(dll::client, PATTERN("84 C0 75 05 B0 01 5F"));
     if (config::get<bool>(vars::unlock_inventory) && _ReturnAddress() == is_loadout_allowed)
         return false;
 
@@ -241,7 +241,7 @@ void __fastcall hooks::paint_traverse::fn(se::panel* ecx, int, cs::vpanel panel,
 
 int __fastcall hooks::list_leaves_in_box::fn(se::spatial_query* ecx, int, const vec3& mins, const vec3& maxs, unsigned short* list, int list_max)
 {
-    static const auto insert_into_tree = memory::find_bytes(dll::client, "89 44 24 14 EB 08 C7 44 24 ? ? ? ? ? 8B 45");
+    static const auto insert_into_tree = memory::find_bytes(dll::client, PATTERN("89 44 24 14 EB 08 C7 44 24 ? ? ? ? ? 8B 45"));
 
     constexpr float max_coord = 16384.0f;
     constexpr vec3 new_maxs = { max_coord, max_coord, max_coord };

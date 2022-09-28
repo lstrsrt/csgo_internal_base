@@ -190,8 +190,8 @@ struct anim_state {
 };
 
 struct activity_to_sequence_mapping {
-    VIRTUAL_FUNCTION_SIG(select_weighted_sequence_from_modifiers, int, dll::server, "55 8B EC 83 EC 2C 53 56 8B 75 08 8B D9", 
-        (this, hdr, activity, modifiers, modifier_count), 
+    VIRTUAL_FUNCTION_SIG(select_weighted_sequence_from_modifiers, int, dll::server, "55 8B EC 83 EC 2C 53 56 8B 75 08 8B D9",
+        (this, hdr, activity, modifiers, modifier_count),
         studio_hdr* hdr, anim_layer_activity activity, void* modifiers, int modifier_count)
 };
 
@@ -215,7 +215,7 @@ struct ik_context {
         (this, pos, q, bone_to_world, bone_computed), vec3* pos, vec4* q, mat3x4* bone_to_world, uint8_t* bone_computed)
     VIRTUAL_FUNCTION_SIG(update_targets, void, dll::client, "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2 89 4C 24 ? 56 57",
         (this, pos, q, bone_to_world, bone_computed), vec3* pos, vec4* q, mat3x4* bone_to_world, uint8_t* bone_computed)
-    VIRTUAL_FUNCTION_SIG(copy_to, void, dll::server, "55 8B EC 83 EC 24 8B 45 08 57 8B F9 89 7D F4 85 C0", 
+    VIRTUAL_FUNCTION_SIG(copy_to, void, dll::server, "55 8B EC 83 EC 24 8B 45 08 57 8B F9 89 7D F4 85 C0",
         (this, other, remapping), ik_context* other, const unsigned short* remapping)
 };
 
@@ -265,12 +265,12 @@ struct bone_setup {
     void init_pose(const studio_hdr* hdr, vec3* pos, vec4* q, int bone_mask) noexcept
     {
         static void(* init_pose_fn)(const studio_hdr*, vec3*, vec4*, int) =
-            memory::find_bytes(dll::client, "55 8B EC 83 EC 10 53 8B D9 89 ? ? 56 57 89").cast<decltype(init_pose_fn)>();
+            memory::find_bytes(dll::client, PATTERN("55 8B EC 83 EC 10 53 8B D9 89 ? ? 56 57 89")).cast<decltype(init_pose_fn)>();
         return init_pose_fn(hdr, pos, q, bone_mask);
     }
 
     VIRTUAL_FUNCTION_SIG(accumulate_pose, void, dll::client, "55 8B EC 83 E4 ? B8 ? ? ? ? E8 ? ? ? ? A1 ? ? ? ? 56 57 8B F9",
-        (this, pos, q, sequence, cycle, weight, time, ik_ctx), 
+        (this, pos, q, sequence, cycle, weight, time, ik_ctx),
         vec3* pos, vec4* q, int sequence, float cycle, float weight, float time, ik_context* ik_ctx)
 };
 

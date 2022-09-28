@@ -12,14 +12,14 @@ namespace cs {
         void init(const char* name)
         {
             static void(__thiscall * init_fn)(key_values*, const char*, int, int) =
-                memory::find_bytes(dll::client, "55 8B EC 51 33 C0 C7 45").cast<decltype(init_fn)>();
+                memory::find_bytes(dll::client, PATTERN("55 8B EC 51 33 C0 C7 45")).cast<decltype(init_fn)>();
             return init_fn(this, name, 0, 0);
         }
 
         void load_from_buffer(const char* resource_name, const char* buffer /* Omitted unnecessary arguments */) noexcept
         {
             static void(__thiscall * load_from_buffer_fn)(key_values*, const char*, const char*, void*, const char*, void*, void*) =
-                memory::find_bytes(dll::client, "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89").cast<decltype(load_from_buffer_fn)>();
+                memory::find_bytes(dll::client, PATTERN("55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89")).cast<decltype(load_from_buffer_fn)>();
             return load_from_buffer_fn(this, resource_name, buffer, nullptr, nullptr, nullptr, nullptr);
         }
 
@@ -29,7 +29,7 @@ namespace cs {
         void set_string(const char* key_name, const char* value) noexcept
         {
             static void(__thiscall * set_string_fn)(key_values*, void*, const char*) =
-                memory::find_bytes(dll::client, "55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01").cast<decltype(set_string_fn)>();
+                memory::find_bytes(dll::client, PATTERN("55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01")).cast<decltype(set_string_fn)>();
 
             const auto key = find_key(key_name, false);
             if (!key)
