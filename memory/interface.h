@@ -49,7 +49,7 @@ public:
             needs_restore = true;
         }
     }
-    
+
     inline void restore() noexcept
     {
         if (needs_restore)

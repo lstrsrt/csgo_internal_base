@@ -14,7 +14,7 @@ constexpr int tick_never_think = -1;
 struct studio_hdr;
 
 enum class life_state {
-    alive, 
+    alive,
     dead = 2
 };
 
@@ -82,7 +82,7 @@ struct base_player : public base_combat_character {
     NETVAR(get_duck_amount, float, "CBasePlayer->m_flDuckAmount")
     NETVAR(get_duck_speed, float, "CBasePlayer->m_flDuckSpeed")
     NETVAR(get_water_level, int, "CBasePlayer->m_nWaterLevel")
-    
+
     DATAMAP_FIELD(get_collision_state, int, get_pred_desc_map(), "CBasePlayer->m_vphysicsCollisionState");
 };
 
@@ -113,16 +113,16 @@ struct player : public base_player {
 
     VIRTUAL_FUNCTION_SIG(post_think_v_physics, void, dll::client, "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", (this))
     VIRTUAL_FUNCTION_SIG(simulate_player_simulated_entities, void, dll::client, "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74", (this))
-    VIRTUAL_FUNCTION_SIG(invalidate_physics_recursive, void, dll::client, 
+    VIRTUAL_FUNCTION_SIG(invalidate_physics_recursive, void, dll::client,
         "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56", (this, invalidate_physics_flags), int invalidate_physics_flags)
-    
+
     bool is_enemy(player* other = nullptr) noexcept;
 };
 
 struct local_player : public player {
     user_cmd* cur_cmd{ };
     angle view{ };
-    
+
     bool update() noexcept;
 };
 

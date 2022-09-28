@@ -9,9 +9,9 @@ namespace menu {
         skins,
         config
     };
-    
+
     inline namespace controls {
-    
+
         void tab(std::wstring_view text, tab_id id, const d2& pos) noexcept;
         void checkbox(std::wstring_view text, bool& var, const d2& pos) noexcept;
         void button(std::wstring_view text, std::function<void(void)> on_click, const d2& pos, const d2& size, bool bg = true) noexcept;

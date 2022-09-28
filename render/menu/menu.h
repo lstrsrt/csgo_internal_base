@@ -11,9 +11,9 @@ namespace menu {
     constexpr clr3 inactive_ctrl_color{ 64, 64, 64 };
     inline d2 position{ 90, 90 };
     inline tab_id cur_tab{ tab_id::aimbot };
-    
+
     void run() noexcept;
-    
+
     inline void toggle() noexcept
     {
         is_active = !is_active;

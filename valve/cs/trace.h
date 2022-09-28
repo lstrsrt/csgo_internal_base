@@ -80,13 +80,13 @@ namespace trace_mask {
     constexpr trace_mask_t player_solid = (contents::solid | contents::moveable | contents::playerclip | contents::window
         | contents::monster | contents::grate);
     constexpr trace_mask_t water = (contents::water | contents::moveable | contents::slime);
-    constexpr trace_mask_t shot = (contents::solid | contents::moveable | contents::monster | contents::window | contents::debris 
+    constexpr trace_mask_t shot = (contents::solid | contents::moveable | contents::monster | contents::window | contents::debris
         | contents::grate | contents::hitbox);
     constexpr trace_mask_t shot_brush_only = (contents::solid | contents::moveable | contents::window | contents::debris);
-    constexpr trace_mask_t shot_hull = (contents::solid | contents::moveable | contents::monster | contents::window | contents::debris 
+    constexpr trace_mask_t shot_hull = (contents::solid | contents::moveable | contents::monster | contents::window | contents::debris
         | contents::grate);
     constexpr trace_mask_t solid_brush_only = (contents::solid | contents::moveable | contents::window | contents::grate);
-    constexpr trace_mask_t player_solid_brush_only = (contents::solid | contents::moveable | contents::window | contents::playerclip 
+    constexpr trace_mask_t player_solid_brush_only = (contents::solid | contents::moveable | contents::window | contents::playerclip
         | contents::grate);
 
 }
@@ -214,7 +214,7 @@ struct trace_entity : public trace_filter {
         return entity == hit;
     }
 
-    inline trace_type get_trace_type() const noexcept override 
+    inline trace_type get_trace_type() const noexcept override
     {
         return trace_type::entities_only;
     }

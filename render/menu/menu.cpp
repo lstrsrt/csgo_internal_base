@@ -6,7 +6,7 @@ void menu::run() noexcept
 {
     if (!is_active)
         return;
-    
+
     // TODO - handle menu movement
 
     render::rectangle(position.x, position.y + 1, 600, 500, render::flag::filled, { 30, 30, 30, 255 });

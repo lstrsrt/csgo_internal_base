@@ -17,30 +17,30 @@ static IMAGE_IMPORT_DESCRIPTOR* get_image_import_descriptor(void* base) noexcept
 
 namespace hooks {
     namespace iat {
-    
+
     enum class hook {
         // ...
     };
-    
+
     inline std::unordered_map<hook, void**> original_functions;
-    
+
     template<class ret = void, typename... va_args>
     ret call_original(hook hk, va_args... args) noexcept
     {
         return reinterpret_cast<ret(__stdcall*)(va_args...)>(original_functions.find(hk)->second)(args...);
     }
-    
+
     void set(const dll_t& dll, hook hk, std::string_view name, const uintptr_t hook) noexcept
     {
         original_functions.emplace(hk, reinterpret_cast<void**>(GetProcAddress(dll.hmod, name.data())));
-        
+
         auto base_address = GetModuleHandleA(nullptr);
         auto import_desc = get_image_import_descriptor(base_address);
         if (!import_desc) {
             LOG_ERROR("Incorrect import descriptor for {}!", dll.name);
             return;
         }
-        
+
         while (import_desc->Name) {
             auto cur_dll = reinterpret_cast<char*>(base_address) + import_desc->Name;
             if (!_stricmp(dll.name.c_str(), cur_dll)) {

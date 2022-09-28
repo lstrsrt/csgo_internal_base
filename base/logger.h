@@ -21,14 +21,14 @@ namespace logger {
 
     inline HANDLE console_handle{ };
     inline std::wstring log_name{ };
-    
+
     enum class level
     {
         success,
         info,
         error
     };
-    
+
     // Use the LOG macros instead of accessing these directly
 
     template<class... va_args>
@@ -37,7 +37,7 @@ namespace logger {
     #ifdef _DEBUG
         const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         const auto msg = std::vformat(fmt, std::make_format_args(args...));
-        
+
         std::cout << "[ ";
         switch (lvl) {
         case level::success:
@@ -57,7 +57,7 @@ namespace logger {
         SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
         std::cout << " ] " << std::put_time(std::localtime(&time), "[%T] ");
         std::cout << msg << std::endl;
-        
+
         std::fstream out{ log_name, std::fstream::out | std::fstream::app };
         if (out.good()) {
             out << msg << '\n';
@@ -65,14 +65,14 @@ namespace logger {
         }
     #endif
     }
-    
+
     template<class... va_args>
     inline void add(level lvl, std::wstring_view fmt, const va_args&... args) noexcept
     {
     #ifdef _DEBUG
         const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         const auto msg = std::vformat(fmt, std::make_wformat_args(args...));
-        
+
         std::wcout << L"[ ";
         switch (lvl) {
         case level::success:
@@ -92,7 +92,7 @@ namespace logger {
         SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
         std::wcout << L" ] " << std::put_time(std::localtime(&time), L"[%T] ");
         std::wcout << msg << std::endl;
-        
+
         std::wfstream out{ log_name, std::wfstream::out | std::wfstream::app };
         if (out.good()) {
             out << msg << '\n';
@@ -100,7 +100,7 @@ namespace logger {
         }
     #endif
     }
-    
+
     inline void initialize(std::wstring_view console_title, std::wstring_view log_filename) noexcept
     {
     #ifdef _DEBUG
@@ -110,14 +110,14 @@ namespace logger {
 
         freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout);
         console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-        
+
         log_name = log_filename;
         winapi::scoped_handle f = CreateFileW(log_name.c_str(), 0, 0, nullptr, CREATE_NEW, 0, nullptr);
 
         add(level::info, "Initialized logger.");
     #endif
     }
-    
+
     inline void end() noexcept
     {
     #ifdef _DEBUG

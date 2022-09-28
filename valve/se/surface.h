@@ -61,7 +61,7 @@ struct surface {
     VIRTUAL_FUNCTION(draw_set_text_font, void, 23, (hfont font), (this, font))
     VIRTUAL_FUNCTION(draw_set_text_color, void, 25, (int r, int g, int b, int a), (this, r, g, b, a))
     VIRTUAL_FUNCTION(draw_set_text_pos, void, 26, (int x, int y), (this, x, y))
-    VIRTUAL_FUNCTION(draw_print_text, void, 28, (const wchar_t* text, int len, font_draw_type draw_type = font_draw_type::_default), 
+    VIRTUAL_FUNCTION(draw_print_text, void, 28, (const wchar_t* text, int len, font_draw_type draw_type = font_draw_type::_default),
         (this, text, len, draw_type))
     VIRTUAL_FUNCTION(draw_set_texture_rgba, void, 37, (int id, const unsigned char* rgba, int width, int height), (this, id, rgba, width, height))
     VIRTUAL_FUNCTION(draw_set_texture, void, 38, (int id), (this, id))

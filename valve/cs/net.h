@@ -2,7 +2,7 @@
 
 namespace se { struct net_channel; }
 
-namespace cs { 
+namespace cs {
 
 enum class flow_direction {
     outgoing, incoming

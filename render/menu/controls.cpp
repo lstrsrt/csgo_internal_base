@@ -63,7 +63,6 @@ void menu::controls::slider(std::wstring_view text, int& var, int min, int max, 
 {
     constexpr d2 region_size = { 100, 18 }; // 125?
     const float scaled = abs(static_cast<float>(min) / static_cast<float>(region_size.x) - static_cast<float>(max) / static_cast<float>(region_size.x));
-    // FIXME: doesn't work when min is negative and max is positive
     const int fill_width = std::clamp(region_size.x / (max - min) * (var - min), 0, region_size.x);
 
     render::rectangle(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, render::flag::outlined, { 0, 0, 0, 255 });

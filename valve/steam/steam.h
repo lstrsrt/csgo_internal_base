@@ -42,7 +42,7 @@ struct friends {
 struct game_coordinator {
     VIRTUAL_FUNCTION(send_message, gc_result, 0, (uint32_t msg_type, const void* data, uint32_t cub_data), (this, msg_type, data, cub_data))
     VIRTUAL_FUNCTION(is_message_available, bool, 1, (uint32_t* cub_msg_size), (this, cub_msg_size))
-    VIRTUAL_FUNCTION(retrieve_message, gc_result, 2, (uint32_t* msg_type, void* dest, uint32_t cub_dest, uint32_t* cub_msg_size), 
+    VIRTUAL_FUNCTION(retrieve_message, gc_result, 2, (uint32_t* msg_type, void* dest, uint32_t cub_dest, uint32_t* cub_msg_size),
         (this, msg_type, dest, cub_dest, cub_msg_size))
 };
 
