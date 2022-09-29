@@ -107,8 +107,8 @@ static auto get_interface_regs(dll_t& dll) noexcept
         dll.create_interface = reinterpret_cast<uintptr_t>(GetProcAddress(dll.hmod, "CreateInterface"));
 
     // Follow jmp instruction inside function to get to CreateInterfaceInternal(), where the global interface list is moved into ESI.
-    auto& jmp = address(dll.create_interface).offset(0x5);
-    const auto reg_list = **jmp.absolute<se::interface_reg***>(0x0, 0x6);
+    const auto reg_list = **address(dll.create_interface).absolute<se::interface_reg***>(0x5, 0x6);
+
     if (!reg_list)
         LOG_ERROR("Could not get s_pInterfaceRegs in {}!", dll.name);
 
