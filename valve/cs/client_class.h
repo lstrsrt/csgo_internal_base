@@ -4,7 +4,7 @@
 
 namespace cs {
 
-namespace i { struct networkable; }
+struct networkable;
 
 enum class class_id {
     ai_base_npc,
@@ -295,8 +295,8 @@ enum class class_id {
 struct recv_table;
 
 struct client_class {
-    std::add_pointer_t<i::networkable*(int, int)> create_client_class_fn{ };
-    std::add_pointer_t<i::networkable*()> create_event_fn{ };
+    std::add_pointer_t<cs::networkable*(int, int)> create_client_class_fn{ };
+    std::add_pointer_t<cs::networkable*()> create_event_fn{ };
     const char* network_name{ };
     recv_table* recv_table{ };
     client_class* next{ };

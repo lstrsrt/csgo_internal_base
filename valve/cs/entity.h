@@ -49,9 +49,7 @@ enum class data_update_type {
     post_update
 };
 
-}
-
-namespace cs::i {
+using base_handle = uint32_t;
 
 struct unknown;
 
@@ -118,14 +116,15 @@ struct thinkable {
     virtual void release() = 0;
 };
 
+struct handle_entity {
+    virtual	~handle_entity() = default;
+    virtual void set_ref_handle(const base_handle& handle) = 0;
+    virtual const base_handle& get_ref_handle() = 0;
+};
+
 struct client_entity;
 
-struct unknown {
-    // IHandleEntity
-    virtual	~unknown() = default;
-    virtual void set_ref_handle(const int& handle) = 0;
-    virtual const int& get_ref_handle() const = 0;
-    // IClientUnknown
+struct unknown : handle_entity {
     virtual collideable* get_collideable() = 0;
     virtual networkable* get_networkable() = 0;
     virtual renderable* get_renderable() = 0;
@@ -139,12 +138,6 @@ struct client_entity : public unknown, public renderable, public networkable, pu
     VIRTUAL_FUNCTION(get_data_desc_map, cs::datamap*, 15, (), (this))
     VIRTUAL_FUNCTION(get_pred_desc_map, cs::datamap*, 17, (), (this))
 };
-
-}
-
-namespace cs {
-
-using base_handle = unsigned long;
 
 enum class item_id {
     weapon_none = 0,
@@ -466,11 +459,70 @@ enum class interpolation_flag {
     latch_simulation_var = (1 << 1)
 };
 
+enum class entity_type {
+    player,
+    weapon,
+    grenade,
+    bomb,
+    all = weapon | grenade | bomb,
+    other
+};
+
 struct studio_hdr;
 struct weapon;
-struct weapon_info;
 
-struct base_entity : public i::client_entity {
+struct weapon_info {
+    PAD(0x14)
+    int max_clip1{ };
+    int max_clip2{ };
+    int default_clip1{ };
+    int default_clip2{ };
+    int primary_max_reserve_ammo{ };
+    int secondary_max_reserve_ammo{ };
+    char* world_model{ };
+    char* view_model{ };
+    char* dropped_model{ };
+    PAD(0x50)
+    char* hud_name{ };
+    char* weapon_name{ };
+    PAD(0x2)
+    bool is_melee_weapon{ };
+    PAD(0x9)
+    float weapon_weight{ };
+    PAD(0x28)
+    weapon_type type{ };
+    PAD(0x4)
+    int price{ };
+    PAD(0x8)
+    float cycle_time{ };
+    PAD(0xc)
+    bool full_auto{ };
+    PAD(0x3)
+    int damage{ };
+    float headshot_multiplier{ };
+    float armor_ratio{ };
+    int bullets{ };
+    float penetration{ };
+    PAD(0x8)
+    float range{ };
+    float range_modifier{ };
+    float throw_velocity{ };
+    PAD(0xc)
+    bool has_silencer{ };
+    PAD(0xb)
+    char* bullet_type{ };
+    float max_speed{ };
+    float max_speed_alt{ };
+    float spread{ };
+    float spread_alt{ };
+    PAD(0x5c)
+    float recoil_magnitude{ };
+    float recoil_magnitude_alt{ };
+    PAD(0x10)
+    float recovery_time_stand{ };
+};
+
+struct base_entity : public cs::client_entity {
     NETVAR(get_simulation_time, float, "CBaseEntity->m_flSimulationTime")
     NETVAR(get_anim_time, float, "CBaseEntity->m_flAnimTime")
     NETVAR(get_origin, vec3, "CBaseEntity->m_vecOrigin")
@@ -515,6 +567,25 @@ struct base_entity : public i::client_entity {
         (this, std::cref(angles)), const angle& angles)
     VIRTUAL_FUNCTION_SIG(physics_run_think, bool, dll::client, "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87",
         (this, method), think_method method)
+
+    auto get_entity_type()
+    {
+        if (is_player())
+            return entity_type::player;
+
+        if (is_weapon()) {
+            if (auto info = get_weapon_info()) {
+                if (info->type == weapon_type::grenade)
+                    return entity_type::grenade;
+                if (info->type == weapon_type::c4)
+                    return entity_type::bomb;
+                if (info->type == weapon_type::grenade)
+                    return entity_type::grenade;
+            }
+        }
+
+        return entity_type::other;
+    }
 };
 
 struct base_attributable_item : public base_entity {
@@ -558,57 +629,6 @@ struct base_animating : public base_entity {
     VIRTUAL_FUNCTION(studio_frame_advance, void, 220, (), (this))
     VIRTUAL_FUNCTION(update_client_side_animation, void, 224, (), (this))
     VIRTUAL_FUNCTION(update_dispatch_layer, void, 247, (anim_layer_t* layer, studio_hdr* hdr, int sequence), (this, layer, hdr, sequence))
-};
-
-struct weapon_info {
-    PAD(0x14)
-    int max_clip1{ };
-    int max_clip2{ };
-    int default_clip1{ };
-    int default_clip2{ };
-    int primary_max_reserve_ammo{ };
-    int secondary_max_reserve_ammo{ };
-    char* world_model{ };
-    char* view_model{ };
-    char* dropped_model{ };
-    PAD(0x50)
-    char* hud_name{ };
-    char* weapon_name{ };
-    PAD(0x2)
-    bool is_melee_weapon{ };
-    PAD(0x9)
-    float weapon_weight{ };
-    PAD(0x28)
-    weapon_type type { };
-    PAD(0x4)
-    int price{ };
-    PAD(0x8)
-    float cycle_time{ };
-    PAD(0xc)
-    bool full_auto{ };
-    PAD(0x3)
-    int damage{ };
-    float headshot_multiplier{ };
-    float armor_ratio{ };
-    int bullets{ };
-    float penetration{ };
-    PAD(0x8)
-    float range{ };
-    float range_modifier{ };
-    float throw_velocity{ };
-    PAD(0xc)
-    bool has_silencer{ };
-    PAD(0xb)
-    char* bullet_type{ };
-    float max_speed{ };
-    float max_speed_alt{ };
-    float spread{ };
-    float spread_alt{ };
-    PAD(0x5c)
-    float recoil_magnitude{ };
-    float recoil_magnitude_alt{ };
-    PAD(0x10)
-    float recovery_time_stand{ };
 };
 
 struct weapon : public base_attributable_item {

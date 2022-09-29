@@ -171,13 +171,13 @@ struct studio_hdr {
 
 struct draw_model_info {
     PAD(0x18)
-    i::renderable* client_entity{ };
+    cs::renderable* client_entity{ };
 };
 
 struct draw_model_state {
     studio_hdr_t* studio_hdr{ };
     void* studio_hw_data{ };
-    i::renderable* renderable{ };
+    cs::renderable* renderable{ };
     const mat3x4* bones{ };
 };
 

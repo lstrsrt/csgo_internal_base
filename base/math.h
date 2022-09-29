@@ -1,5 +1,6 @@
 #pragma once
 
+#include <intrin.h>
 #include <numbers>
 #include <random>
 
@@ -12,16 +13,53 @@ struct w2s_result {
 
 namespace math {
 
+    static constexpr auto pi = std::numbers::pi_v<float>;
+
     constexpr float rad_to_deg(float rad) noexcept
     {
-        return rad * (180.0f / std::numbers::pi_v<float>);
+        return rad * (180.0f / pi);
     }
-    
+
     constexpr float deg_to_rad(float deg) noexcept
     {
-        return deg * (std::numbers::pi_v<float> / 180.0f);
+        return deg * (pi / 180.0f);
     }
-    
+
+    inline float sin(float x) noexcept
+    {
+        return _mm_cvtss_f32(_mm_cos_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    }
+
+    inline float cos(float x) noexcept
+    {
+        return _mm_cvtss_f32(_mm_cos_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    }
+
+    inline float sind(float x) noexcept
+    {
+        return sin(deg_to_rad(x));
+    }
+
+    inline float cosd(float x) noexcept
+    {
+        return cos(deg_to_rad(x));
+    }
+
+    inline float asin(float x) noexcept
+    {
+        return _mm_cvtss_f32(_mm_asin_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    }
+
+    inline float acos(float x) noexcept
+    {
+        return _mm_cvtss_f32(_mm_acos_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    }
+
+    inline float atan(float x) noexcept
+    {
+        return _mm_cvtss_f32(_mm_atan_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    }
+
     int time_to_ticks(float time) noexcept;
     float ticks_to_time(int ticks) noexcept;
     vec3 lerp_vector(const vec3& a, const vec3& b, float fraction) noexcept; // Use std::lerp to interpolate floats
@@ -33,23 +71,22 @@ namespace math {
 
         inline std::mt19937 engine{ std::random_device{ }() };
 
-        template<class ty> requires std::_Is_any_of_v<ty, short, int, long, long long, unsigned short, unsigned int,
-            unsigned long, unsigned long long>
-        inline ty integral(ty min, ty max) noexcept
+        template<std::integral ty>
+        inline ty get(ty min, ty max) noexcept
         {
             return std::uniform_int_distribution{ min, max }(engine);
         }
 
-        template<class ty> requires std::is_floating_point_v<ty>
-        inline ty floating_point(ty min, ty max) noexcept
+        template<floating_point ty>
+        inline ty get(ty min, ty max) noexcept
         {
             return std::uniform_real_distribution{ min, max }(engine);
         }
 
-        template<class ty> requires std::is_enum_v<ty>
-        inline ty enumerator(ty min, ty max) noexcept
+        template<enumerator ty>
+        inline ty get(ty min, ty max) noexcept
         {
-            return static_cast<ty>(integral(to_underlying(min), to_underlying(max)));
+            return static_cast<ty>(get(util::to_underlying(min), util::to_underlying(max)));
         }
 
     }

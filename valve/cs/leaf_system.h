@@ -8,7 +8,7 @@ enum class render_flag : uint32_t {
 };
 
 struct renderable_info {
-    i::renderable* renderable{ };
+    cs::renderable* renderable{ };
     PAD(0x4)
     int enum_count{ };
     int render_frame{ };
@@ -23,7 +23,7 @@ struct renderable_info {
 };
 
 struct renderable_entry {
-    i::renderable* renderable{ };
+    cs::renderable* renderable{ };
     unsigned short world_list_into_leaf{ };
     uint8_t alpha{ };
     uint8_t flags{ };
@@ -51,7 +51,7 @@ struct renderables_list {
     renderable_entry render_groups[render_group::count][4096]{ };
     int render_group_counts[render_group::count]{ };
     int bone_setup_dependency_count{ };
-    i::renderable* bone_setup_dependency[64];
+    cs::renderable* bone_setup_dependency[64];
 };
 
 struct setup_render_info {

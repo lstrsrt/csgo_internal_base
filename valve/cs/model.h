@@ -26,7 +26,7 @@ struct model_render_info {
     vec3 origin{ };
     vec3 angles{ };
     PAD(0x4)
-    i::renderable* renderable{ };
+    cs::renderable* renderable{ };
     const model* model{ };
     const mat3x4* model_to_world{ };
     const mat3x4* lighting_offset{ };
