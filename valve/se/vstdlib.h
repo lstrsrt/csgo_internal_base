@@ -8,8 +8,7 @@ struct cvar {
     VIRTUAL_FUNCTION(find_cmd_line_value, const char*, 11, (const char* name), (this, name))
     VIRTUAL_FUNCTION(find_var, cs::convar*, 14, (const char* var_name), (this, var_name))
 
-    class iterator
-    {
+    class iterator {
     public:
         VIRTUAL_FUNCTION(set_first, void, 0, (), (this))
         VIRTUAL_FUNCTION(next, void, 1, (), (this))

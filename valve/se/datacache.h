@@ -11,9 +11,6 @@ struct mdl_cache {
 };
 
 class mdl_cache_critical_section {
-private:
-    mdl_cache* cache{ };
-
 public:
     explicit mdl_cache_critical_section(mdl_cache* ptr) noexcept
         : cache(ptr)
@@ -25,6 +22,9 @@ public:
     {
         cache->end_lock();
     }
+
+private:
+    mdl_cache* cache{ };
 };
 
 }

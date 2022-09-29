@@ -4,7 +4,14 @@ template<class ty>
 concept floating_point = std::is_floating_point_v<ty>;
 
 template<class ty>
-concept enumerator = std::is_enum_v<ty>;
+concept enumerator = __is_enum(ty);
+
+template<class ty>
+concept string_like = std::_Is_any_of_v<ty, std::string, std::string_view,
+    std::wstring, std::wstring_view> && requires(ty t)
+{
+    t.substr();
+};
 
 namespace util {
 
@@ -23,7 +30,7 @@ namespace util {
 
     inline constexpr size_t array_size(const auto& x)
     {
-        return sizeof(x) / sizeof((x)[0]);
+        return sizeof(x) / sizeof(x[0]);
     }
 
 }

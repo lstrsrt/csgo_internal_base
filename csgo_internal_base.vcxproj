@@ -134,14 +134,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
     <IntDir>int\$(Configuration)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
     <IntDir>int\$(Configuration)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -158,6 +158,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

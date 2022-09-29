@@ -67,8 +67,7 @@ namespace bitfield_ops {
 using namespace bitfield_ops;
 
 template<enumerator en>
-class bitfield
-{
+class bitfield {
 public:
     constexpr bitfield() noexcept = default;
 
@@ -143,5 +142,4 @@ private:
         en m_value;
         std::underlying_type_t<en> m_raw;
     } m_bits{};
-
 };

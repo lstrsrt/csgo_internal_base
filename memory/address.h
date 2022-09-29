@@ -4,9 +4,6 @@
 #include <cstdint>
 
 class address {
-private:
-    uintptr_t value{ };
-
 public:
     address() = default;
     address(uintptr_t value) noexcept
@@ -54,4 +51,7 @@ public:
             return reinterpret_cast<ty>(value + offset + 4 + disp);
         return ty();
     }
+
+private:
+    uintptr_t value{ };
 };

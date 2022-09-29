@@ -3,7 +3,6 @@
 #include "features/features.h"
 #include "hooks.h"
 #include "features/cache.h"
-#include "features/events.h"
 #include "features/variables.h"
 
 void hooks::initialize() noexcept
@@ -34,7 +33,6 @@ void hooks::initialize() noexcept
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
-    events::initialize({ "bullet_impact" });
     cache::initialize();
 }
 

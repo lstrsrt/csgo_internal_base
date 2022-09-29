@@ -6,29 +6,15 @@
 #include "../valve/cs/net.h"
 
 template<class ty>
-class interface_holder {
-public:
+struct interface_holder {
     ty instance{ };
-
-public:
     uintptr_t* real_vmt{ };
     std::unique_ptr<uintptr_t[]> replacement_vmt{ };
     bool needs_restore{ };
 
-    constexpr auto operator->() noexcept
-    {
-        return instance;
-    }
-
-    constexpr operator ty() noexcept
-    {
-        return instance;
-    }
-
-    constexpr auto operator=(ty rhs) noexcept
-    {
-        return instance;
-    }
+    constexpr auto operator->() noexcept { return instance; }
+    constexpr operator ty() noexcept { return instance; }
+    constexpr auto operator=(ty rhs) noexcept { return instance; }
 
     // Pass false to replace_vmt if you don't hook anything from the table or if get_vmt_length() is crashing
     template<bool replace_vmt = true>
@@ -45,7 +31,7 @@ public:
             replacement_vmt = std::make_unique<uintptr_t[]>(len);
             std::ranges::copy(real_vmt - dynamic_cast_info_len, real_vmt + len - dynamic_cast_info_len, replacement_vmt.get());
 
-            *reinterpret_cast<uintptr_t**>(instance) = replacement_vmt.get() + 1;
+            *reinterpret_cast<uintptr_t**>(instance) = replacement_vmt.get() + dynamic_cast_info_len;
             needs_restore = true;
         }
     }
