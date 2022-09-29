@@ -62,6 +62,7 @@
     <ClInclude Include="valve\cs\util.h" />
     <ClInclude Include="valve\cs\utl_vector.h" />
     <ClInclude Include="valve\cs\view.h" />
+    <ClInclude Include="valve\cs\world.h" />
     <ClInclude Include="valve\se\client.h" />
     <ClInclude Include="valve\se\datacache.h" />
     <ClInclude Include="valve\se\engine.h" />

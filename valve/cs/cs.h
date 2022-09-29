@@ -20,5 +20,6 @@
 #include "util.h"
 #include "utl_vector.h"
 #include "view.h"
+#include "world.h"
 
 #include "util.h"

@@ -6,6 +6,7 @@
 #include "../cs/game_event.h"
 #include "../cs/utl_vector.h"
 #include "../cs/entity.h"
+#include "../cs/world.h"
 
 namespace cs {
 
