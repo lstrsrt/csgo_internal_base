@@ -7,8 +7,8 @@ Just another internal cheat base for CS:GO. Currently unfinished.
 * Menu framework (ISurface based, incomplete)
 * Netvar manager with proxy support
 * Config system
+* Compile time pattern string conversion
 * Zero external dependencies
 * Basic cheat features: engine prediction, infinite crouch, FOV changer, some other stuff
 
-Keep in mind that although this base has most CS related things implemented, it's probably not fully up to date anymore and might crash unexpectedly.  
-It's also missing some features (most notably string encryption) which will be added later on.
+Keep in mind that although this base has most CS related things implemented, it's missing some features (most notably string encryption) which will be added later on.
