@@ -5,9 +5,8 @@
 #include "memory.h"
 
 #define SET_SIG_HOOK(dll, sig, name) set(dll, PATTERN(sig), reinterpret_cast<void*>(name::fn), reinterpret_cast<void**>(&name::original))
-#define SET_DETOUR_HOOK(base, name) set(base, name::index, reinterpret_cast<void*>(name::fn), reinterpret_cast<void**>(&name::original))
-#define SET_VF_HOOK(vmt, name) set(vmt, name::index, name::fn, name::original)
-#define SET_IAT_HOOK(dll, name, target) iat::set(g_dlls(dll), iat::hook::name, target, reinterpret_cast<uintptr_t>(iat::name::fn))
+#define SET_VF_HOOK(vmt, name, index) set(vmt, index, name::fn, name::original)
+#define SET_IAT_HOOK(dll, name, target) iat::set(dlls::get(dll), iat::hook::name, target, reinterpret_cast<uintptr_t>(iat::name::fn))
 
 namespace hooks {
 
@@ -39,13 +38,12 @@ namespace hooks {
     template<size_t len>
     inline void set(dll dll_id, std::array<int, len>&& sig, void* hook, void** original) noexcept
     {
-        auto target = memory::find_bytes<len>(dll_id, std::move(sig)).cast<void*>();
-        // hooked_fns[fnv1a::rt(name.data())] = target;
+        const auto target = memory::find_bytes<len>(dll_id, std::move(sig)).cast<void*>();
 
         if (hook_func(target, hook, original, false))
-            return;
-
-        LOG_ERROR("Error while hooking function!");
+            hooked_fns[hook] = original;
+        else
+            LOG_ERROR("Error while hooking function!");
     }
 
 }

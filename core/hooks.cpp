@@ -17,16 +17,16 @@ void hooks::initialize() noexcept
     hook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
     unhook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
 
-    SET_VF_HOOK(interfaces::client, frame_stage_notify);
-    SET_VF_HOOK(interfaces::client, create_move_proxy);
-    SET_VF_HOOK(interfaces::client_mode, override_view);
-    SET_VF_HOOK(interfaces::client_mode, get_viewmodel_fov);
-    SET_VF_HOOK(interfaces::engine, is_connected);
-    SET_VF_HOOK(interfaces::material_system, override_config);
-    SET_VF_HOOK(interfaces::model_render, draw_model_execute);
-    SET_VF_HOOK(interfaces::panel, paint_traverse);
-    SET_VF_HOOK(interfaces::bsp_query, list_leaves_in_box);
-    SET_VF_HOOK(interfaces::surface, lock_cursor);
+    SET_VF_HOOK(interfaces::client, frame_stage_notify, 37);
+    SET_VF_HOOK(interfaces::client, create_move_proxy, 22);
+    SET_VF_HOOK(interfaces::client_mode, override_view, 18);
+    SET_VF_HOOK(interfaces::client_mode, get_viewmodel_fov, 35);
+    SET_VF_HOOK(interfaces::engine, is_connected, 27);
+    SET_VF_HOOK(interfaces::material_system, override_config, 21);
+    SET_VF_HOOK(interfaces::model_render, draw_model_execute, 21);
+    SET_VF_HOOK(interfaces::panel, paint_traverse, 41);
+    SET_VF_HOOK(interfaces::bsp_query, list_leaves_in_box, 6);
+    SET_VF_HOOK(interfaces::surface, lock_cursor, 67);
 
     SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
     SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
@@ -47,7 +47,8 @@ void hooks::end() noexcept
     interfaces::bsp_query.restore();
     interfaces::surface.restore();
 
-    events::end();
+    unhook_func(hooked_fns[on_add_entity::fn], false);
+    unhook_func(hooked_fns[on_remove_entity::fn], false);
 
     SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));
 }
@@ -69,11 +70,9 @@ LRESULT CALLBACK hooks::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 
 static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
 {
-    using hooks::create_move_proxy::original;
+    hooks::create_move_proxy::original(interfaces::client, sequence_nr, input_sample_time, is_active);
 
-    original(interfaces::client, sequence_nr, input_sample_time, is_active);
-
-    if (!send_packet || !is_active)
+    if (!send_packet)
         return;
 
     if (!local.update())
@@ -81,7 +80,6 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
 
     auto cmd = &interfaces::input->cmds[sequence_nr % cs::multiplayer_backup];
     auto verified_cmd = &interfaces::input->verified_cmds[sequence_nr % cs::multiplayer_backup];
-
     if (!cmd || !verified_cmd)
         return;
 

@@ -2,14 +2,7 @@
 
 #include <minwindef.h>
 
-#define DECLARE_VF_HOOK(name, ret, base, idx, ... /* args */) namespace name { \
-using ty = ret(__thiscall*)(base* ecx, __VA_ARGS__); \
-inline ty original; \
-inline ret __fastcall fn(base* ecx, int, __VA_ARGS__); \
-constexpr unsigned int index = idx; \
-}
-
-#define DECLARE_SIG_HOOK(name, ret, base, ... /* args */) namespace name { \
+#define DECLARE_HOOK(name, ret, base, ... /* args */) namespace name { \
 using ty = ret(__thiscall*)(base* ecx, __VA_ARGS__); \
 inline ty original; \
 inline ret __fastcall fn(base* ecx, int, __VA_ARGS__); \
@@ -26,20 +19,20 @@ namespace hooks {
     inline WNDPROC original_wnd_proc{ };
     extern LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-    DECLARE_VF_HOOK(create_move_proxy, void, se::client_dll, 22, int, float, bool)
-    DECLARE_VF_HOOK(frame_stage_notify, void, se::client_dll, 37, cs::frame_stage)
-    DECLARE_VF_HOOK(override_view, void, se::client_mode, 18, cs::view_setup*)
-    DECLARE_VF_HOOK(get_viewmodel_fov, float, se::client_mode, 35)
-    DECLARE_VF_HOOK(is_connected, bool, se::engine_client, 27)
-    DECLARE_VF_HOOK(override_config, bool, se::material_system, 21, cs::material_system_config*, bool)
-    DECLARE_VF_HOOK(draw_model_execute, void, se::model_render, 21, cs::mat_render_context*,
-                    const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)
-    DECLARE_VF_HOOK(paint_traverse, void, se::panel, 41, cs::vpanel, bool, bool)
-    DECLARE_VF_HOOK(list_leaves_in_box, int, se::spatial_query, 6, const vec3&, const vec3&, unsigned short*, int)
-    DECLARE_VF_HOOK(lock_cursor, void, se::surface, 67)
+    DECLARE_HOOK(create_move_proxy, void, se::client_dll, int, float, bool)
+    DECLARE_HOOK(frame_stage_notify, void, se::client_dll, cs::frame_stage)
+    DECLARE_HOOK(override_view, void, se::client_mode, cs::view_setup*)
+    DECLARE_HOOK(get_viewmodel_fov, float, se::client_mode)
+    DECLARE_HOOK(is_connected, bool, se::engine_client)
+    DECLARE_HOOK(override_config, bool, se::material_system, cs::material_system_config*, bool)
+    DECLARE_HOOK(draw_model_execute, void, se::model_render, cs::mat_render_context*,
+                 const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)
+    DECLARE_HOOK(paint_traverse, void, se::panel, cs::vpanel, bool, bool)
+    DECLARE_HOOK(list_leaves_in_box, int, se::spatial_query, const vec3&, const vec3&, unsigned short*, int)
+    DECLARE_HOOK(lock_cursor, void, se::surface)
 
-    DECLARE_SIG_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
-    DECLARE_SIG_HOOK(on_remove_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
+    DECLARE_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
+    DECLARE_HOOK(on_remove_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
 
     DECLARE_PROXY(spotted, "CBaseEntity->m_bSpotted")
 

@@ -43,12 +43,12 @@ public:
     }
 
     template<class ty>
-    ty absolute(ptrdiff_t offset = 0) noexcept
+    ty absolute(ptrdiff_t rel_offset = 0x1, ptrdiff_t abs_offset = 0x0) noexcept
     {
-        const auto disp = *reinterpret_cast<int32_t*>(value);
-        if (disp)
+        const auto target = *reinterpret_cast<int32_t*>(value + rel_offset);
+        if (target)
             // Base address + offset to jmp instruction + size of next instruction + target address.
-            return reinterpret_cast<ty>(value + offset + 4 + disp);
+            return reinterpret_cast<ty>(value + abs_offset + 4 + target);
         return ty();
     }
 

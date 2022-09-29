@@ -27,7 +27,6 @@
     <ClInclude Include="core\config.h" />
     <ClInclude Include="core\cheat.h" />
     <ClInclude Include="core\features\cache.h" />
-    <ClInclude Include="core\features\events.h" />
     <ClInclude Include="core\features\features.h" />
     <ClInclude Include="core\features\variables.h" />
     <ClInclude Include="core\hooks.h" />

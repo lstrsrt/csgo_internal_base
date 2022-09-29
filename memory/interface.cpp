@@ -70,7 +70,7 @@ void interfaces::initialize() noexcept
     move_helper.initialize<false>(**memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01")).offset(0x2).cast<se::move_helper***>());
     player_resource.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 1D ? ? ? ? 89 5C 24 40")).offset(0x2).cast<se::player_resource**>());
     render_beams.initialize<false>(*memory::find_bytes(dll::client, PATTERN("B9 ? ? ? ? FF 50 24 C2 04 00")).offset(0x1).cast<se::render_beams**>());
-    weapon_system.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).cast<se::weapon_system**>());
+    weapon_system.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).offset(0x2).cast<se::weapon_system**>());
     view_render.initialize(**memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? D9 5D F0 8B 01")).offset(0x2).cast<se::view_render***>());
     dx9_device.initialize(**memory::find_bytes(dll::shader_api_dx9, PATTERN("A1 ? ? ? ? 50 8B 08 FF 51 0C")).offset(0x1).cast<IDirect3DDevice9***>());
 
@@ -108,7 +108,7 @@ static auto get_interface_regs(dll_t& dll) noexcept
 
     // Follow jmp instruction inside function to get to CreateInterfaceInternal(), where the global interface list is moved into ESI.
     auto& jmp = address(dll.create_interface).offset(0x5);
-    const auto reg_list = **jmp.absolute<se::interface_reg***>(0x6);
+    const auto reg_list = **jmp.absolute<se::interface_reg***>(0x0, 0x6);
     if (!reg_list)
         LOG_ERROR("Could not get s_pInterfaceRegs in {}!", dll.name);
 
@@ -119,7 +119,7 @@ static void collect_interfaces(dll dll_id) noexcept
 {
     auto& dll = dlls::get(dll_id);
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
-        LOG_INFO("{}: found interface {}", dll.name, cur->name);
+        // LOG_INFO("{}: found interface {}", dll.name, cur->name);
         interfaces::list.push_back(std::make_pair(cur->name, cur->create_fn()));
     }
 }

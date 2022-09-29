@@ -568,24 +568,7 @@ struct base_entity : public cs::client_entity {
     VIRTUAL_FUNCTION_SIG(physics_run_think, bool, dll::client, "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87",
         (this, method), think_method method)
 
-    auto get_entity_type()
-    {
-        if (is_player())
-            return entity_type::player;
-
-        if (is_weapon()) {
-            if (auto info = get_weapon_info()) {
-                if (info->type == weapon_type::grenade)
-                    return entity_type::grenade;
-                if (info->type == weapon_type::c4)
-                    return entity_type::bomb;
-                if (info->type == weapon_type::grenade)
-                    return entity_type::grenade;
-            }
-        }
-
-        return entity_type::other;
-    }
+    entity_type get_entity_type() noexcept;
 };
 
 struct base_attributable_item : public base_entity {
