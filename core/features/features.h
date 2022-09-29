@@ -8,7 +8,7 @@
 
 inline namespace features {
 
-    using cheat::local_player;
+    using cheat::local;
 
     namespace prediction {
 

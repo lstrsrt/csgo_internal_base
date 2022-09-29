@@ -11,7 +11,7 @@ bool player::is_enemy(player* other) noexcept
         return true;
 
     if (!other)
-        return cheat::local_player->get_team() != get_team();
+        return cheat::local->get_team() != get_team();
 
     if (other == this)
         return false;
@@ -21,8 +21,17 @@ bool player::is_enemy(player* other) noexcept
 
 bool local_player::update() noexcept
 {
-    cheat::local_player = interfaces::entity_list->get<cs::local_player*>(interfaces::engine->get_local_player());
-    return cheat::local_player != nullptr;
+    in_game = interfaces::client_state->signon_state == cs::signon_state::full;
+    if (!in_game)
+        return false;
+
+    if (!local)
+        local = interfaces::entity_list->get<cs::player*>(interfaces::engine->get_local_player());
+
+    if (!local)
+        return false;
+
+    return true;
 }
 
 }

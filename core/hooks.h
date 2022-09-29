@@ -9,10 +9,10 @@ inline ret __fastcall fn(base* ecx, int, __VA_ARGS__); \
 constexpr unsigned int index = idx; \
 }
 
-#define DECLARE_SIG_HOOK(name, ret, args) namespace name { \
-using ty = ret(__stdcall*)##args; \
+#define DECLARE_SIG_HOOK(name, ret, base, ... /* args */) namespace name { \
+using ty = ret(__thiscall*)(base* ecx, __VA_ARGS__); \
 inline ty original; \
-inline ret __stdcall fn##args; \
+inline ret __fastcall fn(base* ecx, int, __VA_ARGS__); \
 }
 
 #define DECLARE_PROXY(name, prop_name) namespace name { \
@@ -38,7 +38,8 @@ namespace hooks {
     DECLARE_VF_HOOK(list_leaves_in_box, int, se::spatial_query, 6, const vec3&, const vec3&, unsigned short*, int)
     DECLARE_VF_HOOK(lock_cursor, void, se::surface, 67)
 
-    DECLARE_SIG_HOOK(cull_beam, int, (const vec3&, const vec3&, int))
+    DECLARE_SIG_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
+    DECLARE_SIG_HOOK(on_remove_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
 
     DECLARE_PROXY(spotted, "CBaseEntity->m_bSpotted")
 

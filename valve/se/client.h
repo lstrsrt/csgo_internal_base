@@ -21,13 +21,24 @@ enum class hud_filter {
     print_center
 };
 
+enum class signon_state {
+    none,
+    challenge,
+    connected,
+    _new,
+    prespawn,
+    spawn,
+    full,
+    change_level
+};
+
 }
 
 namespace se {
 
 struct client_dll {
     VIRTUAL_FUNCTION(get_all_classes, cs::client_class*, 8, (), (this))
-    VIRTUAL_FUNCTION(dispatch_user_message, bool, 38, (int msg_type, int flags, int size, const void* msg = nullptr), 
+    VIRTUAL_FUNCTION(dispatch_user_message, bool, 38, (int msg_type, int flags, int size, const void* msg = nullptr),
         (this, msg_type, flags, size, msg))
 };
 
@@ -61,7 +72,7 @@ struct client_state {
     double connect_time{ };
     int retry_number{ };
     PAD(0x54)
-    int signon_state{ };
+    cs::signon_state signon_state{ };
     PAD(0x4)
     double next_cmd_time{ };
     int server_count{ };
@@ -99,16 +110,16 @@ struct client_state {
 };
 
 struct effects_client {
-    VIRTUAL_FUNCTION(smoke, void, 2, (const vec3& origin, int model_index, float scale, float framerate), 
+    VIRTUAL_FUNCTION(smoke, void, 2, (const vec3& origin, int model_index, float scale, float framerate),
         (this, std::cref(origin), model_index, scale, framerate))
-    VIRTUAL_FUNCTION(sparks, void, 3, (const vec3& position, int magnitude = 1, int trail_length = 1, const vec3* direction = nullptr), 
+    VIRTUAL_FUNCTION(sparks, void, 3, (const vec3& position, int magnitude = 1, int trail_length = 1, const vec3* direction = nullptr),
         (this, std::cref(position), magnitude, trail_length, direction))
-    VIRTUAL_FUNCTION(dust, void, 4, (const vec3& position, const vec3& direction, float size, float speed), 
+    VIRTUAL_FUNCTION(dust, void, 4, (const vec3& position, const vec3& direction, float size, float speed),
         (this, std::cref(position), std::cref(direction), size, speed))
-    VIRTUAL_FUNCTION(muzzle_flash, void, 5, (const vec3& origin, const vec3& angles, float scale, int type), 
+    VIRTUAL_FUNCTION(muzzle_flash, void, 5, (const vec3& origin, const vec3& angles, float scale, int type),
         (this, std::cref(origin), std::cref(angles), scale, type))
     VIRTUAL_FUNCTION(metal_sparks, void, 6, (const vec3& position, const vec3& direction), (this, std::cref(position), std::cref(direction)))
-    VIRTUAL_FUNCTION(energy_splash, void, 7, (const vec3& position, const vec3& direction, bool explosive = false), 
+    VIRTUAL_FUNCTION(energy_splash, void, 7, (const vec3& position, const vec3& direction, bool explosive = false),
         (this, std::cref(position), std::cref(direction), explosive))
     VIRTUAL_FUNCTION(ricochet, void, 8, (const vec3& position, const vec3& direction), (this, std::cref(position), std::cref(direction)))
 };
@@ -192,10 +203,10 @@ struct player_resource {
 };
 
 struct prediction {
-    VIRTUAL_FUNCTION(update, void, 3, (int start_frame, bool valid_frame, int incoming_acknowledged, int outgoing_command), 
+    VIRTUAL_FUNCTION(update, void, 3, (int start_frame, bool valid_frame, int incoming_acknowledged, int outgoing_command),
         (this, start_frame, valid_frame, incoming_acknowledged, outgoing_command))
     VIRTUAL_FUNCTION(set_local_view_angles, void, 13, (const angle& angles), (this, std::cref(angles)))
-    VIRTUAL_FUNCTION(setup_move, void, 20, (cs::base_player* player, cs::user_cmd* cmd, se::move_helper* helper, cs::move_data* move), 
+    VIRTUAL_FUNCTION(setup_move, void, 20, (cs::base_player* player, cs::user_cmd* cmd, se::move_helper* helper, cs::move_data* move),
         (this, player, cmd, helper, move))
     VIRTUAL_FUNCTION(finish_move, void, 21, (cs::base_player* player, cs::user_cmd* cmd, cs::move_data* move), (this, player, cmd, move))
     VIRTUAL_FUNCTION(check_moving_ground, void, 18, (cs::base_player* player, double frame_time), (this, player, frame_time))

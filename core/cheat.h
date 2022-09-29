@@ -2,14 +2,13 @@
 
 #include "../memory/interface.h"
 #include "../memory/hook_manager.h"
+#include "../valve/cs/player.h"
 #include "netvars.h"
 #include "config.h"
 
-namespace cs { struct local_player; }
-
 namespace cheat {
 
-    inline cs::local_player* local_player{ };
+    inline cs::local_player local{ };
     inline bool should_unhook{ };
 
     inline void initialize() noexcept

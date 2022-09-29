@@ -119,9 +119,16 @@ struct player : public base_player {
     bool is_enemy(player* other = nullptr) noexcept;
 };
 
-struct local_player : public player {
+struct local_player {
+    player* local{ };
     user_cmd* cur_cmd{ };
     angle view{ };
+    bool in_game{ };
+
+    auto operator->() noexcept { return local; }
+    operator bool() noexcept { return local; }
+    operator base_player*() noexcept { return local; }
+    operator player*() noexcept { return local; }
 
     bool update() noexcept;
 };

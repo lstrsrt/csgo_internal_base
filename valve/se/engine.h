@@ -94,11 +94,6 @@ struct engine_client {
         get_view_angles(ret);
         return ret;
     }
-
-    bool is_in_game_and_connected() noexcept
-    {
-        return (is_in_game() && is_connected());
-    }
 };
 
 class engine_trace {

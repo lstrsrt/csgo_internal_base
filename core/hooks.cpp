@@ -2,6 +2,7 @@
 #include "../render/menu/menu.h"
 #include "features/features.h"
 #include "hooks.h"
+#include "features/cache.h"
 #include "features/events.h"
 #include "features/variables.h"
 
@@ -28,11 +29,13 @@ void hooks::initialize() noexcept
     SET_VF_HOOK(interfaces::bsp_query, list_leaves_in_box);
     SET_VF_HOOK(interfaces::surface, lock_cursor);
 
-    SET_SIG_HOOK(dll::client, "55 8B EC 8B 4D 08 83 EC 18", cull_beam);
+    SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
+    SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
     events::initialize({ "bullet_impact" });
+    cache::initialize();
 }
 
 void hooks::end() noexcept
@@ -45,8 +48,6 @@ void hooks::end() noexcept
     interfaces::panel.restore();
     interfaces::bsp_query.restore();
     interfaces::surface.restore();
-
-    // unhook_func(hooked_fns[fnv1a::ct("cull_beam")], false);
 
     events::end();
 
@@ -77,7 +78,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
     if (!send_packet || !is_active)
         return;
 
-    if (!cheat::local_player->update())
+    if (!local.update())
         return;
 
     auto cmd = &interfaces::input->cmds[sequence_nr % cs::multiplayer_backup];
@@ -86,7 +87,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
     if (!cmd || !verified_cmd)
         return;
 
-    local_player->cur_cmd = cmd;
+    local.cur_cmd = cmd;
 
     if (config::get<bool>(vars::infinite_crouch))
         cmd->buttons.set(cs::cmd_button::bullrush);
@@ -95,7 +96,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
     // aimbot::run(cmd);
     prediction::end();
 
-    local_player->view = cmd->view_angles;
+    local.view = cmd->view_angles;
 
     verified_cmd->cmd = *cmd;
     verified_cmd->crc = cmd->get_checksum();
@@ -123,7 +124,7 @@ __declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* e
 
 void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::frame_stage frame_stage)
 {
-    if (!interfaces::engine->is_in_game_and_connected())
+    if (!local.in_game)
         return original(ecx, frame_stage);
 
     static auto override_postprocessing_disable = *memory::find_bytes(dll::client, PATTERN("83 EC 4C 80 3D")).offset(0x5).cast<bool**>();
@@ -133,7 +134,7 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
         *override_postprocessing_disable = config::get<bool>(vars::disable_postprocessing);
         break;
     case cs::frame_stage::net_update_post_data_update_end:
-        cheat::local_player->update();
+        local.update();
         break;
     }
 
@@ -142,11 +143,11 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
 
 void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_setup* view)
 {
-    if (!cheat::local_player->update())
+    if (!local.update())
         return original(ecx, view);
 
-    if (cheat::local_player->is_alive()) {
-        if (!cheat::local_player->is_scoping())
+    if (local->is_alive()) {
+        if (!local->is_scoping())
             view->fov = config::get<float>(vars::fov);
     }
 
@@ -155,7 +156,7 @@ void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_set
 
 float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)
 {
-    if (!cheat::local_player || (cheat::local_player && cheat::local_player->is_scoping()))
+    if (!local || (local && local->is_scoping()))
         return original(ecx);
 
     return config::get<float>(vars::viewmodel_fov);
@@ -270,10 +271,24 @@ void __fastcall hooks::lock_cursor::fn(se::surface* ecx, int)
     return menu::is_active ? ecx->unlock_cursor() : original(ecx);
 }
 
-// See https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/game/client/view_beams.cpp#L1070
-int __stdcall hooks::cull_beam::fn(const vec3& start, const vec3& end, int pvs_only)
-{
-    return 1;
+void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
+
+    auto unknown = reinterpret_cast<cs::unknown*>(handle_entity);
+    if (unknown; auto entity = unknown->get_base_entity())
+        cache::add(entity);
+
+    return original(ecx, handle_entity, handle);
+
+}
+
+void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
+
+    auto unknown = reinterpret_cast< cs::unknown* >(handle_entity);
+    if (unknown; auto entity = unknown->get_base_entity())
+        cache::remove(entity);
+
+    return original(ecx, handle_entity, handle);
+
 }
 
 void hooks::spotted::proxy(cs::recv_proxy_data* data, void* arg0, void* arg1)
