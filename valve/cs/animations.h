@@ -245,10 +245,9 @@ struct bone_merge_cache {
     studio_hdr* owner_hdr{ };
     const studio_hdr_t* owner_render_hdr{ };
     int copied_framecount{ };
-    int follow_bone_setup_mask{ };
+    bitfield<bone_flag> follow_bone_setup_mask{ };
     pose_param owner_to_follow_pose_param_mapping[max_pose_param]{ };
     utl_vec<merged_bone> merged_bones{ };
-    PAD(0x6)
     uint32_t* bone_merge_bits{ };
     unsigned short raw_index_mapping[max_bones]{ };
     bool force_cache_clear{ };

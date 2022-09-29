@@ -20,18 +20,18 @@ namespace winapi {
             if (handle)
                 CloseHandle(handle);
         }
-    
+
         operator bool() noexcept
         {
             return handle != nullptr && handle != INVALID_HANDLE_VALUE;
         }
-    
+
         operator HANDLE() noexcept
         {
             return handle;
         }
     };
-    
+
     struct virtual_protect {
         LPVOID address{ };
         SIZE_T size{ };
@@ -47,13 +47,13 @@ namespace winapi {
         {
             VirtualProtect(address, size, flags, &flags);
         }
-    
+
         ~virtual_protect()
         {
             VirtualProtect(address, size, flags, &flags);
         }
     };
-    
+
     inline bool get_module_path(HMODULE hmod, std::filesystem::path& path) noexcept
     {
         WCHAR tmp[MAX_PATH]{ };
@@ -62,18 +62,18 @@ namespace winapi {
             path.assign(tmp);
         return ret;
     }
-    
+
     inline void iterate_processes(std::function<void(PROCESSENTRY32W&)> callback) noexcept
     {
         scoped_handle snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         PROCESSENTRY32W entry{ sizeof(entry) };
-    
+
         if (Process32FirstW(snapshot, &entry)) {
             while (Process32NextW(snapshot, &entry))
                 callback(entry);
         }
     }
-    
+
     inline DWORD get_process_id(std::wstring_view name) noexcept
     {
         DWORD ret{ };
@@ -83,7 +83,7 @@ namespace winapi {
         });
         return ret;
     }
-    
+
     inline scoped_handle get_process_handle(std::wstring_view name, DWORD access_flags) noexcept
     {
         return OpenProcess(access_flags, FALSE, get_process_id(name));

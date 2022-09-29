@@ -77,7 +77,7 @@ inline namespace crypt {
                 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
             };
 
-            auto* byte = reinterpret_cast< const uint8_t* >(data);
+            auto* byte = reinterpret_cast<const uint8_t*>(data);
             while (len--)
                 crc = (crc >> 8) ^ lookup_table[(crc & 0xff) ^ *byte++];
         }

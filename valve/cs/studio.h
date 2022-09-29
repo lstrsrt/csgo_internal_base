@@ -102,7 +102,7 @@ struct studio_bone {
     vec3 rotation_scale{ };
     mat3x4 pose_to_bone{ };
     vec4 alignment{ };
-    int flags{ };
+    bitfield<bone_flag> flags{ };
     int procedure_type{ };
     int procedure_index{ };
     mutable int physics_bone{ };
@@ -157,10 +157,10 @@ struct studio_hdr_t {
 };
 
 struct studio_hdr {
-    studio_hdr_t* studio_hdr;
+    studio_hdr_t* hdr;
     void* virtual_model{ };
     void* softbody{ };
-    mutable utl_vec<const studio_hdr_t*> studio_hdr_cache{ };
+    mutable utl_vec<const studio_hdr_t*> hdr_cache{ };
     mutable int frame_unlock_counter{ };
     int* p_frame_unlock_counter{ };
     PAD(0x8)

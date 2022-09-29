@@ -2,16 +2,12 @@
 
 #include <array>
 
-#define PATTERN(str) pattern<str>::value()
-
 template<size_t len>
-struct string_literal
-{
+struct string_literal {
     size_t length = len - 1;
     std::array<char, len - 1> value{ };
 
-    consteval string_literal(const char(&str)[len])
-    {
+    consteval string_literal(const char(&str)[len]) {
         for (size_t i{ }; i < len - 1; i++)
             value[i] = str[i];
     }
@@ -33,10 +29,8 @@ static consteval int make_digits(char a, char b)
 }
 
 template<string_literal str>
-struct pattern
-{
-    struct length_t
-    {
+struct pattern {
+    struct length_t {
         static consteval auto get()
         {
             size_t ret{ };
@@ -66,7 +60,6 @@ struct pattern
         for (size_t i = 0, j = 0; i < str.length; i++) {
             if (str.value[i] == ' ')
                 continue;
-
             if (is_digit(str.value[i])) {
                 i++;
                 if (j < len) {
@@ -79,3 +72,5 @@ struct pattern
         return ret;
     }
 };
+
+#define PATTERN(str) pattern<str>::value()
