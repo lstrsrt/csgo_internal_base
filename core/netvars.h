@@ -6,7 +6,7 @@
 #include "../crypt/fnv1a.h"
 #include "../valve/cs/datatables.h"
 
-#define SET_PROXY(name, fn) netvars::set_proxy(fnv1a::ct(name), fn::proxy, fn::original)
+#define SET_PROXY(name, fn) netvars::set_proxy(name##_hash, fn::proxy, fn::original)
 
 namespace netvars {
 
@@ -15,6 +15,7 @@ namespace netvars {
     void initialize() noexcept;
     void dump_table(std::string_view base_class, cs::recv_table* table, const uint32_t offset) noexcept;
     void set_proxy(hash_t name, cs::recv_proxy_fn proxy, cs::recv_proxy_fn& original) noexcept;
+    void unset_proxy(hash_t name, cs::recv_proxy_fn original) noexcept;
     uint32_t get_datamap_offset(cs::datamap* map, const hash_t field_name) noexcept;
 
     inline hash_t get(hash_t hash) noexcept
@@ -28,7 +29,7 @@ namespace netvars {
 
 #define NETVAR_OFFSET(name, type, var_name, offset) \
 inline type& name() { \
-    constexpr auto hash = fnv1a::ct(var_name); \
+    constexpr auto hash = fnv1a::hash(var_name); \
     return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + netvars::get(hash) + offset); \
 }
 
@@ -36,26 +37,26 @@ inline type& name() { \
 
 #define PTR_NETVAR_OFFSET(name, type, var_name, offset) \
 inline std::add_pointer_t<type> name() { \
-    constexpr auto hash = fnv1a::ct(var_name); \
+    constexpr auto hash = fnv1a::hash(var_name); \
     return std::add_pointer_t<type>(reinterpret_cast<uintptr_t>(this) + netvars::get(hash) + offset); \
 }
 
 #define ARRAY_NETVAR(name, type, size, var_name) \
 inline auto& name() { \
-    constexpr auto hash = fnv1a::ct(var_name); \
+    constexpr auto hash = fnv1a::hash(var_name); \
     return *reinterpret_cast<std::add_pointer_t<std::array<type, size>>>(reinterpret_cast<uintptr_t>(this) + netvars::get(hash)); \
 }
 
 #define DATAMAP_FIELD(name, type, map, var_name) \
 inline auto name() { \
-    constexpr auto hash = fnv1a::ct(var_name); \
+    constexpr auto hash = fnv1a::hash(var_name); \
     static const auto offset = netvars::get_datamap_offset(map, hash); \
     return *reinterpret_cast<std::add_pointer_t<type>>(reinterpret_cast<uintptr_t>(this) + offset); \
 }
 
 #define PTR_DATAMAP_FIELD(name, type, map, var_name) \
 inline auto name() { \
-    constexpr auto hash = fnv1a::ct(var_name); \
+    constexpr auto hash = fnv1a::hash(var_name); \
     static const auto offset = netvars::get_datamap_offset(map, hash); \
     return reinterpret_cast<std::add_pointer_t<type>>(reinterpret_cast<uintptr_t>(this) + offset); \
 }

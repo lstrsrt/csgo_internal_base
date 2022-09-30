@@ -2,7 +2,7 @@
 
 #include "../config.h"
 
-#define ADD_VARIABLE(name, type, preset) inline auto name = config::add_item({ preset, fnv1a::ct(#name), config::item_type::type })
+#define ADD_VARIABLE(name, type, preset) inline auto name = config::add_item({ preset, fnv1a::hash(#name), config::item_type::type })
 
 namespace vars {
 

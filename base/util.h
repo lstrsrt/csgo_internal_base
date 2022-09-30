@@ -7,9 +7,9 @@ template<class ty>
 concept enumerator = __is_enum(ty);
 
 template<class ty>
-concept string_like = std::_Is_any_of_v<ty, std::string, std::string_view,
-    std::wstring, std::wstring_view> && requires(ty t)
+concept string_like = requires(ty t)
 {
+    t.data();
     t.substr();
 };
 

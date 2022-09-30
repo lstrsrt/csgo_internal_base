@@ -10,16 +10,7 @@ inline namespace crypt {
         constexpr hash_t prime = 0x1000193;
 
         template<std::integral ch = char>
-        consteval hash_t ct(const ch* str, hash_t val = basis) noexcept
-        {
-            if (str[0] == '\0')
-                return val;
-            else
-                return ct(&str[1], (val ^ static_cast<hash_t>(str[0])) * prime);
-        }
-
-        template<std::integral ch = char>
-        inline hash_t rt(const ch* str) noexcept
+        constexpr hash_t hash(const ch* str) noexcept
         {
             const auto len = [str]() {
                 size_t i{ };
@@ -37,11 +28,27 @@ inline namespace crypt {
         }
 
         template<string_like st = std::string_view>
-        inline hash_t rt(const st& str) noexcept
+        inline hash_t hash(const st& str) noexcept
         {
-            return rt(str.data());
+            return hash(str.data());
+        }
+
+        namespace literals {
+
+            constexpr auto operator""_hash(const char* str, size_t len) noexcept
+            {
+                return hash(str);
+            }
+
+            constexpr auto operator""_hash(const wchar_t* str, size_t len) noexcept
+            {
+                return hash(str);
+            }
+
         }
 
     }
 
 }
+
+using namespace fnv1a::literals;

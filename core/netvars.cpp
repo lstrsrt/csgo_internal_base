@@ -19,7 +19,7 @@ void netvars::dump_table(std::string_view base_class, cs::recv_table* table, con
         const auto prop = &table->props[i];
 
         // Skip useless classes.
-        if (isdigit(prop->var_name[0]) || fnv1a::rt(prop->var_name) == fnv1a::ct("baseclass"))
+        if (isdigit(prop->var_name[0]) || fnv1a::hash(prop->var_name) == "baseclass"_hash)
             continue;
 
         // Follow to the next datatable, provided it has props.
@@ -28,7 +28,7 @@ void netvars::dump_table(std::string_view base_class, cs::recv_table* table, con
             dump_table(base_class, prop->data_table, offset + prop->offset);
 
         const auto name = std::string(base_class.data()) + "->" + prop->var_name;
-        const auto hash = fnv1a::rt(name);
+        const auto hash = fnv1a::hash(name);
 
         static std::fstream file{ "netvars.txt", std::fstream::out | std::fstream::trunc };
         if (file.good())
@@ -46,6 +46,12 @@ void netvars::set_proxy(hash_t name, cs::recv_proxy_fn proxy, cs::recv_proxy_fn&
     LOG_SUCCESS("Set proxy for prop {}.", prop->var_name);
 }
 
+void netvars::unset_proxy(hash_t name, cs::recv_proxy_fn original) noexcept
+{
+    auto prop = var_map[name].second;
+    prop->proxy_fn = original;
+}
+
 uint32_t netvars::get_datamap_offset(cs::datamap* map, const hash_t field_name) noexcept
 {
     while (map) {
@@ -53,7 +59,7 @@ uint32_t netvars::get_datamap_offset(cs::datamap* map, const hash_t field_name) 
             if (!map->data_description[i].field_name)
                 continue;
 
-            if (field_name == fnv1a::rt(map->data_description[i].field_name))
+            if (field_name == fnv1a::hash(map->data_description[i].field_name))
                 return map->data_description[i].field_offset;
 
             // If we didn't find it, search recursively.

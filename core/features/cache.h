@@ -43,7 +43,6 @@ namespace cache {
     inline void add(cs::base_entity* entity) noexcept
     {
         const auto type = entity->get_entity_type();
-
         if (type == cs::entity_type::player)
             players.push_back(cs::cached_player(static_cast<cs::player*>(entity), type));
         else
@@ -53,29 +52,39 @@ namespace cache {
     inline void remove(cs::base_entity* entity) noexcept
     {
         const auto type = entity->get_entity_type();
-
         if (type == cs::entity_type::player) {
-            auto it = std::ranges::find_if(entities, [entity](cs::cached_entity& e) { return e.ptr == entity; });
+            auto it = std::ranges::find_if(entities, [entity](cs::cached_entity& e) {
+                return e.ptr == entity;
+            });
             if (it != entities.cend())
                 entities.erase(it);
         } else {
-            auto it = std::ranges::find_if(players, [entity](cs::cached_player& e) { return e.ptr == static_cast<cs::player*>(entity); });
+            auto it = std::ranges::find_if(players, [entity](cs::cached_player& e) {
+                return e.ptr == static_cast<cs::player*>(entity);
+            });
             if (it != players.cend())
                 players.erase(it);
         }
     }
 
-    inline void iterate_entities(std::invocable<cs::base_entity*> auto&& callback, bitfield<cs::entity_type> types = { } /* = all */) noexcept
+    inline void iterate_entities(std::invocable<cs::base_entity*> auto&& callback,
+                                 bitfield<cs::entity_type> types = { } /* = all */) noexcept
     {
-        auto view = entities | std::views::filter([unwanted = cs::entity_type::all & ~types.value()](const cs::cached_entity& e) {
-            return (e.type & unwanted) == static_cast<cs::entity_type>(0);
-        });
+        if constexpr (!types.empty()) {
+            auto view = entities | std::views::filter([unwanted = cs::entity_type::all & ~types.value()](const cs::cached_entity& e) {
+                return (e.type & unwanted) == static_cast<cs::entity_type>(0);
+            });
 
-        for (auto& a : view)
+            for (auto& a : view)
+                callback(a.ptr);
+        }
+
+        for (auto& a : entities)
             callback(a.ptr);
     }
 
-    inline void iterate_players(std::invocable<cs::player*> auto&& callback, bitfield<cs::player_filter> filter) noexcept
+    inline void iterate_players(std::invocable<cs::player*> auto&& callback,
+                                bitfield<cs::player_filter> filter) noexcept
     {
         for (auto& a : players) {
             auto* player = a.ptr;
