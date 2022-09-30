@@ -5,20 +5,26 @@
 #include "../valve/se/se.h"
 #include "../valve/cs/net.h"
 
-template<class ty>
+namespace interfaces {
+
+    inline std::vector<void*> hooked_tables{ };
+    inline std::vector<std::pair<std::string, void*>> list{ };
+
+}
+
+template<class ptr> requires std::is_pointer_v<ptr>
 struct interface_holder {
-    ty instance{ };
+    ptr instance{ };
     uintptr_t* real_vmt{ };
     std::unique_ptr<uintptr_t[]> replacement_vmt{ };
-    bool needs_restore{ };
 
-    constexpr auto operator->() noexcept { return instance; }
-    constexpr operator ty() noexcept { return instance; }
-    constexpr auto operator=(ty rhs) noexcept { return instance; }
+    constexpr ptr operator->() noexcept { return instance; }
+    constexpr operator ptr() noexcept { return instance; }
+    constexpr ptr operator=(ptr rhs) noexcept { return instance; }
 
     // Pass false to replace_vmt if you don't hook anything from the table or if get_vmt_length() is crashing
     template<bool replace_vmt = true>
-    inline void initialize(ty vptr) noexcept
+    inline void initialize(ptr vptr) noexcept
     {
         constexpr int dynamic_cast_info_len = 1;
 
@@ -32,20 +38,18 @@ struct interface_holder {
             std::ranges::copy(real_vmt - dynamic_cast_info_len, real_vmt + len - dynamic_cast_info_len, replacement_vmt.get());
 
             *reinterpret_cast<uintptr_t**>(instance) = replacement_vmt.get() + dynamic_cast_info_len;
-            needs_restore = true;
+
+            interfaces::hooked_tables.push_back(this);
         }
     }
 
     inline void restore() noexcept
     {
-        if (needs_restore)
-            *reinterpret_cast<uintptr_t**>(instance) = real_vmt;
+        *reinterpret_cast<uintptr_t**>(instance) = real_vmt;
     }
 };
 
 namespace interfaces {
-
-inline std::vector<std::pair<std::string, void*>> list{ };
 
 inline interface_holder<se::client_dll*>             client{ };
 inline interface_holder<se::client_input*>           input{ };

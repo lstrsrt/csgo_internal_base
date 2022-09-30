@@ -142,9 +142,9 @@ static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_v
 template<class ty>
 static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept
 {
-    for (const auto& a : interfaces::list) {
-        if (a.first.starts_with(version_string.data())) {
-            ptr.initialize(static_cast<ty*>(a.second));
+    for (const auto& [name, iface] : interfaces::list) {
+        if (name.starts_with(version_string.data())) {
+            ptr.initialize(static_cast<ty*>(iface));
             return;
         }
     }

@@ -46,4 +46,9 @@ namespace hooks {
             LOG_ERROR("Error while hooking function!");
     }
 
+    inline void unset(void* hook) noexcept
+    {
+        unhook_func(hooked_fns[hook], false);
+    }
+
 }

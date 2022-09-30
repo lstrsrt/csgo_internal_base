@@ -6,9 +6,12 @@ BOOL APIENTRY DllMain(HMODULE instance, DWORD call_reason, LPVOID reserved)
 {
     if (call_reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(instance);
-        std::thread{ on_attach, instance }.detach();
-        return TRUE;
-    }
+        if (const auto thread = CreateThread(nullptr, 0, on_attach, instance, 0, nullptr))
+            CloseHandle(thread);
+    } else if (call_reason == DLL_PROCESS_DETACH && !reserved)
+        cheat::end(instance);
+
+    return TRUE;
 }
 
 static DWORD WINAPI on_attach(LPVOID instance)
@@ -18,5 +21,5 @@ static DWORD WINAPI on_attach(LPVOID instance)
     while (!cheat::should_unhook)
         std::this_thread::sleep_for(100ms);
 
-    return cheat::end();
+    return cheat::end(instance);
 }

@@ -38,17 +38,12 @@ void hooks::initialize() noexcept
 
 void hooks::end() noexcept
 {
-    interfaces::client.restore();
-    interfaces::client_mode.restore();
-    interfaces::engine.restore();
-    interfaces::material_system.restore();
-    interfaces::model_render.restore();
-    interfaces::panel.restore();
-    interfaces::bsp_query.restore();
-    interfaces::surface.restore();
+    for (auto* a : interfaces::hooked_tables)
+        static_cast<interface_holder<void*>*>(a)->restore();
 
-    unhook_func(hooked_fns[on_add_entity::fn], false);
-    unhook_func(hooked_fns[on_remove_entity::fn], false);
+    unset(on_add_entity::fn);
+    unset(on_remove_entity::fn);
+
     netvars::unset_proxy("CBaseEntity->m_bSpotted"_hash, spotted::original);
 
     SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));

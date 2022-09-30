@@ -23,12 +23,14 @@ namespace cheat {
         LOG_SUCCESS("Cheat initialized. Last full build: {} {}", __DATE__, __TIME__);
     }
 
-    inline DWORD end() noexcept
+    inline DWORD end(LPVOID instance) noexcept
     {
         interfaces::input_system->enable_input();
         hooks::end();
         logger::end();
-        return 0;
+
+        FreeLibraryAndExitThread(static_cast<HMODULE>(instance), EXIT_SUCCESS);
+        return EXIT_SUCCESS;
     }
 
 }
