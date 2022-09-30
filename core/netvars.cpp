@@ -13,7 +13,8 @@ void netvars::initialize() noexcept
     LOG_INFO("Netvars initialized.");
 }
 
-void netvars::dump_table(std::string_view base_class, cs::recv_table* table, const uint32_t offset) noexcept
+void netvars::dump_table(std::string_view base_class, cs::recv_table* table,
+                         const uint32_t offset) noexcept
 {
     for (int i = 0; i < table->prop_amt; i++) {
         const auto prop = &table->props[i];
@@ -63,7 +64,8 @@ uint32_t netvars::get_datamap_offset(cs::datamap* map, const hash_t field_name) 
                 return map->data_description[i].field_offset;
 
             // If we didn't find it, search recursively.
-            if (map->data_description[i].type != cs::field_type::embedded || !map->data_description[i].data_map)
+            if (map->data_description[i].type != cs::field_type::embedded ||
+                !map->data_description[i].data_map)
                 continue;
 
             const auto offset = get_datamap_offset(map->data_description[i].data_map, field_name);

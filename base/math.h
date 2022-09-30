@@ -62,14 +62,16 @@ namespace math {
 
     inline float atan2(float y, float x) noexcept
     {
-        return _mm_cvtss_f32(_mm_atan2_ps(_mm_set_ps(0.f, 0.f, 0.f, y), _mm_set_ps(0.f, 0.f, 0.f, x)));
+        return _mm_cvtss_f32(_mm_atan2_ps(_mm_set_ps(0.f, 0.f, 0.f, y),
+                                          _mm_set_ps(0.f, 0.f, 0.f, x)));
     }
 
     int time_to_ticks(float time) noexcept;
     float ticks_to_time(int ticks) noexcept;
-    vec3 lerp_vector(const vec3& a, const vec3& b, float fraction) noexcept; // Use std::lerp to interpolate floats
+    vec3 lerp_vector(const vec3& a, const vec3& b, float fraction) noexcept;
     angle calculate_angle(const vec3& src, const vec3& dest, const angle& view) noexcept;
-    void angle_to_vectors(const angle& src, vec3* forward = nullptr, vec3* right = nullptr, vec3* up = nullptr) noexcept;
+    void angle_to_vectors(const angle& src, vec3* forward = nullptr, vec3* right = nullptr,
+                          vec3* up = nullptr) noexcept;
     w2s_result world_to_screen(const vec3& world) noexcept;
 
     namespace random {

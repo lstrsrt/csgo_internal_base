@@ -35,7 +35,10 @@ void math::angle_to_vectors(const angle& src, vec3* forward, vec3* right, vec3* 
 {
     vec3 sin{ }, cos{ };
     __m128 cos_res{ };
-    const auto sin_res = _mm_sincos_ps(&cos_res, _mm_set_ps(deg_to_rad(src.x), deg_to_rad(src.y), deg_to_rad(src.z), 0)).m128_f32;
+    const auto sin_res = _mm_sincos_ps(&cos_res,
+                                       _mm_set_ps(deg_to_rad(src.x),
+                                                  deg_to_rad(src.y),
+                                                  deg_to_rad(src.z), 0)).m128_f32;
     sin = { sin_res[3], sin_res[2], sin_res[1] };
     cos = { cos_res.m128_f32[3], cos_res.m128_f32[2], cos_res.m128_f32[1] };
 
@@ -61,15 +64,18 @@ w2s_result math::world_to_screen(const vec3& world) noexcept
     w2s_result ret{ };
 
     const auto& matrix = interfaces::engine->world_to_screen_matrix();
-    const float width = matrix[3][0] * world.x + matrix[3][1] * world.y + matrix[3][2] * world.z + matrix[3][3];
+    const float width = matrix[3][0] * world.x + matrix[3][1] *
+        world.y + matrix[3][2] * world.z + matrix[3][3];
     const d2 screen_size = interfaces::engine->get_screen_size();
 
     if (width > 0.001f)
         ret.successful = true;
 
     const float inverse = 1.0f / width;
-    ret.screen.x = (matrix[0][0] * world.x + matrix[0][1] * world.y + matrix[0][2] * world.z + matrix[0][3]) * inverse;
-    ret.screen.y = (matrix[1][0] * world.x + matrix[1][1] * world.y + matrix[1][2] * world.z + matrix[1][3]) * inverse;
+    ret.screen.x = (matrix[0][0] * world.x + matrix[0][1] *
+                    world.y + matrix[0][2] * world.z + matrix[0][3]) * inverse;
+    ret.screen.y = (matrix[1][0] * world.x + matrix[1][1] *
+                    world.y + matrix[1][2] * world.z + matrix[1][3]) * inverse;
     ret.screen.x = (screen_size.x / 2.0f) + (ret.screen.x * screen_size.x) / 2.0f;
     ret.screen.y = (screen_size.y / 2.0f) - (ret.screen.y * screen_size.y) / 2.0f;
 

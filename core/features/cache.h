@@ -83,7 +83,8 @@ namespace cache {
         }
     }
 
-    void iterate_players(std::invocable<cs::player*> auto&& callback, bitfield<cs::player_filter> filter) noexcept
+    void iterate_players(std::invocable<cs::player*> auto&& callback,
+                         bitfield<cs::player_filter> filter) noexcept
     {
         for (auto& a : players) {
             auto* player = a.ptr;

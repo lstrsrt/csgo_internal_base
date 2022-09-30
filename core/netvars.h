@@ -13,7 +13,8 @@ namespace netvars {
     inline std::unordered_map<hash_t, std::pair<uint32_t, cs::recv_prop*>> var_map{ };
 
     void initialize() noexcept;
-    void dump_table(std::string_view base_class, cs::recv_table* table, const uint32_t offset) noexcept;
+    void dump_table(std::string_view base_class, cs::recv_table* table,
+                    const uint32_t offset) noexcept;
     void set_proxy(hash_t name, cs::recv_proxy_fn proxy, cs::recv_proxy_fn& original) noexcept;
     void unset_proxy(hash_t name, cs::recv_proxy_fn original) noexcept;
     uint32_t get_datamap_offset(cs::datamap* map, const hash_t field_name) noexcept;

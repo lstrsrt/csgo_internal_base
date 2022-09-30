@@ -3,8 +3,10 @@
 static void update() noexcept
 {
     if (interfaces::client_state->delta_tick > 0)
-    interfaces::prediction->update(interfaces::client_state->delta_tick, true, interfaces::client_state->last_cmd_acknowledged,
-        interfaces::client_state->last_outgoing_cmd + interfaces::client_state->choked_cmds);
+    interfaces::prediction->update(interfaces::client_state->delta_tick, true,
+                                   interfaces::client_state->last_cmd_acknowledged,
+                                   interfaces::client_state->last_outgoing_cmd +
+                                   interfaces::client_state->choked_cmds);
 }
 
 static void update_button_state(bitfield<cs::cmd_button>& cmd_buttons) noexcept
@@ -25,8 +27,10 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
         return;
 
     static bool once = []() {
-        seed = *memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04")).offset(0x2).cast<int**>();
-        player = *memory::find_bytes(dll::client, PATTERN("89 35 ? ? ? ? F3 0F 10 48 20")).offset(0x2).cast<cs::player***>();
+        seed = *dlls::client.find(PATTERN("8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04"))
+            .offset(0x2).cast<int**>();
+        player = *dlls::client.find(PATTERN("89 35 ? ? ? ? F3 0F 10 48 20"))
+            .offset(0x2).cast<cs::player***>();
         return true;
     }();
 
@@ -42,7 +46,8 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
     backup.tick_count = interfaces::globals->tick_count;
 
     interfaces::globals->cur_time = math::ticks_to_time(local->get_tick_base());
-    interfaces::globals->frame_time = interfaces::prediction->is_engine_paused ? 0.0f : interfaces::globals->interval_per_tick;
+    interfaces::globals->frame_time = interfaces::prediction->is_engine_paused ? 0.0f :
+                                      interfaces::globals->interval_per_tick;
     interfaces::globals->tick_count = local->get_tick_base();
     interfaces::prediction->is_in_prediction = true;
     interfaces::prediction->is_first_time_predicted = false;

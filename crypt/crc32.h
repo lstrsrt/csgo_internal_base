@@ -6,8 +6,6 @@ inline namespace crypt {
 
     namespace crc32 {
 
-        // Same behavior as https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/tier1/checksum_crc.cpp#L103,
-        // but simplified and without goto.
         inline void process_data(crc32_t& crc, const void* data, size_t len) noexcept
         {
             static constexpr crc32_t lookup_table[256] = {

@@ -28,7 +28,8 @@ namespace hooks {
     DECLARE_HOOK(override_config, bool, se::material_system, cs::material_system_config*, bool)
     DECLARE_HOOK(draw_model_execute, void, se::model_render, cs::mat_render_context*,
                  const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)
-    DECLARE_HOOK(list_leaves_in_box, int, se::spatial_query, const vec3&, const vec3&, unsigned short*, int)
+    DECLARE_HOOK(list_leaves_in_box, int, se::spatial_query, const vec3&, const vec3&,
+                 unsigned short*, int)
     DECLARE_HOOK(lock_cursor, void, se::surface)
 
     DECLARE_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
