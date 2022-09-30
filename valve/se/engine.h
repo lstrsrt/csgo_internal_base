@@ -164,6 +164,9 @@ struct render_view {
 struct sound;
 
 struct vgui {
+    PAD(0x48)
+    void* static_transition_panel;
+
     VIRTUAL_FUNCTION(get_panel, cs::vpanel, 1, (cs::vgui_panel panel), (this, panel))
 };
 

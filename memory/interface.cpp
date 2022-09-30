@@ -119,7 +119,7 @@ static void collect_interfaces(dll dll_id) noexcept
 {
     auto& dll = dlls::get(dll_id);
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
-        // LOG_INFO("{}: found interface {}", dll.name, cur->name);
+        LOG_INFO("{}: found interface {}", dll.name, cur->name);
         interfaces::list.push_back(std::make_pair(cur->name, cur->create_fn()));
     }
 }

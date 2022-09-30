@@ -28,6 +28,11 @@ enum class font_flag {
 
 using vpanel = uint32_t;
 
+enum paint_mode {
+    paint_ui_panels = (1 << 0),
+    paint_ingame_panels = (1 << 1)
+};
+
 enum class vgui_panel {
     root,
     game_ui_dll,
@@ -77,6 +82,9 @@ struct surface {
     VIRTUAL_FUNCTION(draw_outlined_circle, void, 103, (int x, int y, int radius, int segments), (this, x, y, radius, segments))
     VIRTUAL_FUNCTION(draw_textured_polygon, void, 106, (int n, vertex* vertice, bool clip_vertices = true), (this, n, vertice, clip_vertices))
     VIRTUAL_FUNCTION(draw_colored_circle, void, 162, (int x, int y, float radius, int r, int g, int b, int a), (this, x, y, radius, r, g, b, a))
+
+    VIRTUAL_FUNCTION_SIG(start_drawing, void, dll::vgui_mat_surface, "55 8B EC 83 E4 C0 83 EC 38", (this))
+    VIRTUAL_FUNCTION_SIG(finish_drawing, void, dll::vgui_mat_surface, "8B 0D ? ? ? ? 56 C6 05", (this))
 };
 
 }

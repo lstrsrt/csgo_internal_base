@@ -67,24 +67,23 @@ namespace cache {
         }
     }
 
-    inline void iterate_entities(std::invocable<cs::base_entity*> auto&& callback,
-                                 bitfield<cs::entity_type> types = { } /* = all */) noexcept
+    void iterate_entities(std::invocable<cs::base_entity*> auto&& callback,
+                          bitfield<cs::entity_type> types = { } /* = all */) noexcept
     {
         if constexpr (!types.empty()) {
-            auto view = entities | std::views::filter([unwanted = cs::entity_type::all & ~types.value()](const cs::cached_entity& e) {
+            const auto unwanted = cs::entity_type::all & ~types.value();
+            auto view = entities | std::views::filter([unwanted](const cs::cached_entity& e) {
                 return (e.type & unwanted) == static_cast<cs::entity_type>(0);
             });
-
             for (auto& a : view)
                 callback(a.ptr);
+        } else {
+            for (auto& a : entities)
+                callback(a.ptr);
         }
-
-        for (auto& a : entities)
-            callback(a.ptr);
     }
 
-    inline void iterate_players(std::invocable<cs::player*> auto&& callback,
-                                bitfield<cs::player_filter> filter) noexcept
+    void iterate_players(std::invocable<cs::player*> auto&& callback, bitfield<cs::player_filter> filter) noexcept
     {
         for (auto& a : players) {
             auto* player = a.ptr;

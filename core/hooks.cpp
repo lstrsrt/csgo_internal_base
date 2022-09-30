@@ -17,16 +17,16 @@ void hooks::initialize() noexcept
     hook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
     unhook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
 
-    SET_VF_HOOK(interfaces::client, frame_stage_notify, 37);
-    SET_VF_HOOK(interfaces::client, create_move_proxy, 22);
-    SET_VF_HOOK(interfaces::client_mode, override_view, 18);
-    SET_VF_HOOK(interfaces::client_mode, get_viewmodel_fov, 35);
-    SET_VF_HOOK(interfaces::engine, is_connected, 27);
-    SET_VF_HOOK(interfaces::material_system, override_config, 21);
-    SET_VF_HOOK(interfaces::model_render, draw_model_execute, 21);
-    SET_VF_HOOK(interfaces::panel, paint_traverse, 41);
-    SET_VF_HOOK(interfaces::bsp_query, list_leaves_in_box, 6);
-    SET_VF_HOOK(interfaces::surface, lock_cursor, 67);
+    SET_VT_HOOK(interfaces::client, frame_stage_notify, 37);
+    SET_VT_HOOK(interfaces::client, create_move_proxy, 22);
+    SET_VT_HOOK(interfaces::client_mode, override_view, 18);
+    SET_VT_HOOK(interfaces::client_mode, get_viewmodel_fov, 35);
+    SET_VT_HOOK(interfaces::engine, is_connected, 27);
+    SET_VT_HOOK(interfaces::vgui, paint, 14);
+    SET_VT_HOOK(interfaces::material_system, override_config, 21);
+    SET_VT_HOOK(interfaces::model_render, draw_model_execute, 21);
+    SET_VT_HOOK(interfaces::bsp_query, list_leaves_in_box, 6);
+    SET_VT_HOOK(interfaces::surface, lock_cursor, 67);
 
     SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
     SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
@@ -49,6 +49,7 @@ void hooks::end() noexcept
 
     unhook_func(hooked_fns[on_add_entity::fn], false);
     unhook_func(hooked_fns[on_remove_entity::fn], false);
+    netvars::unset_proxy("CBaseEntity->m_bSpotted"_hash, spotted::original);
 
     SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));
 }
@@ -72,7 +73,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
 {
     hooks::create_move_proxy::original(interfaces::client, sequence_nr, input_sample_time, is_active);
 
-    if (!send_packet)
+    if (!is_active || !send_packet)
         return;
 
     if (!local.update())
@@ -167,6 +168,22 @@ bool __fastcall hooks::is_connected::fn(se::engine_client* ecx, int)
     return original(ecx);
 }
 
+void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
+{
+    static bool once = []() { return render::initialize(); }();
+
+    if (ecx->static_transition_panel && (mode & cs::paint_mode::paint_ui_panels)) {
+        interfaces::surface->start_drawing();
+
+        render::text(render::fonts::watermark, { 15, 15 }, L"hello");
+        menu::run();
+
+        interfaces::surface->finish_drawing();
+    }
+
+    return original(ecx, mode);
+}
+
 bool __fastcall hooks::override_config::fn(se::material_system* ecx, int, cs::material_system_config* config, bool force_update)
 {
     config->fullbright = config::get<bool>(vars::fullbright);
@@ -223,19 +240,6 @@ void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::ma
     interfaces::model_render->forced_material_override(nullptr);
 }
 
-void __fastcall hooks::paint_traverse::fn(se::panel* ecx, int, cs::vpanel panel, bool force_repaint, bool allow_force)
-{
-    static bool once = []() { return render::initialize(); }();
-    static cs::vpanel tools_handle = []() { return interfaces::vgui->get_panel(cs::vgui_panel::tools); }();
-
-    if (panel == tools_handle) {
-        render::text(render::fonts::watermark, { 15, 15 }, L"hello");
-        menu::run();
-    }
-
-    return original(ecx, panel, force_repaint, allow_force);
-}
-
 int __fastcall hooks::list_leaves_in_box::fn(se::spatial_query* ecx, int, const vec3& mins, const vec3& maxs, unsigned short* list, int list_max)
 {
     static const auto insert_into_tree = memory::find_bytes(dll::client, PATTERN("89 44 24 14 EB 08 C7 44 24 ? ? ? ? ? 8B 45"));
@@ -279,7 +283,7 @@ void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_e
 
 void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
 
-    auto unknown = reinterpret_cast< cs::unknown* >(handle_entity);
+    auto unknown = reinterpret_cast<cs::unknown*>(handle_entity);
     if (unknown; auto entity = unknown->get_base_entity())
         cache::remove(entity);
 
@@ -296,5 +300,5 @@ void hooks::spotted::proxy(cs::recv_proxy_data* data, void* arg0, void* arg1)
 }
 
 #undef SET_SIG_HOOK
-#undef SET_VF_HOOK
+#undef SET_VT_HOOK
 #undef SET_IAT_HOOK
