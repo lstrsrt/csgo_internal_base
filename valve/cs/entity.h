@@ -11,6 +11,8 @@
 
 namespace cs {
 
+constexpr int invalid_handle = -1;
+
 struct base_entity;
 struct model;
 struct client_class;
@@ -49,7 +51,24 @@ enum class data_update_type {
     post_update
 };
 
-using base_handle = uint32_t;
+struct base_handle {
+    uint32_t value{ };
+
+    bool is_valid() const noexcept
+    {
+        return value != invalid_handle;
+    }
+
+    operator uint32_t() noexcept
+    {
+        return value;
+    }
+
+    bool operator==(const base_handle handle) const noexcept
+    {
+        return value == handle.value;
+    }
+};
 
 struct unknown;
 
