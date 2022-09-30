@@ -27,7 +27,7 @@ namespace math {
 
     inline float sin(float x) noexcept
     {
-        return _mm_cvtss_f32(_mm_cos_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+        return _mm_cvtss_f32(_mm_sin_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
     }
 
     inline float cos(float x) noexcept
@@ -60,6 +60,11 @@ namespace math {
         return _mm_cvtss_f32(_mm_atan_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
     }
 
+    inline float atan2(float y, float x) noexcept
+    {
+        return _mm_cvtss_f32(_mm_atan2_ps(_mm_set_ps(0.f, 0.f, 0.f, y), _mm_set_ps(0.f, 0.f, 0.f, x)));
+    }
+
     int time_to_ticks(float time) noexcept;
     float ticks_to_time(int ticks) noexcept;
     vec3 lerp_vector(const vec3& a, const vec3& b, float fraction) noexcept; // Use std::lerp to interpolate floats
@@ -71,22 +76,22 @@ namespace math {
 
         inline std::mt19937 engine{ std::random_device{ }() };
 
-        template<std::integral ty>
-        inline ty get(ty min, ty max) noexcept
+        template<std::integral ix>
+        inline ix get(ix min, ix max) noexcept
         {
             return std::uniform_int_distribution{ min, max }(engine);
         }
 
-        template<floating_point ty>
-        inline ty get(ty min, ty max) noexcept
+        template<floating_point fp>
+        inline fp get(fp min, fp max) noexcept
         {
             return std::uniform_real_distribution{ min, max }(engine);
         }
 
-        template<enumerator ty>
-        inline ty get(ty min, ty max) noexcept
+        template<enumerator en>
+        inline en get(en min, en max) noexcept
         {
-            return static_cast<ty>(get(util::to_underlying(min), util::to_underlying(max)));
+            return static_cast<en>(get(util::to_underlying(min), util::to_underlying(max)));
         }
 
     }
