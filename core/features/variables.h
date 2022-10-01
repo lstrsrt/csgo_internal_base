@@ -13,9 +13,7 @@ namespace vars {
     ADD_VARIABLE(fov, f32, 90.0f);
     ADD_VARIABLE(viewmodel_fov, f32, 68.0f);
     ADD_VARIABLE(disable_postprocessing, boolean, true);
-    ADD_VARIABLE(fullbright, boolean, false);
 
     ADD_VARIABLE(infinite_crouch, boolean, false);
-    ADD_VARIABLE(unlock_inventory, boolean, false);
 
 }

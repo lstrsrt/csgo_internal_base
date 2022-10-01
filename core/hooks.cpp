@@ -21,11 +21,8 @@ void hooks::initialize() noexcept
     SET_VT_HOOK(interfaces::client, create_move_proxy, 22);
     SET_VT_HOOK(interfaces::client_mode, override_view, 18);
     SET_VT_HOOK(interfaces::client_mode, get_viewmodel_fov, 35);
-    SET_VT_HOOK(interfaces::engine, is_connected, 27);
     SET_VT_HOOK(interfaces::vgui, paint, 14);
-    SET_VT_HOOK(interfaces::material_system, override_config, 21);
     SET_VT_HOOK(interfaces::model_render, draw_model_execute, 21);
-    SET_VT_HOOK(interfaces::bsp_query, list_leaves_in_box, 6);
     SET_VT_HOOK(interfaces::surface, lock_cursor, 67);
 
     SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
@@ -154,15 +151,6 @@ float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)
     return config::get<float>(vars::viewmodel_fov);
 }
 
-bool __fastcall hooks::is_connected::fn(se::engine_client* ecx, int)
-{
-    static const auto is_loadout_allowed = dlls::client.find(PATTERN("84 C0 75 05 B0 01 5F"));
-    if (config::get<bool>(vars::unlock_inventory) && _ReturnAddress() == is_loadout_allowed)
-        return false;
-
-    return original(ecx);
-}
-
 void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
 {
     static bool once = []() { return render::initialize(); }();
@@ -177,12 +165,6 @@ void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
     }
 
     return original(ecx, mode);
-}
-
-bool __fastcall hooks::override_config::fn(se::material_system* ecx, int, cs::material_system_config* config, bool force_update)
-{
-    config->fullbright = config::get<bool>(vars::fullbright);
-    return original(ecx, config, force_update);
 }
 
 static auto init_material() noexcept
@@ -235,32 +217,6 @@ void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::ma
     interfaces::model_render->forced_material_override(nullptr);
 }
 
-int __fastcall hooks::list_leaves_in_box::fn(se::spatial_query* ecx, int, const vec3& mins, const vec3& maxs, unsigned short* list, int list_max)
-{
-    static const auto insert_into_tree = dlls::client.find(PATTERN("89 44 24 14 EB 08 C7 44 24 ? ? ? ? ? 8B 45"));
-
-    constexpr float max_coord = 16384.0f;
-    constexpr vec3 new_maxs = { max_coord, max_coord, max_coord };
-    constexpr vec3 new_mins = { -max_coord, -max_coord, -max_coord };
-
-    if (_ReturnAddress() != insert_into_tree)
-        return original(ecx, mins, maxs, list, list_max);
-
-    const auto info = *reinterpret_cast<cs::renderable_info**>(reinterpret_cast<uintptr_t>(_AddressOfReturnAddress()) + 0x14);
-    const auto entity = info->renderable->get_client_unknown()->get_base_entity();
-    if (!entity)
-        return original(ecx, mins, maxs, list, list_max);
-
-    // Force into translucent group.
-    if (entity->is_player()) {
-        info->flags.unset(cs::render_flag::force_opaque_pass);
-        info->flags.set(cs::render_flag::bounds_always_recompute); // Setting IS_SPRITE (0x80) is unnecessary
-    }
-
-    // Return with largest possible world bounds to draw player models over longer distances
-    return original(ecx, new_mins, new_maxs, list, list_max);
-}
-
 void __fastcall hooks::lock_cursor::fn(se::surface* ecx, int)
 {
     return menu::is_active ? ecx->unlock_cursor() : original(ecx);
@@ -296,4 +252,3 @@ void hooks::spotted::proxy(cs::recv_proxy_data* data, void* arg0, void* arg1)
 
 #undef SET_SIG_HOOK
 #undef SET_VT_HOOK
-#undef SET_IAT_HOOK

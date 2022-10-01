@@ -6,7 +6,6 @@
 
 #define SET_SIG_HOOK(dll, sig, name) set(dll, PATTERN(sig), reinterpret_cast<void*>(name::fn), reinterpret_cast<void**>(&name::original))
 #define SET_VT_HOOK(vmt, name, index) set(vmt, index, name::fn, name::original)
-#define SET_IAT_HOOK(dll, name, target) iat::set(dll, iat::hook::name, target, reinterpret_cast<uintptr_t>(iat::name::fn))
 
 namespace hooks {
 
