@@ -73,7 +73,7 @@ namespace cache {
         if (!types.is_empty()) {
             const auto unwanted = cs::entity_type::all & ~types.value();
             auto view = entities | std::views::filter([unwanted](const cs::cached_entity& e) {
-                return (e.type & unwanted) == static_cast<cs::entity_type>(0);
+                return !(e.type & unwanted);
             });
             for (auto& a : view)
                 callback(a.ptr);

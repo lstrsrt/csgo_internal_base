@@ -16,7 +16,7 @@ void netvars::initialize() noexcept
 void netvars::dump_table(std::string_view base_class, cs::recv_table* table,
                          const uint32_t offset) noexcept
 {
-    for (int i = 0; i < table->prop_amt; i++) {
+    for (int i{ }; i < table->prop_amt; i++) {
         const auto prop = &table->props[i];
 
         // Skip useless classes.
@@ -56,7 +56,7 @@ void netvars::unset_proxy(hash_t name, cs::recv_proxy_fn original) noexcept
 uint32_t netvars::get_datamap_offset(cs::datamap* map, const hash_t field_name) noexcept
 {
     while (map) {
-        for (int i = 0; i < map->data_fields_count; i++) {
+        for (int i{ }; i < map->data_fields_count; i++) {
             if (!map->data_description[i].field_name)
                 continue;
 

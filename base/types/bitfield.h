@@ -1,6 +1,14 @@
 #pragma once
 
+#include <compare>
+
 namespace bitfield_ops {
+
+    template<enumerator en>
+    constexpr bool operator!(const en& e) noexcept
+    {
+        return e == static_cast<en>(0);
+    }
 
     template<enumerator en>
     constexpr en operator&(const en& lhs, const en& rhs) noexcept
@@ -23,13 +31,13 @@ namespace bitfield_ops {
     template<enumerator en>
     constexpr en operator<<(const en& lhs, const en& rhs) noexcept
     {
-        return static_cast< en >(util::to_underlying(lhs) << util::to_underlying(rhs));
+        return static_cast<en>(util::to_underlying(lhs) << util::to_underlying(rhs));
     }
 
     template<enumerator en>
     constexpr en operator>>(const en& lhs, const en& rhs) noexcept
     {
-        return static_cast< en >(util::to_underlying(lhs) >> util::to_underlying(rhs));
+        return static_cast<en>(util::to_underlying(lhs) >> util::to_underlying(rhs));
     }
 
     template<enumerator en>
@@ -41,7 +49,7 @@ namespace bitfield_ops {
     template<enumerator en>
     inline en& operator|=(en& lhs, const en& rhs) noexcept
     {
-        return lhs = static_cast< en >(util::to_underlying(lhs) | util::to_underlying(rhs));
+        return lhs = static_cast<en>(util::to_underlying(lhs) | util::to_underlying(rhs));
     }
 
     template<enumerator en>
@@ -51,15 +59,15 @@ namespace bitfield_ops {
     }
 
     template<enumerator en>
-    inline en& operator<<= (en & lhs, const en & rhs) noexcept
+    inline en& operator<<=(en& lhs, const en& rhs) noexcept
     {
-        return lhs = static_cast< en >(util::to_underlying(lhs) <<= util::to_underlying(rhs));
+        return lhs = static_cast<en>(util::to_underlying(lhs) <<= util::to_underlying(rhs));
     }
 
     template<enumerator en>
     inline en& operator>>=(en& lhs, const en& rhs) noexcept
     {
-        return lhs = static_cast< en >(util::to_underlying(lhs) >>= util::to_underlying(rhs));
+        return lhs = static_cast<en>(util::to_underlying(lhs) >>= util::to_underlying(rhs));
     }
 
 }
@@ -70,10 +78,8 @@ template<enumerator en>
 class bitfield {
 public:
     constexpr bitfield() noexcept = default;
-
     constexpr bitfield(en bits) noexcept
         : bits(bits) { }
-
     constexpr bitfield(std::underlying_type<en> bits) noexcept
         : bits(bits) { }
 
@@ -85,6 +91,11 @@ public:
     constexpr auto operator=(int32_t rhs) noexcept
     {
         bits.value = static_cast<en>(rhs);
+    }
+
+    constexpr auto operator<=>(const en& rhs) const noexcept
+    {
+        return bits.raw <=> util::to_underlying(rhs);
     }
 
     constexpr auto value() noexcept
@@ -141,5 +152,5 @@ private:
     union {
         en value;
         std::underlying_type_t<en> raw;
-    } bits{};
+    } bits{ };
 };

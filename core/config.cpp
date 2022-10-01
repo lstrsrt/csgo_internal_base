@@ -16,7 +16,7 @@ void config::initialize() noexcept
 void config::read(std::wstring_view name) noexcept
 {
     const auto index_from_hash = [](const hash_t name) {
-        for (size_t i = 0; i < items.size(); i++) {
+        for (size_t i{ }; i < items.size(); i++) {
             if (items[i].name == name)
                 return i;
         }

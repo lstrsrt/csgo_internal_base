@@ -20,7 +20,7 @@ inline namespace crypt {
             }();
 
             auto hashed = basis;
-            for (size_t i = 0; i < len; i++) {
+            for (size_t i{ }; i < len; i++) {
                 hashed ^= str[i];
                 hashed *= prime;
             }

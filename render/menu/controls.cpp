@@ -121,7 +121,7 @@ void menu::controls::combo_box(std::wstring_view text, const std::vector<std::ws
     }
 
     if (is_selected) {
-        for (size_t i = 0; i < options.size(); i++) {
+        for (size_t i{ }; i < options.size(); i++) {
             render::text(render::fonts::menu, { pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i) }, options[i]);
             if (input::is_hovering_item({ pos.x, pos.y + static_cast<int>(18 * i) }, region_size))
                 item_color = accent_color;

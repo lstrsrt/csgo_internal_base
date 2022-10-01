@@ -36,7 +36,7 @@ struct pattern {
             size_t ret{ };
             bool was_digit{ };
 
-            for (size_t i = 0; i < str.length; i++) {
+            for (size_t i{ }; i < str.length; i++) {
                 if (is_digit(str.value[i])) {
                     if (!was_digit)
                         ret++;
@@ -57,7 +57,7 @@ struct pattern {
         constexpr auto len = length_t::get();
         std::array<int, len> ret{ };
 
-        for (size_t i = 0, j = 0; i < str.length; i++) {
+        for (size_t i{ }, j{ }; i < str.length; i++) {
             if (str.value[i] == ' ')
                 continue;
             if (is_digit(str.value[i])) {

@@ -54,11 +54,11 @@ struct dll {
         if (!nt_optional_hdr)
             return nullptr;
 
-        const auto* dir_addr = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(
+        const auto dir_addr = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(
             base + nt_optional_hdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
-        const auto* functions = reinterpret_cast<uint32_t*>(base + dir_addr->AddressOfFunctions);
-        const auto* names = reinterpret_cast<uint32_t*>(base + dir_addr->AddressOfNames);
-        const auto* ordinals = reinterpret_cast<uint16_t*>(base + dir_addr->AddressOfNameOrdinals);
+        const auto functions = reinterpret_cast<uint32_t*>(base + dir_addr->AddressOfFunctions);
+        const auto names = reinterpret_cast<uint32_t*>(base + dir_addr->AddressOfNames);
+        const auto ordinals = reinterpret_cast<uint16_t*>(base + dir_addr->AddressOfNameOrdinals);
 
         for (DWORD i{ }; i < dir_addr->NumberOfFunctions; i++) {
             const auto name = reinterpret_cast<const char*>(base + names[i]);

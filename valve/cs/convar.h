@@ -29,8 +29,7 @@ struct convar : public command_base {
     }
     auto get_string() noexcept
     {
-        const char* str = parent->string;
-        return str ? str : "";
+        return parent->string ? parent->string : "";
     }
     VIRTUAL_FUNCTION(set_value, void, 14, (const char* value), (this, value))
     VIRTUAL_FUNCTION(set_value, void, 15, (float value), (this, value))

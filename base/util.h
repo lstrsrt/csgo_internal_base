@@ -28,7 +28,7 @@ namespace util {
         return u.y;
     }
 
-    inline constexpr size_t array_size(const auto& x)
+    inline constexpr auto array_size(const auto& x)
     {
         return sizeof(x) / sizeof(x[0]);
     }
