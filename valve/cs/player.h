@@ -111,12 +111,12 @@ struct player : public base_player {
     VIRTUAL_FUNCTION(get_eye_angles, angle&, 169, (), (this))
     VIRTUAL_FUNCTION(set_local_view_angles, void, 373, (const angle& angles), (this, std::cref(angles)))
 
-    VIRTUAL_FUNCTION_SIG(post_think_v_physics, void, dll::client, "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", (this))
-    VIRTUAL_FUNCTION_SIG(simulate_player_simulated_entities, void, dll::client, "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74", (this))
-    VIRTUAL_FUNCTION_SIG(invalidate_physics_recursive, void, dll::client,
+    VIRTUAL_FUNCTION_SIG(post_think_v_physics, void, dlls::client, "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", (this))
+    VIRTUAL_FUNCTION_SIG(simulate_player_simulated_entities, void, dlls::client, "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74", (this))
+    VIRTUAL_FUNCTION_SIG(invalidate_physics_recursive, void, dlls::client,
         "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56", (this, invalidate_physics_flags), int invalidate_physics_flags)
 
-    bool is_enemy(player* other = nullptr) noexcept;
+    bool is_enemy(player* other = nullptr /* = local */) noexcept;
 };
 
 struct local_player {
