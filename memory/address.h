@@ -3,17 +3,20 @@
 #include <cstddef>
 #include <cstdint>
 
-class address {
-public:
+struct address {
+    uintptr_t value{ };
+
     address() = default;
     address(uintptr_t value) noexcept
-        : value(value) {};
-    address(uint8_t* value) noexcept
-        : value(reinterpret_cast<uintptr_t>(value)) {};
+        : value(value) { }
     address(uintptr_t* value) noexcept
-        : value(reinterpret_cast<uintptr_t>(value)) {};
+        : value(reinterpret_cast<uintptr_t>(value)) { }
+    address(uint8_t* value) noexcept
+        : value(reinterpret_cast<uintptr_t>(value)) { }
     address(void* value) noexcept
-        : value(reinterpret_cast<uintptr_t>(value)) {};
+        : value(reinterpret_cast<uintptr_t>(value)) { }
+    address(std::nullptr_t value) noexcept
+        : value(reinterpret_cast<uintptr_t>(value)) { }
 
     constexpr operator bool() const noexcept
     {
@@ -53,7 +56,4 @@ public:
             return reinterpret_cast<ty>(jmp + abs_offset + 4 + target);
         return ty();
     }
-
-private:
-    uintptr_t value{ };
 };

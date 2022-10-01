@@ -1,28 +1,27 @@
 #include "interface.h"
 #include "../crypt/xorstr.h"
 
-static void collect_interfaces(dll dll_id) noexcept;
+static void collect_interfaces(dll& dll) noexcept;
 template<class ty>
 static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept;
 template<class ty>
-static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept;
+static void find_interface(interface_holder<ty*>& ptr, dll& dll, std::string_view version_string) noexcept;
 
 void interfaces::initialize() noexcept
 {
-    collect_interfaces(dll::client);
-    collect_interfaces(dll::datacache);
-    collect_interfaces(dll::engine);
-    collect_interfaces(dll::file_system);
-    collect_interfaces(dll::input_system);
-    collect_interfaces(dll::localize);
-    collect_interfaces(dll::matchmaking);
-    collect_interfaces(dll::material_system);
-    collect_interfaces(dll::server);
-    collect_interfaces(dll::studio_render);
-    collect_interfaces(dll::vgui_mat_surface);
-    collect_interfaces(dll::vgui2);
-    collect_interfaces(dll::vphysics);
-    collect_interfaces(dll::vstdlib);
+    collect_interfaces(dlls::client);
+    collect_interfaces(dlls::datacache);
+    collect_interfaces(dlls::engine);
+    collect_interfaces(dlls::file_system);
+    collect_interfaces(dlls::input_system);
+    collect_interfaces(dlls::localize);
+    collect_interfaces(dlls::matchmaking);
+    collect_interfaces(dlls::material_system);
+    collect_interfaces(dlls::studio_render);
+    collect_interfaces(dlls::vgui_mat_surface);
+    collect_interfaces(dlls::vgui2);
+    collect_interfaces(dlls::vphysics);
+    collect_interfaces(dlls::vstdlib);
 
     get_cached_interface(client, "VClient0");
     get_cached_interface(console, "GameConsole0");
@@ -57,36 +56,36 @@ void interfaces::initialize() noexcept
     get_cached_interface(vgui, "VEngineVGui0");
 
     // Not sure why but these only work manually...
-    find_interface(panel, dlls::get(dll::vgui2), "VGUI_Panel0");
-    find_interface(surface, dlls::get(dll::vgui_mat_surface), "VGUI_Surface0");
+    find_interface(panel, dlls::vgui2, "VGUI_Panel0");
+    find_interface(surface, dlls::vgui_mat_surface, "VGUI_Surface0");
 
     client_mode.initialize(**memory::get_virtual(client, 10).offset(0x5).cast<se::client_mode***>());
     globals.initialize<false>(**memory::get_virtual(client, 11).offset(0xa).cast<se::global_vars_base***>());
     input.initialize<false>(*memory::get_virtual(client, 16).offset(0x1).cast<se::client_input**>());
     client_state.initialize<false>(**memory::get_virtual(engine, 12).offset(0x10).cast<se::client_state***>());
 
-    game_rules.initialize<false>(*memory::find_bytes(dll::client, PATTERN("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A")).offset(0x1).cast<se::game_rules**>());
-    glow_manager.initialize<false>(*memory::find_bytes(dll::client, PATTERN("0F 11 05 ? ? ? ? 83 C8 01")).offset(0x3).cast<se::glow_manager**>());
-    move_helper.initialize<false>(**memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01")).offset(0x2).cast<se::move_helper***>());
-    player_resource.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 1D ? ? ? ? 89 5C 24 40")).offset(0x2).cast<se::player_resource**>());
-    render_beams.initialize<false>(*memory::find_bytes(dll::client, PATTERN("B9 ? ? ? ? FF 50 24 C2 04 00")).offset(0x1).cast<se::render_beams**>());
-    weapon_system.initialize<false>(*memory::find_bytes(dll::client, PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).offset(0x2).cast<se::weapon_system**>());
-    view_render.initialize(**memory::find_bytes(dll::client, PATTERN("8B 0D ? ? ? ? D9 5D F0 8B 01")).offset(0x2).cast<se::view_render***>());
-    dx9_device.initialize(**memory::find_bytes(dll::shader_api_dx9, PATTERN("A1 ? ? ? ? 50 8B 08 FF 51 0C")).offset(0x1).cast<IDirect3DDevice9***>());
+    game_rules.initialize<false>(*dlls::client.find(PATTERN("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A")).offset(0x1).cast<se::game_rules**>());
+    glow_manager.initialize<false>(*dlls::client.find(PATTERN("0F 11 05 ? ? ? ? 83 C8 01")).offset(0x3).cast<se::glow_manager**>());
+    move_helper.initialize<false>(**dlls::client.find(PATTERN("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01")).offset(0x2).cast<se::move_helper***>());
+    player_resource.initialize<false>(*dlls::client.find(PATTERN("8B 1D ? ? ? ? 89 5C 24 40")).offset(0x2).cast<se::player_resource**>());
+    render_beams.initialize<false>(*dlls::client.find(PATTERN("B9 ? ? ? ? FF 50 24 C2 04 00")).offset(0x1).cast<se::render_beams**>());
+    weapon_system.initialize<false>(*dlls::client.find(PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).offset(0x2).cast<se::weapon_system**>());
+    view_render.initialize(**dlls::client.find(PATTERN("8B 0D ? ? ? ? D9 5D F0 8B 01")).offset(0x2).cast<se::view_render***>());
+    dx9_device.initialize(**dlls::shader_api_dx9.find(PATTERN("A1 ? ? ? ? 50 8B 08 FF 51 0C")).offset(0x1).cast<IDirect3DDevice9***>());
 
     bsp_query.initialize(engine->get_bsp_tree_query());
 
-    steam::user      = reinterpret_cast<std::add_pointer_t<steam::h_user()>>(GetProcAddress(dlls::get(dll::steam_api).hmod, "SteamAPI_GetHSteamUser"))();
-    steam::pipe      = reinterpret_cast<std::add_pointer_t<steam::h_pipe()>>(GetProcAddress(dlls::get(dll::steam_api).hmod, "SteamAPI_GetHSteamPipe"))();
-    steam_api_ctx    = engine->get_steam_api_context();
-    steam_client     = steam_api_ctx->steam_client;
-    game_coordinator = static_cast<steam::game_coordinator*>(steam_client->get_generic_interface(steam::user, steam::pipe, "SteamGameCoordinator001"));
-    steam_friends    = steam_api_ctx->steam_friends;
-    matchmaking      = steam_api_ctx->steam_matchmaking;
-    user_stats       = steam_api_ctx->steam_user_stats;
+    steam::user       = dlls::steam_api.get_export("SteamAPI_GetHSteamUser"_hash).cast<steam::h_user(*)()>()();
+    steam::pipe       = dlls::steam_api.get_export("SteamAPI_GetHSteamPipe"_hash).cast<steam::h_pipe(*)()>()();
+    steam_api_ctx     = engine->get_steam_api_context();
+    steam_client      = steam_api_ctx->steam_client;
+    game_coordinator  = static_cast<steam::game_coordinator*>(steam_client->get_generic_interface(steam::user, steam::pipe, "SteamGameCoordinator001"));
+    steam_friends     = steam_api_ctx->steam_friends;
+    matchmaking       = steam_api_ctx->steam_matchmaking;
+    user_stats        = steam_api_ctx->steam_user_stats;
 
-    mem_alloc         = *reinterpret_cast<se::mem_alloc**>(GetProcAddress(dlls::get(dll::tier0).hmod, "g_pMemAlloc"));
-    key_values_system = reinterpret_cast<se::key_values_system_fn>(GetProcAddress(dlls::get(dll::vstdlib).hmod, "KeyValuesSystem"))();
+    mem_alloc         = *dlls::tier0.get_export("g_pMemAlloc"_hash).cast<se::mem_alloc**>();
+    key_values_system = dlls::vstdlib.get_export("KeyValuesSystem"_hash).cast<se::key_values_system_fn>()();
 
     LOG_INFO("Interfaces initialized.");
 }
@@ -101,10 +100,10 @@ struct interface_reg {
 
 }
 
-static auto get_interface_regs(dll_t& dll) noexcept
+static auto get_interface_regs(dll& dll) noexcept
 {
     if (!dll.create_interface)
-        dll.create_interface = reinterpret_cast<uintptr_t>(GetProcAddress(dll.hmod, "CreateInterface"));
+        dll.create_interface = dll.get_export("CreateInterface"_hash).value;
 
     // Follow jmp instruction inside function to get to CreateInterfaceInternal(), where the global interface list is moved into ESI.
     const auto reg_list = **address(dll.create_interface).absolute<se::interface_reg***>(0x5, 0x6);
@@ -115,9 +114,8 @@ static auto get_interface_regs(dll_t& dll) noexcept
     return reg_list;
 }
 
-static void collect_interfaces(dll dll_id) noexcept
+static void collect_interfaces(dll& dll) noexcept
 {
-    auto& dll = dlls::get(dll_id);
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
         LOG_INFO("{}: found interface {}", dll.name, cur->name);
         interfaces::list.push_back(std::make_pair(cur->name, cur->create_fn()));
@@ -127,7 +125,7 @@ static void collect_interfaces(dll dll_id) noexcept
 // Version strings may be partial.
 
 template<class ty>
-static void find_interface(interface_holder<ty*>& ptr, dll_t& dll, std::string_view version_string) noexcept
+static void find_interface(interface_holder<ty*>& ptr, dll& dll, std::string_view version_string) noexcept
 {
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
         if (std::string(cur->name).starts_with(version_string)) {

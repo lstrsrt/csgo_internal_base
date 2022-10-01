@@ -1,13 +1,13 @@
 #pragma once
 
+#define CONCAT_IMPL(x, y) x##y
+#define CONCAT(x, y) CONCAT_IMPL(x, y)
+#define PAD(size) private: std::byte CONCAT(pad, __COUNTER__)[size]{ }; public:
+
 #include <intrin.h>
 
 #include "address.h"
 #include "dll.h"
-
-#define CONCAT_IMPL(x, y) x##y
-#define CONCAT(x, y) CONCAT_IMPL(x, y)
-#define PAD(size) private: std::byte CONCAT(pad, __COUNTER__)[size]{ }; public:
 
 namespace memory {
 
@@ -28,28 +28,18 @@ namespace memory {
         return address(reinterpret_cast<uintptr_t>(_AddressOfReturnAddress()) - sizeof(uintptr_t));
     }
 
-    template<size_t len>
-    address find_bytes(dll dll_id, std::array<int, len>&& pattern) noexcept requires(len > 0)
+    inline size_t get_vmt_length(uintptr_t* vptr) noexcept
     {
-        static int i{ };
-        i++;
+        size_t length{ };
+        MEMORY_BASIC_INFORMATION info{ };
 
-        auto& dll = dlls::get(dll_id);
-        auto* bytes = reinterpret_cast< uint8_t* >(dll.hmod);
-        for (size_t i{ }; i < dll.nt_headers->OptionalHeader.SizeOfImage - len; i++) {
-            for (size_t j{ }; j < len; j++) {
-                if (bytes[i + j] != pattern[j] && pattern[j] != -1)
-                    break;
-                if (j + 1 == len)
-                    return address(&bytes[i]);
-            }
-        }
+        while (VirtualQuery(reinterpret_cast<LPCVOID>(vptr[length]), &info, sizeof(info)) &&
+               info.State & MEM_COMMIT &&
+               info.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))
+            ++length;
 
-        LOG_ERROR("Did not find pattern {} in module {}!", i, dll.name);
-        return address();
+        return length;
     }
-
-    size_t get_vmt_length(uintptr_t* vptr) noexcept;
 
 }
 
@@ -63,6 +53,6 @@ inline ret name params noexcept \
 #define VIRTUAL_FUNCTION_SIG(name, ret, dll, sig, args, ... /* params */) \
 inline ret name(__VA_ARGS__) noexcept \
 { \
-    static ret(__thiscall* name##_fn)(void*, __VA_ARGS__) = memory::find_bytes(dll, PATTERN(sig)).cast<decltype(name##_fn)>(); \
+    static ret(__thiscall* name##_fn)(void*, __VA_ARGS__) = dll.find(PATTERN(sig)).cast<decltype(name##_fn)>(); \
     return name##_fn##args; \
 }

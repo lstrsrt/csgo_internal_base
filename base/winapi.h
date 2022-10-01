@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-struct dll_t;
+struct dll;
 
 namespace winapi {
 
@@ -14,7 +14,7 @@ namespace winapi {
         HANDLE handle{ };
 
         scoped_handle(HANDLE handle) noexcept
-            : handle(handle) {};
+            : handle(handle) { }
         ~scoped_handle()
         {
             if (handle)

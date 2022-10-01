@@ -14,8 +14,8 @@ void hooks::initialize() noexcept
         original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc)));
     }
 
-    hook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
-    unhook_func = memory::find_bytes(dll::game_overlay_renderer, PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
+    hook_func = dlls::game_overlay_renderer.find(PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
+    unhook_func = dlls::game_overlay_renderer.find(PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
 
     SET_VT_HOOK(interfaces::client, frame_stage_notify, 37);
     SET_VT_HOOK(interfaces::client, create_move_proxy, 22);
@@ -28,8 +28,8 @@ void hooks::initialize() noexcept
     SET_VT_HOOK(interfaces::bsp_query, list_leaves_in_box, 6);
     SET_VT_HOOK(interfaces::surface, lock_cursor, 67);
 
-    SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
-    SET_SIG_HOOK(dll::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
+    SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
+    SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
@@ -119,7 +119,7 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
     if (!local.in_game)
         return original(ecx, frame_stage);
 
-    static auto override_postprocessing_disable = *memory::find_bytes(dll::client, PATTERN("83 EC 4C 80 3D")).offset(0x5).cast<bool**>();
+    static auto override_postprocessing_disable = *dlls::client.find(PATTERN("83 EC 4C 80 3D")).offset(0x5).cast<bool**>();
 
     switch (frame_stage) {
     case cs::frame_stage::render_start:
@@ -135,7 +135,7 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
 
 void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_setup* view)
 {
-    if (!local.update())
+    if (!local.in_game)
         return original(ecx, view);
 
     if (local->is_alive()) {
@@ -156,7 +156,7 @@ float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)
 
 bool __fastcall hooks::is_connected::fn(se::engine_client* ecx, int)
 {
-    static const auto is_loadout_allowed = memory::find_bytes(dll::client, PATTERN("84 C0 75 05 B0 01 5F"));
+    static const auto is_loadout_allowed = dlls::client.find(PATTERN("84 C0 75 05 B0 01 5F"));
     if (config::get<bool>(vars::unlock_inventory) && _ReturnAddress() == is_loadout_allowed)
         return false;
 
@@ -237,7 +237,7 @@ void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::ma
 
 int __fastcall hooks::list_leaves_in_box::fn(se::spatial_query* ecx, int, const vec3& mins, const vec3& maxs, unsigned short* list, int list_max)
 {
-    static const auto insert_into_tree = memory::find_bytes(dll::client, PATTERN("89 44 24 14 EB 08 C7 44 24 ? ? ? ? ? 8B 45"));
+    static const auto insert_into_tree = dlls::client.find(PATTERN("89 44 24 14 EB 08 C7 44 24 ? ? ? ? ? 8B 45"));
 
     constexpr float max_coord = 16384.0f;
     constexpr vec3 new_maxs = { max_coord, max_coord, max_coord };

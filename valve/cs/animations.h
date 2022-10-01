@@ -118,8 +118,8 @@ struct anim_layer_t {
 };
 
 struct anim_state {
-    VIRTUAL_FUNCTION_SIG(reset, void, dll::client, "56 6A 01 68 ? ? ? ? 8B F1", (this))
-    VIRTUAL_FUNCTION_SIG(update, void, dll::client, "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24", (this, eye_pitch, eye_yaw, force),
+    VIRTUAL_FUNCTION_SIG(reset, void, dlls::client, "56 6A 01 68 ? ? ? ? 8B F1", (this))
+    VIRTUAL_FUNCTION_SIG(update, void, dlls::client, "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24", (this, eye_pitch, eye_yaw, force),
         float eye_yaw, float eye_pitch, bool force)
 
     int* layer_order_preset{ };
@@ -189,33 +189,27 @@ struct anim_state {
     int anim_state_version{ };
 };
 
-struct activity_to_sequence_mapping {
-    VIRTUAL_FUNCTION_SIG(select_weighted_sequence_from_modifiers, int, dll::server, "55 8B EC 83 EC 2C 53 56 8B 75 08 8B D9",
-        (this, hdr, activity, modifiers, modifier_count),
-        studio_hdr* hdr, anim_layer_activity activity, void* modifiers, int modifier_count)
-};
-
 struct ik_target {
     int frame_count{ };
     PAD(0x51)
 };
 
 struct ik_context {
-    VIRTUAL_FUNCTION_SIG(construct, void, dll::client,
+    VIRTUAL_FUNCTION_SIG(construct, void, dlls::client,
         "53 8B D9 F6 C3 03 74 0B FF 15 ?? ?? ?? ?? 84 C0 74 01 CC C7 83 ?? ?? ?? ?? ?? ?? ?? ?? 8B CB", (this))
-    VIRTUAL_FUNCTION_SIG(destruct, void, dll::client,
+    VIRTUAL_FUNCTION_SIG(destruct, void, dlls::client,
         "56 8B F1 57 8D 8E ?? ?? ?? ?? E8 ?? ?? ?? ?? 8D 8E ?? ?? ?? ?? E8 ?? ?? ?? ?? 83 BE", (this))
-    VIRTUAL_FUNCTION_SIG(init, void, dll::client, "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F",
+    VIRTUAL_FUNCTION_SIG(init, void, dlls::client, "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F",
         (this, hdr, angles, pos, time, frame_counter, bone_mask),
         studio_hdr* hdr, angle& angles, vec3& pos, float time, int frame_counter, int bone_mask)
-    VIRTUAL_FUNCTION_SIG(add_dependencies, void, dll::server, "55 8B EC 81 EC ? ? ? ? 53 56 57 8B F9 0F 28 CB F3 0F 11 4D",
+    VIRTUAL_FUNCTION_SIG(add_dependencies, void, dlls::client, "55 8B EC 81 EC ? ? ? ? 53 56 57 8B F9 0F 28 CB F3 0F 11 4D",
         (this, seq_desc, sequence, cycle, pose_params, weight),
         studio_seq_desc& seq_desc, int sequence, float cycle, const float* pose_params, float weight)
-    VIRTUAL_FUNCTION_SIG(solve_dependencies, void, dll::client, "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56 57",
+    VIRTUAL_FUNCTION_SIG(solve_dependencies, void, dlls::client, "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56 57",
         (this, pos, q, bone_to_world, bone_computed), vec3* pos, vec4* q, mat3x4* bone_to_world, uint8_t* bone_computed)
-    VIRTUAL_FUNCTION_SIG(update_targets, void, dll::client, "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2 89 4C 24 ? 56 57",
+    VIRTUAL_FUNCTION_SIG(update_targets, void, dlls::client, "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2 89 4C 24 ? 56 57",
         (this, pos, q, bone_to_world, bone_computed), vec3* pos, vec4* q, mat3x4* bone_to_world, uint8_t* bone_computed)
-    VIRTUAL_FUNCTION_SIG(copy_to, void, dll::server, "55 8B EC 83 EC 24 8B 45 08 57 8B F9 89 7D F4 85 C0",
+    VIRTUAL_FUNCTION_SIG(copy_to, void, dlls::client, "55 8B EC 83 EC 24 8B 45 08 57 8B F9 89 7D F4 85 C0",
         (this, other, remapping), ik_context* other, const unsigned short* remapping)
 };
 
@@ -264,11 +258,11 @@ struct bone_setup {
     void init_pose(const studio_hdr* hdr, vec3* pos, vec4* q, int bone_mask) noexcept
     {
         static void(* init_pose_fn)(const studio_hdr*, vec3*, vec4*, int) =
-            memory::find_bytes(dll::client, PATTERN("55 8B EC 83 EC 10 53 8B D9 89 ? ? 56 57 89")).cast<decltype(init_pose_fn)>();
+            dlls::client.find(PATTERN("55 8B EC 83 EC 10 53 8B D9 89 ? ? 56 57 89")).cast<decltype(init_pose_fn)>();
         return init_pose_fn(hdr, pos, q, bone_mask);
     }
 
-    VIRTUAL_FUNCTION_SIG(accumulate_pose, void, dll::client, "55 8B EC 83 E4 ? B8 ? ? ? ? E8 ? ? ? ? A1 ? ? ? ? 56 57 8B F9",
+    VIRTUAL_FUNCTION_SIG(accumulate_pose, void, dlls::client, "55 8B EC 83 E4 ? B8 ? ? ? ? E8 ? ? ? ? A1 ? ? ? ? 56 57 8B F9",
         (this, pos, q, sequence, cycle, weight, time, ik_ctx),
         vec3* pos, vec4* q, int sequence, float cycle, float weight, float time, ik_context* ik_ctx)
 };

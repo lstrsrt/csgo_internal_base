@@ -146,7 +146,7 @@ struct trace_filter_skip_two_entities : public trace_filter {
 
     trace_filter_skip_two_entities() noexcept = default;
     trace_filter_skip_two_entities(base_entity* first, base_entity* second) noexcept
-        : first(first), second(second) {};
+        : first(first), second(second) { }
 
     inline bool should_hit_entity(base_entity* entity, trace_mask_t mask) const noexcept override
     {
@@ -189,7 +189,7 @@ struct trace_filter_no_players : public trace_filter {
 
     trace_filter_no_players() noexcept = default;
     trace_filter_no_players(base_entity* skip, trace_type type = trace_type::everything) noexcept
-        : skip(skip), type(type) {};
+        : skip(skip), type(type) { }
 
     inline bool should_hit_entity(base_entity* entity, trace_mask_t mask) const noexcept override
     {
@@ -207,7 +207,7 @@ struct trace_entity : public trace_filter {
 
     trace_entity() noexcept = default;
     trace_entity(base_entity* hit) noexcept
-        : hit(hit) {};
+        : hit(hit) { }
 
     inline bool should_hit_entity(base_entity* entity, trace_mask_t mask) const noexcept override
     {
@@ -229,7 +229,7 @@ struct trace_filter_simple : public trace_filter {
 
     trace_filter_simple() noexcept = default;
     trace_filter_simple(const base_entity* pass_entity, collision_group group, should_hit_fn extra_should_hit_check = nullptr) noexcept
-        : pass_entity(pass_entity), group(group), extra_should_hit_check(extra_should_hit_check) {};
+        : pass_entity(pass_entity), group(group), extra_should_hit_check(extra_should_hit_check) { }
 
     inline bool should_hit_entity(base_entity* entity, int mask) const noexcept override
     {

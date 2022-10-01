@@ -487,6 +487,11 @@ enum class entity_type {
     other
 };
 
+enum class anim_lod_flag : uint32_t {
+    outside_view_frustum = (1 << 1),
+    dormant = (1 << 3)
+};
+
 struct studio_hdr;
 struct weapon;
 
@@ -580,11 +585,11 @@ struct base_entity : public cs::client_entity {
     VIRTUAL_FUNCTION(update_collision_bounds, void, 340, (), (this))
     VIRTUAL_FUNCTION(get_weapon_info, weapon_info*, 461, (), (this))
 
-    VIRTUAL_FUNCTION_SIG(set_abs_origin, void, dll::client, "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D",
+    VIRTUAL_FUNCTION_SIG(set_abs_origin, void, dlls::client, "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D",
         (this, std::cref(origin)), const vec3& origin)
-    VIRTUAL_FUNCTION_SIG(set_abs_angles, void, dll::client, "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1",
+    VIRTUAL_FUNCTION_SIG(set_abs_angles, void, dlls::client, "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1",
         (this, std::cref(angles)), const angle& angles)
-    VIRTUAL_FUNCTION_SIG(physics_run_think, bool, dll::client, "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87",
+    VIRTUAL_FUNCTION_SIG(physics_run_think, bool, dlls::client, "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87",
         (this, method), think_method method)
 
     entity_type get_entity_type() noexcept;
@@ -612,9 +617,13 @@ struct base_view_model {
 
 struct base_animating : public base_entity {
     NETVAR(get_sequence, int, "CBaseAnimating->m_nSequence")
+    NETVAR(get_cycle, int, "CBaseAnimating->m_flCycle")
+    NETVAR(get_playback_rate, int, "CBaseAnimating->m_flPlaybackRate")
     NETVAR(get_pose_params, pose_params, "CBaseAnimating->m_flPoseParameter")
     NETVAR(use_client_side_animation, bool, "CBaseAnimating->m_bClientSideAnimation")
 
+    OFFSET(get_anim_lod_flags, bitfield<anim_lod_flag>, 0xa28)
+    OFFSET(get_computed_lod_frame, int, 0xa30)
     OFFSET(get_ik_ctx, ik_context*, 0x266c)
     OFFSET(get_most_recent_model_bone_counter, unsigned long, 0x268c)
     OFFSET(get_bone_merge_cache, bone_merge_cache*, 0x2908)
@@ -711,7 +720,7 @@ struct precipitation : public base_entity {
     NETVAR(get_type, precipitation_type, "CPrecipitation->m_nPrecipType")
 };
 
-struct tonemap_controller {
+struct tonemap_controller : base_entity {
     NETVAR(use_custom_auto_exposure_min, bool, "CEnvTonemapController->m_bUseCustomAutoExposureMin")
     NETVAR(use_custom_auto_exposure_max, bool, "CEnvTonemapController->m_bUseCustomAutoExposureMax")
     NETVAR(use_custom_bloom_scale, bool, "CEnvTonemapController->m_bUseCustomBloomScale")

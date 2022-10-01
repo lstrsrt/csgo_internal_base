@@ -118,7 +118,7 @@ public:
 struct event_listener {
     static constexpr int event_debug_id_init = 42;
 
-    virtual ~event_listener() {}
+    virtual ~event_listener() { }
     virtual void fire_game_event(cs::game_event* event) = 0;
     virtual int get_event_debug_id() { return event_debug_id_init; }
 };

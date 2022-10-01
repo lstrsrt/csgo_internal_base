@@ -38,7 +38,6 @@
     <ClInclude Include="memory\address.h" />
     <ClInclude Include="memory\dll.h" />
     <ClInclude Include="memory\memory.h" />
-    <ClInclude Include="memory\iat.h" />
     <ClInclude Include="memory\interface.h" />
     <ClInclude Include="memory\hook_manager.h" />
     <ClInclude Include="render\menu\controls.h" />
@@ -91,7 +90,6 @@
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\main.cpp" />
-    <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="memory\interface.cpp" />
     <ClCompile Include="render\menu\controls.cpp" />
     <ClCompile Include="render\menu\menu.cpp" />
@@ -146,7 +144,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;WIN32;WIN32_LEAN_AND_MEAN;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_EXCEPTIONS=0;WIN32;WIN32_LEAN_AND_MEAN;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>

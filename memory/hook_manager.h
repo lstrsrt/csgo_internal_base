@@ -6,7 +6,7 @@
 
 #define SET_SIG_HOOK(dll, sig, name) set(dll, PATTERN(sig), reinterpret_cast<void*>(name::fn), reinterpret_cast<void**>(&name::original))
 #define SET_VT_HOOK(vmt, name, index) set(vmt, index, name::fn, name::original)
-#define SET_IAT_HOOK(dll, name, target) iat::set(dlls::get(dll), iat::hook::name, target, reinterpret_cast<uintptr_t>(iat::name::fn))
+#define SET_IAT_HOOK(dll, name, target) iat::set(dll, iat::hook::name, target, reinterpret_cast<uintptr_t>(iat::name::fn))
 
 namespace hooks {
 
@@ -36,9 +36,9 @@ namespace hooks {
     }
 
     template<size_t len>
-    inline void set(dll dll_id, std::array<int, len>&& sig, void* hook, void** original) noexcept
+    inline void set(dll& dll, std::array<int, len>&& sig, void* hook, void** original) noexcept
     {
-        const auto target = memory::find_bytes<len>(dll_id, std::move(sig)).cast<void*>();
+        const auto target = dll.find<len>(std::move(sig)).cast<void*>();
 
         if (hook_func(target, hook, original, false))
             hooked_fns[hook] = original;

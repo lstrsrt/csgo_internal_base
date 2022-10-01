@@ -81,7 +81,7 @@ namespace cs {
     };
 
     struct dlight {
-        enum flag {
+        enum class flag {
             no_world_illumination,
             no_model_illumination,
             add_displacement_alpha,

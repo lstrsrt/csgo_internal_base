@@ -166,7 +166,7 @@ struct studio_hdr {
     PAD(0x8)
     utl_vec<int> bone_flags{ };
     utl_vec<int> bone_parent{ };
-    activity_to_sequence_mapping* activity_to_sequence{ };
+    void* activity_to_sequence{ };
 };
 
 struct draw_model_info {
