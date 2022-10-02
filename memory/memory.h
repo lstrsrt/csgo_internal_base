@@ -36,7 +36,7 @@ namespace memory {
         MEMORY_BASIC_INFORMATION info{};
         VirtualQuery(addr, &info, sizeof(info));
 
-        return info.State == MEM_COMMIT && !(info.Protect & PAGE_NOACCESS);
+        return info.State & MEM_COMMIT && !(info.Protect & PAGE_NOACCESS);
     }
 
     inline size_t get_vmt_length(uintptr_t* vptr) noexcept
@@ -64,6 +64,6 @@ inline ret name params noexcept \
 #define VIRTUAL_FUNCTION_SIG(name, ret, dll, sig, args, ... /* params */) \
 inline ret name(__VA_ARGS__) noexcept \
 { \
-    static ret(__thiscall* name##_fn)(void*, __VA_ARGS__) = dll.find(PATTERN(sig)).cast<decltype(name##_fn)>(); \
-    return name##_fn##args; \
+    static ret(__thiscall* fn)(void*, __VA_ARGS__) = dll.find(PATTERN(sig)).cast<decltype(fn)>(); \
+    return fn args; \
 }

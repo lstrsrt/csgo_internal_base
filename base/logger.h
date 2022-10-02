@@ -35,7 +35,7 @@ namespace logger {
     // Use the LOG macros instead of accessing these directly
 
     template<level lvl, class... va_args>
-    inline void add(std::string_view fmt, const va_args&... args) noexcept
+    void add(std::string_view fmt, const va_args&... args) noexcept
     {
     #ifdef _DEBUG
         std::string msg{ };
@@ -81,7 +81,7 @@ namespace logger {
     }
 
     template<level lvl, class... va_args>
-    inline void add(std::wstring_view fmt, const va_args&... args) noexcept
+    void add(std::wstring_view fmt, const va_args&... args) noexcept
     {
     #ifdef _DEBUG
         std::wstring msg{ };

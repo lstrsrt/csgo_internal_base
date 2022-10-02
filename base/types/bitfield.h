@@ -79,9 +79,13 @@ class bitfield {
 public:
     constexpr bitfield() noexcept = default;
     constexpr bitfield(en bits) noexcept
-        : bits(bits) { }
+    {
+        this->bits.value = bits;
+    }
     constexpr bitfield(std::underlying_type<en> bits) noexcept
-        : bits(bits) { }
+    {
+        this->bits.raw = bits;
+    }
 
     constexpr operator en() noexcept
     {

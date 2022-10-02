@@ -27,12 +27,20 @@ namespace math {
 
     inline float sin(float x) noexcept
     {
+    #ifdef __clang__
+        return __builtin_sinf(x);
+    #else
         return _mm_cvtss_f32(_mm_sin_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    #endif
     }
 
     inline float cos(float x) noexcept
     {
+    #ifdef __clang__
+        return __builtin_cosf(x);
+    #else
         return _mm_cvtss_f32(_mm_cos_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    #endif
     }
 
     inline float sind(float x) noexcept
@@ -47,23 +55,39 @@ namespace math {
 
     inline float asin(float x) noexcept
     {
+    #ifdef __clang__
+        return __builtin_asinf(x);
+    #else
         return _mm_cvtss_f32(_mm_asin_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    #endif
     }
 
     inline float acos(float x) noexcept
     {
+    #ifdef __clang__
+        return __builtin_acosf(x);
+    #else
         return _mm_cvtss_f32(_mm_acos_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    #endif
     }
 
     inline float atan(float x) noexcept
     {
+    #ifdef __clang__
+        return __builtin_atanf(x);
+    #else
         return _mm_cvtss_f32(_mm_atan_ps(_mm_set_ps(0.f, 0.f, 0.f, x)));
+    #endif
     }
 
     inline float atan2(float y, float x) noexcept
     {
+    #ifdef __clang__
+        return __builtin_atan2f(y, x);
+    #else
         return _mm_cvtss_f32(_mm_atan2_ps(_mm_set_ps(0.f, 0.f, 0.f, y),
                                           _mm_set_ps(0.f, 0.f, 0.f, x)));
+    #endif
     }
 
     int time_to_ticks(float time) noexcept;

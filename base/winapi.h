@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <functional>
+#include <string_view>
 #include <Windows.h>
 #include <TlHelp32.h>
 
@@ -58,7 +59,7 @@ namespace winapi {
     {
         WCHAR tmp[MAX_PATH]{ };
         bool ret{ };
-        if (ret = GetModuleFileNameW(hmod, tmp, MAX_PATH) != 0)
+        if ((ret = GetModuleFileNameW(hmod, tmp, MAX_PATH)) != 0)
             path.assign(tmp);
         return ret;
     }

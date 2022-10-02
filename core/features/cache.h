@@ -13,11 +13,17 @@ namespace cs {
     };
 
     struct cached_entity {
+        explicit cached_entity(base_entity* p, const entity_type t) noexcept
+            : ptr(p), type(t) { }
+
         cs::base_entity* ptr;
         cs::entity_type type;
     };
 
     struct cached_player {
+        explicit cached_player(player* p, entity_type t) noexcept
+            : ptr(p), type(t) { }
+
         cs::player* ptr;
         cs::entity_type type;
     };
@@ -36,7 +42,7 @@ namespace cache {
 
         for (int i{ 1 }; i < interfaces::entity_list->get_highest_index(); i++) {
             if (auto entity = interfaces::entity_list->get(i))
-                entities.emplace_back(entity);
+                entities.emplace_back(cs::cached_entity(entity, entity->get_entity_type()));
         }
     }
 
@@ -46,7 +52,7 @@ namespace cache {
         if (type == cs::entity_type::player)
             players.push_back(cs::cached_player(static_cast<cs::player*>(entity), type));
         else
-            entities.push_back(cs::cached_entity(entity, type));
+             entities.push_back(cs::cached_entity(entity, type));
     }
 
     inline void remove(cs::base_entity* entity) noexcept

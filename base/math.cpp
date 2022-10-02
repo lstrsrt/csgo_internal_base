@@ -34,6 +34,10 @@ angle math::calculate_angle(const vec3& src, const vec3& dest, const angle& view
 void math::angle_to_vectors(const angle& src, vec3* forward, vec3* right, vec3* up) noexcept
 {
     vec3 sin{ }, cos{ };
+#ifdef __clang__
+    sin = { sind(src.x), sind(src.y), sind(src.z) };
+    cos = { cosd(src.x), cosd(src.y), cosd(src.z) };
+#else
     __m128 cos_res{ };
     const auto sin_res = _mm_sincos_ps(&cos_res,
                                        _mm_set_ps(deg_to_rad(src.x),
@@ -41,6 +45,7 @@ void math::angle_to_vectors(const angle& src, vec3* forward, vec3* right, vec3* 
                                                   deg_to_rad(src.z), 0)).m128_f32;
     sin = { sin_res[3], sin_res[2], sin_res[1] };
     cos = { cos_res.m128_f32[3], cos_res.m128_f32[2], cos_res.m128_f32[1] };
+#endif
 
     if (forward) {
         forward->x = cos.x * cos.y;

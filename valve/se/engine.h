@@ -88,7 +88,7 @@ struct engine_client {
         return d2{ x, y };
     }
 
-    angle& get_view_angles() noexcept
+    angle get_view_angles() noexcept
     {
         angle ret{ };
         get_view_angles(ret);
