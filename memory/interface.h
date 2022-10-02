@@ -23,7 +23,7 @@ struct interface_holder {
     constexpr ptr operator=(ptr rhs) noexcept { return instance; }
 
     // Pass false to replace_vmt if you don't hook anything from the table or if get_vmt_length() is crashing
-    template<bool replace_vmt = true>
+    template<bool replace_vmt = false>
     inline void initialize(ptr vptr) noexcept
     {
         constexpr int dynamic_cast_info_len = 1;

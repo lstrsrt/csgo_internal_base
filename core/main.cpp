@@ -8,8 +8,7 @@ BOOL APIENTRY DllMain(HMODULE instance, DWORD call_reason, LPVOID reserved)
         DisableThreadLibraryCalls(instance);
         if (const auto thread = CreateThread(nullptr, 0, on_attach, instance, 0, nullptr))
             CloseHandle(thread);
-    } else if (call_reason == DLL_PROCESS_DETACH && !reserved)
-        cheat::end(instance);
+    }
 
     return TRUE;
 }

@@ -2,9 +2,9 @@
 #include "../crypt/xorstr.h"
 
 static void collect_interfaces(dll& dll) noexcept;
-template<class ty>
+template<bool replace_vmt = false, class ty>
 static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept;
-template<class ty>
+template<bool replace_vmt = false, class ty>
 static void find_interface(interface_holder<ty*>& ptr, dll& dll, std::string_view version_string) noexcept;
 
 void interfaces::initialize() noexcept
@@ -23,7 +23,7 @@ void interfaces::initialize() noexcept
     collect_interfaces(dlls::vphysics);
     collect_interfaces(dlls::vstdlib);
 
-    get_cached_interface(client, "VClient0");
+    get_cached_interface<true>(client, "VClient0");
     get_cached_interface(console, "GameConsole0");
     get_cached_interface(cvar, "VEngineCvar0");
     get_cached_interface(debug_overlay, "VDebugOverlay0");
@@ -41,7 +41,7 @@ void interfaces::initialize() noexcept
     get_cached_interface(material_system, "VMaterialSystem0");
     get_cached_interface(mdl_cache, "MDLCache0");
     get_cached_interface(model_info, "VModelInfoClient0");
-    get_cached_interface(model_render, "VEngineModel0");
+    get_cached_interface<true>(model_render, "VEngineModel0");
     get_cached_interface(movement, "GameMovement0");
     get_cached_interface(net_support, "INETSUPPORT_0");
     get_cached_interface(physics_props, "VPhysicsSurfaceProps0");
@@ -53,23 +53,23 @@ void interfaces::initialize() noexcept
     get_cached_interface(studio_render_ctx, "VStudioRender0");
     get_cached_interface(trace, "EngineTraceClient0");
     get_cached_interface(ui, "GameUI0");
-    get_cached_interface(vgui, "VEngineVGui0");
+    get_cached_interface<true>(vgui, "VEngineVGui0");
 
     // Not sure why but these only work manually...
     find_interface(panel, dlls::vgui2, "VGUI_Panel0");
-    find_interface(surface, dlls::vgui_mat_surface, "VGUI_Surface0");
+    find_interface<true>(surface, dlls::vgui_mat_surface, "VGUI_Surface0");
 
-    client_mode.initialize(**memory::get_virtual(client, 10).offset(0x5).cast<se::client_mode***>());
-    globals.initialize<false>(**memory::get_virtual(client, 11).offset(0xa).cast<se::global_vars_base***>());
-    input.initialize<false>(*memory::get_virtual(client, 16).offset(0x1).cast<se::client_input**>());
-    client_state.initialize<false>(**memory::get_virtual(engine, 12).offset(0x10).cast<se::client_state***>());
+    client_mode.initialize<true>(**memory::get_virtual(client, 10).offset(0x5).cast<se::client_mode***>());
+    globals.initialize(**memory::get_virtual(client, 11).offset(0xa).cast<se::global_vars_base***>());
+    input.initialize(*memory::get_virtual(client, 16).offset(0x1).cast<se::client_input**>());
+    client_state.initialize(**memory::get_virtual(engine, 12).offset(0x10).cast<se::client_state***>());
 
-    game_rules.initialize<false>(*dlls::client.find(PATTERN("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A")).offset(0x1).cast<se::game_rules**>());
-    glow_manager.initialize<false>(*dlls::client.find(PATTERN("0F 11 05 ? ? ? ? 83 C8 01")).offset(0x3).cast<se::glow_manager**>());
-    move_helper.initialize<false>(**dlls::client.find(PATTERN("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01")).offset(0x2).cast<se::move_helper***>());
-    player_resource.initialize<false>(*dlls::client.find(PATTERN("8B 1D ? ? ? ? 89 5C 24 40")).offset(0x2).cast<se::player_resource**>());
-    render_beams.initialize<false>(*dlls::client.find(PATTERN("B9 ? ? ? ? FF 50 24 C2 04 00")).offset(0x1).cast<se::render_beams**>());
-    weapon_system.initialize<false>(*dlls::client.find(PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).offset(0x2).cast<se::weapon_system**>());
+    game_rules.initialize(*dlls::client.find(PATTERN("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A")).offset(0x1).cast<se::game_rules**>());
+    glow_manager.initialize(*dlls::client.find(PATTERN("0F 11 05 ? ? ? ? 83 C8 01")).offset(0x3).cast<se::glow_manager**>());
+    move_helper.initialize(**dlls::client.find(PATTERN("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01")).offset(0x2).cast<se::move_helper***>());
+    player_resource.initialize(*dlls::client.find(PATTERN("8B 1D ? ? ? ? 89 5C 24 40")).offset(0x2).cast<se::player_resource**>());
+    render_beams.initialize(*dlls::client.find(PATTERN("B9 ? ? ? ? FF 50 24 C2 04 00")).offset(0x1).cast<se::render_beams**>());
+    weapon_system.initialize(*dlls::client.find(PATTERN("8B 35 ? ? ? ? FF 10 0F B7 C0")).offset(0x2).cast<se::weapon_system**>());
     view_render.initialize(**dlls::client.find(PATTERN("8B 0D ? ? ? ? D9 5D F0 8B 01")).offset(0x2).cast<se::view_render***>());
     dx9_device.initialize(**dlls::shader_api_dx9.find(PATTERN("A1 ? ? ? ? 50 8B 08 FF 51 0C")).offset(0x1).cast<IDirect3DDevice9***>());
 
@@ -124,25 +124,25 @@ static void collect_interfaces(dll& dll) noexcept
 
 // Version strings may be partial.
 
-template<class ty>
+template<bool replace_vmt, class ty>
 static void find_interface(interface_holder<ty*>& ptr, dll& dll, std::string_view version_string) noexcept
 {
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
         if (std::string(cur->name).starts_with(version_string)) {
             LOG_SUCCESS("Found interface {}.", cur->name);
-            ptr.initialize(static_cast<ty*>(cur->create_fn()));
+            ptr.initialize<replace_vmt>(static_cast<ty*>(cur->create_fn()));
             return;
         }
     }
     LOG_ERROR("Could not find interface {} in {}!", version_string, dll.name);
 }
 
-template<class ty>
+template<bool replace_vmt, class ty>
 static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view version_string) noexcept
 {
     for (const auto& [name, iface] : interfaces::list) {
         if (name.starts_with(version_string.data())) {
-            ptr.initialize(static_cast<ty*>(iface));
+            ptr.initialize<replace_vmt>(static_cast<ty*>(iface));
             return;
         }
     }
