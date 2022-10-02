@@ -1,11 +1,11 @@
 #pragma once
 
 struct d2 {
+    int x{ }, y{ };
+
     constexpr d2() noexcept = default;
     constexpr d2(int x, int y) noexcept
         : x(x), y(y) { }
-
-    int x{ }, y{ };
 
     constexpr d2& operator+=(const d2& rhs) noexcept
     {

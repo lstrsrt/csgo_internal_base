@@ -7,8 +7,7 @@ template<class ty>
 concept enumerator = __is_enum(ty);
 
 template<class ty>
-concept string_like = requires(ty t)
-{
+concept string_like = requires(ty t) {
     t.data();
     t.substr();
 };

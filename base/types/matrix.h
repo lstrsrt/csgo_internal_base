@@ -9,7 +9,7 @@ struct mat3x4 {
     {
         return data[i];
     }
-    
+
     const float* operator[](int i) const noexcept
     {
         return data[i];
@@ -20,12 +20,12 @@ struct mat4x4 {
     float data[4][4]{ };
 
     float* operator[](int i) noexcept
-    { 
-        return data[i]; 
+    {
+        return data[i];
     }
-    
+
     const float* operator[](int i) const noexcept
     {
-        return data[i]; 
+        return data[i];
     }
 };

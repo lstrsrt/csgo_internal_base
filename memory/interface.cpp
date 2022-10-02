@@ -130,7 +130,7 @@ static void find_interface(interface_holder<ty*>& ptr, dll& dll, std::string_vie
     for (auto cur = get_interface_regs(dll); cur; cur = cur->next) {
         if (std::string(cur->name).starts_with(version_string)) {
             LOG_SUCCESS("Found interface {}.", cur->name);
-            ptr.initialize<replace_vmt>(static_cast<ty*>(cur->create_fn()));
+            ptr.template initialize<replace_vmt>(static_cast<ty*>(cur->create_fn()));
             return;
         }
     }
@@ -142,7 +142,7 @@ static void get_cached_interface(interface_holder<ty*>& ptr, std::string_view ve
 {
     for (const auto& [name, iface] : interfaces::list) {
         if (name.starts_with(version_string.data())) {
-            ptr.initialize<replace_vmt>(static_cast<ty*>(iface));
+            ptr.template initialize<replace_vmt>(static_cast<ty*>(iface));
             return;
         }
     }
