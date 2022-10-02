@@ -28,6 +28,17 @@ namespace memory {
         return address(reinterpret_cast<uintptr_t>(_AddressOfReturnAddress()) - sizeof(uintptr_t));
     }
 
+    inline bool is_address_valid(void* addr) noexcept
+    {
+        if (!addr)
+            return false;
+
+        MEMORY_BASIC_INFORMATION info{};
+        VirtualQuery(addr, &info, sizeof(info));
+
+        return info.State == MEM_COMMIT && !(info.Protect & PAGE_NOACCESS);
+    }
+
     inline size_t get_vmt_length(uintptr_t* vptr) noexcept
     {
         size_t length{ };
