@@ -30,6 +30,8 @@ void hooks::initialize() noexcept
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
+    LOG_INFO("Hooks initialized.");
+
     cache::initialize();
 }
 

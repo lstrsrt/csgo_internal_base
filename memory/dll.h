@@ -18,7 +18,7 @@ struct dll {
         : name(name) { }
 
     template<size_t len>
-    address find(std::array<int, len>&& pattern) noexcept requires(len > 0)
+    address find(std::array<int, len>&& pattern) const noexcept requires(len > 0)
     {
         static int i{ };
         i++;
@@ -37,7 +37,7 @@ struct dll {
         return address();
     }
 
-    inline address get_export(hash_t hash) noexcept
+    inline address get_export(hash_t hash) const noexcept
     {
         const auto nt_optional_hdr = [this]() -> const IMAGE_OPTIONAL_HEADER32* {
             auto dos = reinterpret_cast<IMAGE_DOS_HEADER*>(base);

@@ -3,7 +3,7 @@
 static void update() noexcept
 {
     if (interfaces::client_state->delta_tick > 0)
-    interfaces::prediction->update(interfaces::client_state->delta_tick, true,
+        interfaces::prediction->update(interfaces::client_state->delta_tick, true,
                                    interfaces::client_state->last_cmd_acknowledged,
                                    interfaces::client_state->last_outgoing_cmd +
                                    interfaces::client_state->choked_cmds);

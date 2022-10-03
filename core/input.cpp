@@ -25,7 +25,7 @@ bool input::is_key_active(keybind key) noexcept
     }
 }
 
-bool input::is_hovering_item(const d2& item_pos, const d2& item_size) noexcept
+bool input::is_hovering_item(d2 item_pos, d2 item_size) noexcept
 {
     return (mouse_pos.x >= item_pos.x && mouse_pos.y >= item_pos.y &&
         mouse_pos.x <= item_pos.x + item_size.x && mouse_pos.y <= item_pos.y + item_size.y);

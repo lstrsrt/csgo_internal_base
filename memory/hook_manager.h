@@ -39,10 +39,12 @@ namespace hooks {
     {
         const auto target = dll.find<len>(std::move(sig)).cast<void*>();
 
+        hooked_fns[hook] = target;
+
         if (hook_func(target, hook, original, false))
-            hooked_fns[hook] = original;
-        else
-            LOG_ERROR("Error while hooking function!");
+            return;
+
+        LOG_ERROR("Error while hooking function!");
     }
 
     inline void unset(void* hook) noexcept

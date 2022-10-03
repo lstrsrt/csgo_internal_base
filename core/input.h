@@ -30,7 +30,7 @@ namespace input {
     inline d2 mouse_pos{ };
 
     bool is_key_active(keybind key) noexcept;
-    bool is_hovering_item(const d2& item_pos, const d2& item_size) noexcept;
+    bool is_hovering_item(d2 item_pos, d2 item_size) noexcept;
     void process(UINT msg, WPARAM wparam, LPARAM lparam) noexcept;
 
 }
