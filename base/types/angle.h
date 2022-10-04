@@ -23,22 +23,22 @@ struct angle {
             fabsf(z - rhs.z) > std::numeric_limits<float>::epsilon());
     }
 
-    angle operator+(const angle& rhs) const
+    constexpr angle operator+(const angle& rhs) const noexcept
     {
         return angle(x + rhs.x, y + rhs.y, z + rhs.z);
     }
 
-    angle operator-(const angle& rhs) const
+    constexpr angle operator-(const angle& rhs) const noexcept
     {
         return angle(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
-    angle operator*(const angle& rhs) const
+    constexpr angle operator*(const angle& rhs) const noexcept
     {
         return angle(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
-    angle operator/(const angle& rhs) const
+    constexpr angle operator/(const angle& rhs) const noexcept
     {
         return angle(x / rhs.x, y / rhs.y, z / rhs.z);
     }
@@ -121,7 +121,7 @@ struct angle {
         y = std::clamp(y, -180.0f, 180.0f);
         z = 0.0f;
     }
-    
+
     constexpr auto length_sqr() const noexcept
     {
         return (x * x + y * y + z * z);

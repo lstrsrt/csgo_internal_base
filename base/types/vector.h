@@ -29,42 +29,42 @@ struct vec3 {
             fabsf(z - rhs.z) > std::numeric_limits<float>::epsilon());
     }
 
-    vec3 operator+(const vec3& rhs) const noexcept
+    constexpr vec3 operator+(const vec3& rhs) const noexcept
     {
         return vec3(x + rhs.x, y + rhs.y, z + rhs.z);
     }
 
-    vec3 operator-(const vec3& rhs) const noexcept
+    constexpr vec3 operator-(const vec3& rhs) const noexcept
     {
         return vec3(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
-    vec3 operator*(const vec3& rhs) const noexcept
+    constexpr vec3 operator*(const vec3& rhs) const noexcept
     {
         return vec3(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
-    vec3 operator/(const vec3& rhs) const noexcept
+    constexpr vec3 operator/(const vec3& rhs) const noexcept
     {
         return vec3(x / rhs.x, y / rhs.y, z / rhs.z);
     }
 
-    vec3 operator+(const float rhs) const noexcept
+    constexpr vec3 operator+(const float rhs) const noexcept
     {
         return vec3(x + rhs, y + rhs, z + rhs);
     }
 
-    vec3 operator-(const float rhs) const noexcept
+    constexpr vec3 operator-(const float rhs) const noexcept
     {
         return vec3(x - rhs, y - rhs, z - rhs);
     }
 
-    vec3 operator*(const float rhs) const noexcept
+    constexpr vec3 operator*(const float rhs) const noexcept
     {
         return vec3(x * rhs, y * rhs, z * rhs);
     }
 
-    vec3 operator/(const float rhs) const noexcept
+    constexpr vec3 operator/(const float rhs) const noexcept
     {
         return vec3(x / rhs, y / rhs, z / rhs);
     }
@@ -155,27 +155,27 @@ struct vec3 {
         z = { };
     }
 
-    auto length_sqr() const noexcept
+    float length_sqr() const noexcept
     {
         return dot_product(*this);
     }
 
-    auto length() const noexcept
+    float length() const noexcept
     {
         return sqrtf(length_sqr());
     }
 
-    auto length2d_sqr() const noexcept
+    float length2d_sqr() const noexcept
     {
         return (x * x + y * y);
     }
 
-    auto length2d() const noexcept
+    float length2d() const noexcept
     {
         return sqrtf(length2d_sqr());
     }
 
-    auto distance_to(const vec3& other) const noexcept
+    float distance_to(const vec3& other) const noexcept
     {
         return (*this - other).length();
     }

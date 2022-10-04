@@ -5,9 +5,9 @@
 namespace bitfield_ops {
 
     template<enumerator en>
-    constexpr bool operator!(const en& e) noexcept
+    constexpr bool operator!(const en& bit) noexcept
     {
-        return e == static_cast<en>(0);
+        return bit == static_cast<en>(0);
     }
 
     template<enumerator en>

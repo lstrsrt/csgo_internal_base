@@ -7,28 +7,78 @@ struct d2 {
     constexpr d2(int x, int y) noexcept
         : x(x), y(y) { }
 
-    constexpr d2& operator+=(const d2& rhs) noexcept
+    constexpr bool operator==(d2 rhs) const noexcept
+    {
+        return x == rhs.x && y == rhs.y;
+    }
+
+    constexpr bool operator!=(d2 rhs) const noexcept
+    {
+        return x != rhs.x || y != rhs.y;
+    }
+
+    constexpr d2 operator+(d2 rhs) const noexcept
+    {
+        return d2(x + rhs.x, y + rhs.y);
+    }
+
+    constexpr d2 operator-(d2 rhs) const noexcept
+    {
+        return d2(x - rhs.x, y - rhs.y);
+    }
+
+    constexpr d2 operator*(d2 rhs) const noexcept
+    {
+        return d2(x * rhs.x, y * rhs.y);
+    }
+
+    constexpr d2 operator/(d2 rhs) const noexcept
+    {
+        return d2(x / rhs.x, y / rhs.y);
+    }
+
+    constexpr d2 operator+(const int rhs) const noexcept
+    {
+        return d2(x + rhs, y + rhs);
+    }
+
+    constexpr d2 operator-(const int rhs) const noexcept
+    {
+        return d2(x - rhs, y - rhs);
+    }
+
+    constexpr d2 operator*(const int rhs) const noexcept
+    {
+        return d2(x * rhs, y * rhs);
+    }
+
+    constexpr d2 operator/(const int rhs) const noexcept
+    {
+        return d2(x / rhs, y / rhs);
+    }
+
+    constexpr d2& operator+=(d2 rhs) noexcept
     {
         x += rhs.x;
         y += rhs.y;
         return *this;
     }
 
-    constexpr d2& operator-=(const d2& rhs) noexcept
+    constexpr d2& operator-=(d2 rhs) noexcept
     {
         x -= rhs.x;
         y -= rhs.y;
         return *this;
     }
 
-    constexpr d2& operator*=(const d2& rhs) noexcept
+    constexpr d2& operator*=(d2 rhs) noexcept
     {
         x *= rhs.x;
         y *= rhs.y;
         return *this;
     }
 
-    constexpr d2& operator/=(const d2& rhs) noexcept
+    constexpr d2& operator/=(d2 rhs) noexcept
     {
         x /= rhs.x;
         y /= rhs.y;
@@ -61,45 +111,5 @@ struct d2 {
         x /= rhs;
         y /= rhs;
         return *this;
-    }
-
-    d2 operator+(const int rhs) const noexcept
-    {
-        return d2(x + rhs, y + rhs);
-    }
-
-    d2 operator-(const int rhs) const noexcept
-    {
-        return d2(x - rhs, y - rhs);
-    }
-
-    d2 operator*(const int rhs) const noexcept
-    {
-        return d2(x * rhs, y * rhs);
-    }
-
-    d2 operator/(const int rhs) const noexcept
-    {
-        return d2(x / rhs, y / rhs);
-    }
-
-    d2 operator+(const d2& rhs) const noexcept
-    {
-        return d2(x + rhs.x, y + rhs.y);
-    }
-
-    d2 operator-(const d2& rhs) const noexcept
-    {
-        return d2(x - rhs.x, y - rhs.y);
-    }
-
-    d2 operator*(const d2& rhs) const noexcept
-    {
-        return d2(x * rhs.x, y * rhs.y);
-    }
-
-    d2 operator/(const d2& rhs) const noexcept
-    {
-        return d2(x / rhs.x, y / rhs.y);
     }
 };
