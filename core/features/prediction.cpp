@@ -1,4 +1,5 @@
 #include "features.h"
+#include "../../base/math.h"
 
 static void update() noexcept
 {

@@ -92,7 +92,7 @@ inline interface_holder<se::server_dll*>             server{ };
 inline interface_holder<se::sound*>                  sound{ };
 inline interface_holder<se::spatial_query*>          bsp_query{ };
 inline interface_holder<se::string_table_container*> network_string_table{ };
-inline interface_holder<se::studio_render_context*>  studio_render_ctx{ };
+inline interface_holder<se::studio_render*>          studio_render{ };
 inline interface_holder<se::surface*>                surface{ };
 inline interface_holder<se::vgui*>                   vgui{ };
 inline interface_holder<se::view_render*>            view_render{ };

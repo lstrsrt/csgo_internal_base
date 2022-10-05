@@ -65,7 +65,7 @@ namespace logger {
             }
 
             SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-            std::tm buf{ };
+            tm buf{ };
             localtime_s(&buf, &time);
             std::cout << " ] " << std::put_time(&buf, "[%T] ");
         }
@@ -110,7 +110,7 @@ namespace logger {
             }
 
             SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-            std::tm buf{ };
+            tm buf{ };
             localtime_s(&buf, &time);
             std::wcout << L" ] " << std::put_time(&buf, L"[%T] ");
         }

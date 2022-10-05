@@ -3,7 +3,7 @@
 #include <array>
 #include <Windows.h>
 
-#include "../base/math.h"
+#include "../base/types/dimension.h"
 
 namespace input {
 

@@ -52,7 +52,7 @@ namespace cache {
         if (type == cs::entity_type::player)
             players.push_back(cs::cached_player(static_cast<cs::player*>(entity), type));
         else
-             entities.push_back(cs::cached_entity(entity, type));
+            entities.push_back(cs::cached_entity(entity, type));
     }
 
     inline void remove(cs::base_entity* entity) noexcept
@@ -92,9 +92,7 @@ namespace cache {
     void iterate_players(std::invocable<cs::player*> auto&& callback,
                          bitfield<cs::player_filter> filter) noexcept
     {
-        for (auto& a : players) {
-            auto* player = a.ptr;
-
+        for (auto& [player, type] : players) {
             if (filter.is_set(cs::player_filter::dormant))
                 if (player->is_dormant())
                     continue;

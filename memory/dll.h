@@ -11,19 +11,19 @@
 struct dll {
     std::string name{ };
     uintptr_t base{ };
-    ULONG size{ };
-    uintptr_t create_interface{ }; // Only relevant to game DLLs
+    uint32_t size{ };
+    address create_interface{ }; // Only relevant to game DLLs
 
     dll(const char* name) noexcept
         : name(name) { }
 
-    template<size_t len>
-    address find(std::array<int, len>&& pattern) const noexcept requires(len > 0)
+    template<size_t len> requires(len > 0)
+    address find(std::array<int, len>&& pattern) const noexcept
     {
         static int i{ };
         i++;
 
-        auto* bytes = reinterpret_cast<uint8_t*>(base);
+        auto bytes = reinterpret_cast<uint8_t*>(base);
         for (size_t i{ }; i < size - len; i++) {
             for (size_t j{ }; j < len; j++) {
                 if (bytes[i + j] != pattern[j] && pattern[j] != -1)
@@ -123,11 +123,14 @@ namespace dlls {
             cur = reinterpret_cast<ldr_data_table_entry*>(cur->InMemoryOrderLinks.Flink);
         }
 
-        for (auto* entry : list) {
-            if (const auto dll = dlls.at(fnv1a::hash(entry->name))) {
+        for (auto entry : list) {
+            const auto res = dlls.find(fnv1a::hash(entry->name));
+            if (res != dlls.cend()) {
+                const auto dll = res->second;
                 entry->base = reinterpret_cast<uintptr_t>(dll->DllBase);
                 entry->size = dll->SizeOfImage;
-            }
+            } else
+                LOG_ERROR("Did not find module {}!", entry->name);
         }
     }
 

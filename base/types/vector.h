@@ -17,16 +17,16 @@ struct vec3 {
 
     bool operator==(const vec3& rhs) const noexcept
     {
-        return (fabsf(x - rhs.x) <= std::numeric_limits<float>::epsilon() &&
-            fabsf(y - rhs.y) <= std::numeric_limits<float>::epsilon() &&
-            fabsf(z - rhs.z) <= std::numeric_limits<float>::epsilon());
+        return (std::abs(x - rhs.x) <= std::numeric_limits<float>::epsilon() &&
+            std::abs(y - rhs.y) <= std::numeric_limits<float>::epsilon() &&
+            std::abs(z - rhs.z) <= std::numeric_limits<float>::epsilon());
     }
 
     bool operator!=(const vec3& rhs) const noexcept
     {
-        return (fabsf(x - rhs.x) > std::numeric_limits<float>::epsilon() ||
-            fabsf(y - rhs.y) > std::numeric_limits<float>::epsilon() ||
-            fabsf(z - rhs.z) > std::numeric_limits<float>::epsilon());
+        return (std::abs(x - rhs.x) > std::numeric_limits<float>::epsilon() ||
+            std::abs(y - rhs.y) > std::numeric_limits<float>::epsilon() ||
+            std::abs(z - rhs.z) > std::numeric_limits<float>::epsilon());
     }
 
     constexpr vec3 operator+(const vec3& rhs) const noexcept

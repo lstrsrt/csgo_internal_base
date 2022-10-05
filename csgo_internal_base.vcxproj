@@ -39,7 +39,7 @@
     <ClInclude Include="memory\dll.h" />
     <ClInclude Include="memory\memory.h" />
     <ClInclude Include="memory\interface.h" />
-    <ClInclude Include="memory\hook_manager.h" />
+    <ClInclude Include="memory\hook_mgr.h" />
     <ClInclude Include="render\menu\controls.h" />
     <ClInclude Include="render\menu\menu.h" />
     <ClInclude Include="render\render.h" />

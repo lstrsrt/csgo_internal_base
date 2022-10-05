@@ -11,16 +11,16 @@ struct angle {
 
     bool operator==(const angle& rhs) const noexcept
     {
-        return (fabsf(x - rhs.x) <= std::numeric_limits<float>::epsilon() &&
-            fabsf(y - rhs.y) <= std::numeric_limits<float>::epsilon() &&
-            fabsf(z - rhs.z) <= std::numeric_limits<float>::epsilon());
+        return (std::abs(x - rhs.x) <= std::numeric_limits<float>::epsilon() &&
+            std::abs(y - rhs.y) <= std::numeric_limits<float>::epsilon() &&
+            std::abs(z - rhs.z) <= std::numeric_limits<float>::epsilon());
     }
 
     bool operator!=(const angle& rhs) const noexcept
     {
-        return (fabsf(x - rhs.x) > std::numeric_limits<float>::epsilon() ||
-            fabsf(y - rhs.y) > std::numeric_limits<float>::epsilon() ||
-            fabsf(z - rhs.z) > std::numeric_limits<float>::epsilon());
+        return (std::abs(x - rhs.x) > std::numeric_limits<float>::epsilon() ||
+            std::abs(y - rhs.y) > std::numeric_limits<float>::epsilon() ||
+            std::abs(z - rhs.z) > std::numeric_limits<float>::epsilon());
     }
 
     constexpr angle operator+(const angle& rhs) const noexcept
@@ -41,6 +41,26 @@ struct angle {
     constexpr angle operator/(const angle& rhs) const noexcept
     {
         return angle(x / rhs.x, y / rhs.y, z / rhs.z);
+    }
+
+    constexpr angle operator+(const float rhs) const noexcept
+    {
+        return angle(x + rhs, y + rhs, z + rhs);
+    }
+
+    constexpr angle operator-(const float rhs) const noexcept
+    {
+        return angle(x - rhs, y - rhs, z - rhs);
+    }
+
+    constexpr angle operator*(const float rhs) const noexcept
+    {
+        return angle(x * rhs, y * rhs, z * rhs);
+    }
+
+    constexpr angle operator/(const float rhs) const noexcept
+    {
+        return angle(x / rhs, y / rhs, z / rhs);
     }
 
     constexpr angle& operator=(const angle& rhs) noexcept

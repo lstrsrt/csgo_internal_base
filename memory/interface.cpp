@@ -50,7 +50,7 @@ void interfaces::initialize() noexcept
     get_cached_interface(server, "ServerGameDLL0");
     get_cached_interface(sound, "IEngineSoundClient0");
     get_cached_interface(network_string_table, "VEngineClientStringTable0");
-    get_cached_interface(studio_render_ctx, "VStudioRender0");
+    get_cached_interface(studio_render, "VStudioRender0");
     get_cached_interface(trace, "EngineTraceClient0");
     get_cached_interface(ui, "GameUI0");
     get_cached_interface<true>(vgui, "VEngineVGui0");
@@ -103,10 +103,10 @@ struct interface_reg {
 static auto get_interface_regs(dll& dll) noexcept
 {
     if (!dll.create_interface)
-        dll.create_interface = dll.get_export("CreateInterface"_hash).value;
+        dll.create_interface = dll.get_export("CreateInterface"_hash);
 
     // Follow jmp instruction inside function to get to CreateInterfaceInternal(), where the global interface list is moved into ESI.
-    const auto reg_list = **address(dll.create_interface).absolute<se::interface_reg***>(0x5, 0x6);
+    const auto reg_list = **dll.create_interface.absolute<se::interface_reg***>(0x5, 0x6);
 
     if (!reg_list)
         LOG_ERROR("Could not get s_pInterfaceRegs in {}!", dll.name);

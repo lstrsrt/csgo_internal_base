@@ -546,7 +546,7 @@ struct weapon_info {
     float recovery_time_stand{ };
 };
 
-struct base_entity : public cs::client_entity {
+struct base_entity : public client_entity {
     NETVAR(get_simulation_time, float, "CBaseEntity->m_flSimulationTime")
     NETVAR(get_anim_time, float, "CBaseEntity->m_flAnimTime")
     NETVAR(get_origin, vec3, "CBaseEntity->m_vecOrigin")
@@ -609,12 +609,6 @@ struct base_attributable_item : public base_entity {
     NETVAR(get_fallback_stat_trak, int, "CBaseAttributableItem->m_nFallbackStatTrak")
 };
 
-struct base_view_model {
-    NETVAR(get_model_index, int, "CBaseViewModel->m_nModelIndex")
-    NETVAR(get_owner_handle, base_handle, "CBaseViewModel->m_hOwner")
-    NETVAR(get_weapon_handle, base_handle, "CBaseViewModel->m_hWeapon")
-};
-
 struct base_animating : public base_entity {
     NETVAR(get_sequence, int, "CBaseAnimating->m_nSequence")
     NETVAR(get_cycle, int, "CBaseAnimating->m_flCycle")
@@ -640,6 +634,13 @@ struct base_animating : public base_entity {
     VIRTUAL_FUNCTION(studio_frame_advance, void, 220, (), (this))
     VIRTUAL_FUNCTION(update_client_side_animation, void, 224, (), (this))
     VIRTUAL_FUNCTION(update_dispatch_layer, void, 247, (anim_layer_t* layer, studio_hdr* hdr, int sequence), (this, layer, hdr, sequence))
+};
+
+struct base_view_model : base_animating
+{
+    NETVAR(get_model_index, int, "CBaseViewModel->m_nModelIndex")
+    NETVAR(get_owner_handle, base_handle, "CBaseViewModel->m_hOwner")
+    NETVAR(get_weapon_handle, base_handle, "CBaseViewModel->m_hWeapon")
 };
 
 struct weapon : public base_attributable_item {
@@ -669,7 +670,7 @@ struct weapon : public base_attributable_item {
     weapon_info* get_info() noexcept;
 };
 
-struct grenade : public base_entity {
+struct grenade : public base_animating {
     NETVAR(get_dmg_radius, float, "CBaseGrenade->m_DmgRadius")
     NETVAR(get_velocity, vec3, "CBaseGrenade->m_vecVelocity")
     NETVAR(get_thrower_handle, base_handle, "CBaseGrenade->m_hThrower")
@@ -691,7 +692,7 @@ enum class bomb_site {
     b
 };
 
-struct planted_c4 : public base_entity {
+struct planted_c4 : public base_animating {
     NETVAR(is_ticking, bool, "CPlantedC4->m_bBombTicking")
     NETVAR(get_blow_time, float, "CPlantedC4->m_flC4Blow")
     NETVAR(get_total_time, float, "CPlantedC4->m_flTimerLength")

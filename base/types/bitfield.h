@@ -5,67 +5,67 @@
 namespace bitfield_ops {
 
     template<enumerator en>
-    constexpr bool operator!(const en& bit) noexcept
+    constexpr bool operator!(en bit) noexcept
     {
         return bit == static_cast<en>(0);
     }
 
     template<enumerator en>
-    constexpr en operator&(const en& lhs, const en& rhs) noexcept
+    constexpr en operator&(en lhs, en rhs) noexcept
     {
         return static_cast<en>(util::to_underlying(lhs) & util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    constexpr en operator|(const en& lhs, const en& rhs) noexcept
+    constexpr en operator|(en lhs, en rhs) noexcept
     {
         return static_cast<en>(util::to_underlying(lhs) | util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    constexpr en operator^(const en& lhs, const en& rhs) noexcept
+    constexpr en operator^(en lhs, en rhs) noexcept
     {
         return static_cast<en>(util::to_underlying(lhs) ^ util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    constexpr en operator<<(const en& lhs, const en& rhs) noexcept
+    constexpr en operator<<(en lhs, en rhs) noexcept
     {
         return static_cast<en>(util::to_underlying(lhs) << util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    constexpr en operator>>(const en& lhs, const en& rhs) noexcept
+    constexpr en operator>>(en lhs, en rhs) noexcept
     {
         return static_cast<en>(util::to_underlying(lhs) >> util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    constexpr en operator~(const en& bit) noexcept
+    constexpr en operator~(en bit) noexcept
     {
         return static_cast<en>(~util::to_underlying(bit));
     }
 
     template<enumerator en>
-    inline en& operator|=(en& lhs, const en& rhs) noexcept
+    inline en& operator|=(en& lhs, en rhs) noexcept
     {
         return lhs = static_cast<en>(util::to_underlying(lhs) | util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    inline en& operator&=(en& lhs, const en& rhs) noexcept
+    inline en& operator&=(en& lhs, en rhs) noexcept
     {
         return lhs = static_cast<en>(util::to_underlying(lhs) &= util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    inline en& operator<<=(en& lhs, const en& rhs) noexcept
+    inline en& operator<<=(en& lhs, en rhs) noexcept
     {
         return lhs = static_cast<en>(util::to_underlying(lhs) <<= util::to_underlying(rhs));
     }
 
     template<enumerator en>
-    inline en& operator>>=(en& lhs, const en& rhs) noexcept
+    inline en& operator>>=(en& lhs, en rhs) noexcept
     {
         return lhs = static_cast<en>(util::to_underlying(lhs) >>= util::to_underlying(rhs));
     }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../memory/interface.h"
-#include "../memory/hook_manager.h"
+#include "../memory/hook_mgr.h"
 #include "../valve/cs/player.h"
 #include "netvars.h"
 #include "config.h"
