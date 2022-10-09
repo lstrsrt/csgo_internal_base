@@ -1,6 +1,6 @@
 #include "key_values.h"
 #include "../../memory/memory.h"
-#include "../../memory/interface.h"
+#include "../../memory/interfaces.h"
 
 namespace cs {
 

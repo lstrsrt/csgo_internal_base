@@ -1,5 +1,5 @@
 #include "math.h"
-#include "../memory/interface.h"
+#include "../memory/interfaces.h"
 
 int math::time_to_ticks(float time) noexcept
 {

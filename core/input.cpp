@@ -1,7 +1,7 @@
 #include <windowsx.h>
 
 #include "input.h"
-#include "../memory/interface.h"
+#include "../memory/interfaces.h"
 
 bool input::is_key_active(keybind key) noexcept
 {

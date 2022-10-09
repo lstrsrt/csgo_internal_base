@@ -2,6 +2,9 @@
 
 #include <array>
 #include <Windows.h>
+#ifdef small
+#undef small
+#endif
 
 #include "../base/types/dimension.h"
 

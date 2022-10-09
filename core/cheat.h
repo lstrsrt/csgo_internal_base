@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../memory/interface.h"
+#include "../memory/interfaces.h"
 #include "../memory/hook_mgr.h"
 #include "../valve/cs/player.h"
 #include "netvars.h"

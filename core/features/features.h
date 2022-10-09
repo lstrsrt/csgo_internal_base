@@ -2,7 +2,7 @@
 
 #include "../../base/base.h"
 #include "../../valve/cs/cs.h"
-#include "../../memory/interface.h"
+#include "../../memory/interfaces.h"
 #include "../cheat.h"
 #include "variables.h"
 

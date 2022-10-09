@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "../../memory/interface.h"
+#include "../../memory/interfaces.h"
 
 namespace cs {
 

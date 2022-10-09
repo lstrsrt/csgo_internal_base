@@ -1,5 +1,5 @@
 #include "player.h"
-#include "../../memory/interface.h"
+#include "../../memory/interfaces.h"
 #include "../../core/cheat.h"
 
 namespace cs {

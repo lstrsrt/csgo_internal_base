@@ -38,7 +38,7 @@
     <ClInclude Include="memory\address.h" />
     <ClInclude Include="memory\dll.h" />
     <ClInclude Include="memory\memory.h" />
-    <ClInclude Include="memory\interface.h" />
+    <ClInclude Include="memory\interfaces.h" />
     <ClInclude Include="memory\hook_mgr.h" />
     <ClInclude Include="render\menu\controls.h" />
     <ClInclude Include="render\menu\menu.h" />
@@ -90,7 +90,7 @@
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\main.cpp" />
-    <ClCompile Include="memory\interface.cpp" />
+    <ClCompile Include="memory\interfaces.cpp" />
     <ClCompile Include="render\menu\controls.cpp" />
     <ClCompile Include="render\menu\menu.cpp" />
     <ClCompile Include="render\render.cpp" />

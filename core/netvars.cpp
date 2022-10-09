@@ -1,5 +1,5 @@
 #include "netvars.h"
-#include "../memory/interface.h"
+#include "../memory/interfaces.h"
 #include "../crypt/fnv1a.h"
 
 void netvars::initialize() noexcept
