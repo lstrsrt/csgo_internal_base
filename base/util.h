@@ -7,7 +7,8 @@ template<class ty>
 concept enumerator = __is_enum(ty);
 
 template<class ty>
-concept string_like = requires(ty t) {
+concept string_like = requires(ty t)
+{
     t.data();
     t.substr();
 };
@@ -27,7 +28,8 @@ namespace util {
         return u.y;
     }
 
-    inline constexpr auto array_size(const auto& x)
+    template<class ty> requires std::is_array_v<ty>
+    inline constexpr auto array_size(const ty& x)
     {
         return sizeof(x) / sizeof(x[0]);
     }

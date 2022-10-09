@@ -67,7 +67,7 @@ namespace bitfield_ops {
     template<enumerator en>
     inline en& operator>>=(en& lhs, std::integral auto rhs) noexcept
     {
-        return lhs = static_cast<en>(util::to_underlying(lhs) <<= rhs);
+        return lhs = static_cast<en>(util::to_underlying(lhs) >>= rhs);
     }
 
 }
