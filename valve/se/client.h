@@ -161,6 +161,7 @@ struct global_vars_base {
     float real_time{ };
     int	frame_count{ };
     float absolute_frame_time{ };
+    float absolute_frame_start_time_dev{ };
     float cur_time{ };
     float frame_time{ };
     int max_clients{ };

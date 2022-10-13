@@ -478,13 +478,15 @@ enum class interpolation_flag {
     latch_simulation_var = (1 << 1)
 };
 
+/* An entity is only ever one of these, but setting this up
+   as a bitfield makes it easier to filter them. */
 enum class entity_type {
-    player,
-    weapon,
-    grenade,
-    bomb,
-    all = weapon | grenade | bomb,
-    other
+    player = (1 << 0),
+    weapon = (1 << 1),
+    grenade = (1 << 2),
+    bomb = (1 << 3),
+    other = (1 << 4),
+    all = player | weapon | grenade | bomb | other,
 };
 
 enum class anim_lod_flag : uint32_t {
