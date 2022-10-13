@@ -35,12 +35,23 @@ enum class material_flag {
 };
 
 struct material {
+    VIRTUAL_FUNCTION(get_name, const char*, 0, (), (this))
+    VIRTUAL_FUNCTION(get_texture_group_name, const char*, 1, (), (this))
     VIRTUAL_FUNCTION(find_var, material_var*, 11, (const char* name, bool* found, bool complain = true), (this, name, found, complain))
+    VIRTUAL_FUNCTION(increment_ref_count, void, 12, (), (this))
     VIRTUAL_FUNCTION(modulate_alpha, void, 27, (float alpha), (this, alpha))
     VIRTUAL_FUNCTION(modulate_color, void, 28, (float r, float g, float b), (this, r, g, b))
     VIRTUAL_FUNCTION(set_flag, void, 29, (material_flag var_flag, bool state), (this, var_flag, state))
     VIRTUAL_FUNCTION(get_flag, bool, 30, (material_flag var_flag), (this, var_flag))
+    VIRTUAL_FUNCTION(set_shader, void, 34, (const char* shader), (this, shader))
     VIRTUAL_FUNCTION(is_error_material, bool, 42, (), (this))
+    VIRTUAL_FUNCTION(set_shader_and_params, void, 48, (cs::key_values* key_values), (this, key_values))
+
+    inline void modulate(const clr4& clr) noexcept
+    {
+        modulate_color(clr.r / 255.f, clr.g / 255.f, clr.b / 255.f);
+        modulate_alpha(clr.a / 255.f);
+    }
 };
 
 struct mat_render_context;

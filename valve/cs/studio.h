@@ -170,8 +170,17 @@ struct studio_hdr {
 };
 
 struct draw_model_info {
-    PAD(0x18)
-    cs::renderable* client_entity{ };
+    studio_hdr_t* hdr{ };
+    void* studio_hw_data{ };
+    uint16_t decals{ };
+    int skin{ };
+    int body{ };
+    int hitbox_set_index{ };
+    renderable* client_entity{ };
+    int lod{ };
+    void* clr_meshes{ };
+    bool static_lighting{ };
+    char lighting_state[440]{ };
 };
 
 struct draw_model_state {

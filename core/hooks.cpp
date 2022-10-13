@@ -37,7 +37,7 @@ void hooks::initialize() noexcept
 
 void hooks::end() noexcept
 {
-    for (auto* a : interfaces::hooked_tables)
+    for (auto a : interfaces::hooked_tables)
         static_cast<interface_holder<void*>*>(a)->restore();
 
     unset(on_add_entity::fn);
@@ -127,6 +127,8 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
     case cs::frame_stage::net_update_post_data_update_end:
         local.update();
         break;
+    default:
+        break;
     }
 
     return original(ecx, frame_stage);
@@ -134,13 +136,11 @@ void __fastcall hooks::frame_stage_notify::fn(se::client_dll* ecx, int, cs::fram
 
 void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_setup* view)
 {
-    if (!local.in_game)
+    if (!local || !local.in_game)
         return original(ecx, view);
 
-    if (local->is_alive()) {
-        if (!local->is_scoping())
-            view->fov = config::get<float>(vars::fov);
-    }
+    if (!local->is_scoping())
+        view->fov = config::get<float>(vars::fov);
 
     return original(ecx, view);
 }
@@ -226,9 +226,9 @@ void __fastcall hooks::lock_cursor::fn(se::surface* ecx, int)
 
 void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
 
-    auto unknown = reinterpret_cast<cs::unknown*>(handle_entity);
-    if (unknown; auto entity = unknown->get_base_entity())
-        cache::add(entity);
+    auto unknown = static_cast<cs::unknown*>(handle_entity);
+    if (unknown && unknown->get_base_entity())
+        cache::add(unknown->get_base_entity());
 
     return original(ecx, handle_entity, handle);
 
@@ -236,9 +236,9 @@ void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_e
 
 void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
 
-    auto unknown = reinterpret_cast<cs::unknown*>(handle_entity);
-    if (unknown; auto entity = unknown->get_base_entity())
-        cache::remove(entity);
+    auto unknown = static_cast<cs::unknown*>(handle_entity);
+    if (unknown && unknown->get_base_entity())
+        cache::remove(unknown->get_base_entity());
 
     return original(ecx, handle_entity, handle);
 
