@@ -27,6 +27,7 @@ void hooks::initialize() noexcept
 
     SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
     SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
+    SET_SIG_HOOK(dlls::engine, "55 8B EC 83 E4 F8 83 EC 0C 53 8B D9 56 57 89 5C 24 0C", fire_event_intern);
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
@@ -224,7 +225,8 @@ void __fastcall hooks::lock_cursor::fn(se::surface* ecx, int)
     return menu::is_active ? ecx->unlock_cursor() : original(ecx);
 }
 
-void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
+void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle)
+{
 
     auto unknown = static_cast<cs::unknown*>(handle_entity);
     if (unknown && unknown->get_base_entity())
@@ -234,7 +236,8 @@ void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_e
 
 }
 
-void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle) {
+void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle)
+{
 
     auto unknown = static_cast<cs::unknown*>(handle_entity);
     if (unknown && unknown->get_base_entity())
@@ -242,6 +245,21 @@ void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handl
 
     return original(ecx, handle_entity, handle);
 
+}
+
+bool __fastcall hooks::fire_event_intern::fn(se::event_manager* ecx, int, cs::game_event* evt, bool server, bool client)
+{
+    if (!evt)
+        return original(ecx, evt, server, client);
+
+    switch (fnv1a::hash(evt->get_name())) {
+    case "player_hurt"_hash:
+        // auto attacker = cs::util::player_from_event(evt, "attacker");
+        // ...
+        break;
+    }
+
+    return original(ecx, evt, server, client);
 }
 
 void hooks::spotted::proxy(cs::recv_proxy_data* data, void* arg0, void* arg1)

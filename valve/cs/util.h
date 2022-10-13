@@ -8,9 +8,9 @@ namespace cs {
 
 namespace util {
 
-    inline auto player_from_event(game_event* evt) noexcept
+    inline auto player_from_event(game_event* evt, std::string_view name = "userid") noexcept
     {
-        return interfaces::entity_list->get<player*>(interfaces::engine->get_player_for_uid(evt->get_int("userid")));
+        return interfaces::entity_list->get<player*>(interfaces::engine->get_player_for_uid(evt->get_int(name.data())));
     }
 
     inline bool is_targetable_player(base_entity* entity) noexcept

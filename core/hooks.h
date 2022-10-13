@@ -30,6 +30,7 @@ namespace hooks {
 
     DECLARE_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
     DECLARE_HOOK(on_remove_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
+    DECLARE_HOOK(fire_event_intern, bool, se::event_manager, cs::game_event*, bool, bool)
 
     DECLARE_PROXY(spotted, "CBaseEntity->m_bSpotted")
 
