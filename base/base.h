@@ -1,5 +1,10 @@
 #pragma once
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wunused-value"
+#pragma clang diagnostic ignored "-Wpragma-once-outside-header"
+#endif
+
 #include <chrono>
 using namespace std::chrono_literals;
 #include <cstddef>

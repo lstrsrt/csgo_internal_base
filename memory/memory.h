@@ -2,7 +2,7 @@
 
 #define CONCAT_IMPL(x, y) x##y
 #define CONCAT(x, y) CONCAT_IMPL(x, y)
-#define PAD(size) private: std::byte CONCAT(pad, __COUNTER__)[size]{ }; public:
+#define PAD(size) private: [[maybe_unused]] std::byte CONCAT(pad, __COUNTER__)[size]{ }; public:
 
 #include <intrin.h>
 

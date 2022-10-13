@@ -4,6 +4,7 @@
 #include <format>
 #include <fstream>
 #include <iostream>
+#include <string_view>
 
 #include "winapi.h"
 
