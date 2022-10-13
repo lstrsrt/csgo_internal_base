@@ -79,17 +79,17 @@ class bitfield {
 public:
     constexpr bitfield() noexcept = default;
     constexpr bitfield(en bits) noexcept
-#ifdef _MSVC
-        : bits(bits)
-#elif __clang__
+#ifndef __clang__
+        : bits(bits) { }
+#else
     {
         this->bits.value = bits;
     }
-    constexpr bitfield(std::underlying_type<en> bits) noexcept
 #endif
-#ifdef _MSVC
-        : bits(bits)
-#elif __clang__
+    constexpr bitfield(std::underlying_type<en> bits) noexcept
+#ifndef __clang__
+        : bits(bits) { }
+#else
     {
         this->bits.raw = bits;
     }
