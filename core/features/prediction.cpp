@@ -37,7 +37,7 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
 
     update();
 
-    *seed = 0;
+    *seed = cmd->random_seed;
     *player = static_cast<cs::player*>(local);
 
     backup.is_in_prediction = interfaces::prediction->is_in_prediction;
