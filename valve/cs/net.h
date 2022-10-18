@@ -68,8 +68,8 @@ struct net_channel_info {
     VIRTUAL_FUNCTION(get_avg_choke, float, 12, (cs::flow_direction flow), (this, flow))
     VIRTUAL_FUNCTION(get_avg_data, float, 13, (cs::flow_direction flow), (this, flow))
     VIRTUAL_FUNCTION(get_avg_packets, float, 14, (cs::flow_direction flow), (this, flow))
-    VIRTUAL_FUNCTION(get_sequence_number, float, 16, (cs::flow_direction flow), (this, flow))
-    VIRTUAL_FUNCTION(is_valid_packet, float, 17, (cs::flow_direction flow, int frame_number), (this, flow, frame_number))
+    VIRTUAL_FUNCTION(get_sequence_number, int, 17, (cs::flow_direction flow), (this, flow))
+    VIRTUAL_FUNCTION(is_valid_packet, bool, 18, (cs::flow_direction flow, int frame_number), (this, flow, frame_number))
 };
 
 struct net_message {

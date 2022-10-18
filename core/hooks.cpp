@@ -43,6 +43,7 @@ void hooks::end() noexcept
 
     unset(on_add_entity::fn);
     unset(on_remove_entity::fn);
+    unset(fire_event_intern::fn);
 
     netvars::unset_proxy("CBaseEntity->m_bSpotted"_hash, spotted::original);
 
@@ -67,6 +68,10 @@ LRESULT CALLBACK hooks::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
 {
     hooks::create_move_proxy::original(interfaces::client, sequence_nr, input_sample_time, is_active);
+
+    if (!interfaces::game_rules)
+        interfaces::game_rules = **dlls::client.find(PATTERN("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A"))
+        .offset(0x1).cast<se::game_rules***>();
 
     if (!is_active || !send_packet)
         return;
