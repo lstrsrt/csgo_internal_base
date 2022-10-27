@@ -117,6 +117,7 @@ struct player : public base_player {
         "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56", (this, invalidate_physics_flags), int invalidate_physics_flags)
 
     bool is_enemy(player* other = nullptr /* = local */) noexcept;
+    bool get_info(player_info& info) noexcept;
 };
 
 struct local_player {
@@ -131,6 +132,7 @@ struct local_player {
     operator player*() noexcept { return local; }
 
     bool update() noexcept;
+    void reset() noexcept;
 };
 
 }

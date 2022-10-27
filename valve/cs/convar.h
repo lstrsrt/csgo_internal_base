@@ -21,16 +21,28 @@ struct command_base {
 struct convar : public command_base {
     VIRTUAL_FUNCTION(get_name, const char*, 5, (), (this))
     VIRTUAL_FUNCTION(get_base_name, const char*, 6, (), (this))
-    VIRTUAL_FUNCTION(get_float, float, 11, (), (this))
-    VIRTUAL_FUNCTION(get_int, int, 12, (), (this))
+
+    auto get_float() noexcept
+    {
+        auto xored = *reinterpret_cast<uintptr_t*>(&parent->float_value) ^ reinterpret_cast<uintptr_t>(this);
+        return *reinterpret_cast<float*>(&xored);
+    }
+
+    auto get_int() noexcept
+    {
+        return static_cast<int>(parent->int_value ^ reinterpret_cast<uintptr_t>(this));
+    }
+
     auto get_bool() noexcept
     {
         return !!get_int();
     }
+
     auto get_string() noexcept
     {
         return parent->string ? parent->string : "";
     }
+
     VIRTUAL_FUNCTION(set_value, void, 14, (const char* value), (this, value))
     VIRTUAL_FUNCTION(set_value, void, 15, (float value), (this, value))
     VIRTUAL_FUNCTION(set_value, void, 16, (int value), (this, value))

@@ -6,17 +6,21 @@ namespace cs {
 
 bool player::is_enemy(player* other) noexcept
 {
-    if (other == this)
+    static const auto teammates_are_enemies = interfaces::cvar->find_var("mp_teammates_are_enemies");
+    const auto cmp = other ? other : cheat::local.local;
+
+    if (get_index() == cmp->get_index())
         return false;
 
-    static const auto teammates_are_enemies = interfaces::cvar->find_var("mp_teammates_are_enemies");
-    if (teammates_are_enemies->get_int())
+    if (teammates_are_enemies->get_bool() && get_team() == cmp->get_team())
         return true;
 
-    if (!other)
-        return cheat::local->get_team() != get_team();
+    return get_team() != cmp->get_team();
+}
 
-    return other->get_team() != get_team();
+bool player::get_info(player_info& info) noexcept
+{
+    return interfaces::engine->get_player_info(get_index(), &info);
 }
 
 bool local_player::update() noexcept
@@ -32,6 +36,14 @@ bool local_player::update() noexcept
         return false;
 
     return true;
+}
+
+void local_player::reset() noexcept
+{
+    local = nullptr;
+    cur_cmd = nullptr;
+    view = { };
+    in_game = false;
 }
 
 }

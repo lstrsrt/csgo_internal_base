@@ -27,7 +27,7 @@ void hooks::initialize() noexcept
 
     SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 56 8B F1 57", on_add_entity);
     SET_SIG_HOOK(dlls::client, "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07", on_remove_entity);
-    SET_SIG_HOOK(dlls::engine, "55 8B EC 83 E4 F8 83 EC 0C 53 8B D9 56 57 89 5C 24 0C", fire_event_intern);
+    SET_SIG_HOOK(dlls::engine, "55 8B EC 83 E4 F8 83 EC 0C 8B C1", fire_event_intern);
 
     SET_PROXY("CBaseEntity->m_bSpotted", spotted);
 
@@ -153,7 +153,7 @@ void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_set
 
 float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)
 {
-    if (!local || (local && local->is_scoping()))
+    if (!local || local->is_scoping())
         return original(ecx);
 
     return config::get<float>(vars::viewmodel_fov);

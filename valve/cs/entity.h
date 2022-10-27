@@ -498,19 +498,12 @@ struct studio_hdr;
 struct weapon;
 
 struct weapon_info {
-    PAD(0x14)
+    PAD(0x4);
+    const char* class_name{ };
+    PAD(0xc);
     int max_clip1{ };
-    int max_clip2{ };
-    int default_clip1{ };
-    int default_clip2{ };
-    int primary_max_reserve_ammo{ };
-    int secondary_max_reserve_ammo{ };
-    char* world_model{ };
-    char* view_model{ };
-    char* dropped_model{ };
-    PAD(0x50)
-    char* hud_name{ };
-    char* weapon_name{ };
+    PAD(0x70);
+    const char* weapon_name{ };
     PAD(0x2)
     bool is_melee_weapon{ };
     PAD(0x9)
@@ -523,13 +516,7 @@ struct weapon_info {
     float cycle_time{ };
     PAD(0xc)
     bool full_auto{ };
-    PAD(0x3)
-    int damage{ };
-    float headshot_multiplier{ };
-    float armor_ratio{ };
-    int bullets{ };
-    float penetration{ };
-    PAD(0x8)
+    PAD(0x1f)
     float range{ };
     float range_modifier{ };
     float throw_velocity{ };
