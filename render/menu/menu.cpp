@@ -4,7 +4,7 @@
 
 void menu::run() noexcept
 {
-    if (!is_active)
+    if (!is_open)
         return;
 
     // TODO - handle menu movement
