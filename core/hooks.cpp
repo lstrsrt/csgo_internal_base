@@ -178,7 +178,6 @@ void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
         interfaces::surface->start_drawing();
 
         render::text(render::fonts::watermark, { 15, 15 }, L"hello");
-        visuals::esp::run();
         menu::run();
 
         interfaces::surface->finish_drawing();

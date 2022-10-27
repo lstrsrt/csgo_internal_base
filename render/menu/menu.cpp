@@ -31,7 +31,6 @@ void menu::run() noexcept
         slider(L"FOV", config::get<float>(vars::fov), 30.0f, 130.0f, { 100, 145 }, 0);
         slider(L"Viewmodel FOV", config::get<float>(vars::viewmodel_fov), 30.0f, 130.0f, { 100, 165 }, 0);
         checkbox(L"Disable postprocessing", config::get<bool>(vars::disable_postprocessing), { 100, 185 });
-        checkbox(L"Fullbright", config::get<bool>(vars::fullbright), { 100, 205 });
         break;
     case tab_id::misc:
         button(L"Unhide convars", []() {
@@ -47,7 +46,6 @@ void menu::run() noexcept
             LOG_INFO("Unhid {} convars.", i);
         }, { 100, 125 }, { 100, 30 });
         checkbox(L"Infinite crouch", config::get<bool>(vars::infinite_crouch), { 100, 160 });
-        checkbox(L"Unlock inventory", config::get<bool>(vars::unlock_inventory), { 100, 180 });
         break;
     case tab_id::skins:
         break;
