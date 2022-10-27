@@ -485,8 +485,9 @@ enum class entity_type {
     weapon = (1 << 1),
     grenade = (1 << 2),
     bomb = (1 << 3),
-    other = (1 << 4),
-    all = player | weapon | grenade | bomb | other,
+    unknown = (1 << 4),
+    all_items = weapon | grenade | bomb,
+    all = player | weapon | grenade | bomb | unknown,
 };
 
 enum class anim_lod_flag : uint32_t {

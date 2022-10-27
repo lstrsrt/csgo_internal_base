@@ -75,7 +75,7 @@ entity_type base_entity::get_entity_type() noexcept
     case class_id::weapon_xm1014:
         return entity_type::weapon;
     default:
-        return entity_type::other;
+        return entity_type::unknown;
     }
 
 }

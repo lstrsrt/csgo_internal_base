@@ -19,18 +19,18 @@ namespace hooks {
     inline WNDPROC original_wnd_proc{ };
     extern LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+    DECLARE_HOOK(level_shutdown, void, se::client_dll)
     DECLARE_HOOK(create_move_proxy, void, se::client_dll, int, float, bool)
     DECLARE_HOOK(frame_stage_notify, void, se::client_dll, cs::frame_stage)
     DECLARE_HOOK(override_view, void, se::client_mode, cs::view_setup*)
     DECLARE_HOOK(get_viewmodel_fov, float, se::client_mode)
-    DECLARE_HOOK(paint, void, se::vgui, cs::paint_mode)
-    DECLARE_HOOK(draw_model_execute, void, se::model_render, cs::mat_render_context*,
-                 const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)
-    DECLARE_HOOK(lock_cursor, void, se::surface)
-
     DECLARE_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
     DECLARE_HOOK(on_remove_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
     DECLARE_HOOK(fire_event_intern, bool, se::event_manager, cs::game_event*, bool, bool)
+    DECLARE_HOOK(draw_model_execute, void, se::model_render, cs::mat_render_context*,
+                 const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)
+    DECLARE_HOOK(lock_cursor, void, se::surface)
+    DECLARE_HOOK(paint, void, se::vgui, cs::paint_mode)
 
     DECLARE_PROXY(spotted, "CBaseEntity->m_bSpotted")
 

@@ -1,9 +1,9 @@
 #include "cheat.h"
 #include "../render/menu/menu.h"
 #include "features/features.h"
-#include "hooks.h"
 #include "features/cache.h"
 #include "features/variables.h"
+#include "hooks.h"
 
 void hooks::initialize() noexcept
 {
@@ -11,12 +11,15 @@ void hooks::initialize() noexcept
     interfaces::dx9_device->GetCreationParameters(&creation_params);
     if (creation_params.hFocusWindow) {
         game_window = creation_params.hFocusWindow;
-        original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtrA(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc)));
+        original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLong(game_window, GWLP_WNDPROC, reinterpret_cast<LONG>(wnd_proc)));
+    } else {
+        LOG_ERROR("Invalid focus window, unable to redirect WndProc!");
     }
 
     hook_func = dlls::game_overlay_renderer.find(PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
     unhook_func = dlls::game_overlay_renderer.find(PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
 
+    SET_VT_HOOK(interfaces::client, level_shutdown, 7);
     SET_VT_HOOK(interfaces::client, frame_stage_notify, 37);
     SET_VT_HOOK(interfaces::client, create_move_proxy, 22);
     SET_VT_HOOK(interfaces::client_mode, override_view, 18);
@@ -57,12 +60,20 @@ LRESULT CALLBACK hooks::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
     if (input::is_key_active({ VK_INSERT, input::key_type::toggle }))
         menu::toggle();
 
-    interfaces::input_system->enable_input(!menu::is_active);
+    interfaces::input_system->enable_input(!menu::is_open);
 
-    if (menu::is_active)
+    if (menu::is_open)
         return TRUE;
 
     return CallWindowProcA(original_wnd_proc, hwnd, msg, wparam, lparam);
+}
+
+void __fastcall hooks::level_shutdown::fn(se::client_dll* ecx, int)
+{
+    local.in_game = false;
+    cache::clear();
+
+    return original(ecx);
 }
 
 static void __stdcall create_move(int sequence_nr, float input_sample_time, bool is_active, bool& send_packet)
@@ -153,7 +164,7 @@ void __fastcall hooks::override_view::fn(se::client_mode* ecx, int, cs::view_set
 
 float __fastcall hooks::get_viewmodel_fov::fn(se::client_mode* ecx, int)
 {
-    if (!local || local->is_scoping())
+    if (!local || (local && local->is_scoping()))
         return original(ecx);
 
     return config::get<float>(vars::viewmodel_fov);
@@ -167,6 +178,7 @@ void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
         interfaces::surface->start_drawing();
 
         render::text(render::fonts::watermark, { 15, 15 }, L"hello");
+        visuals::esp::run();
         menu::run();
 
         interfaces::surface->finish_drawing();
@@ -195,29 +207,29 @@ static auto init_material() noexcept
     return interfaces::material_system->create_material("default.vmt", kv);
 }
 
-static void override_material(bool xqz) noexcept
+static void override_material(const clr4& clr, bool xqz) noexcept
 {
     static auto material = init_material();
     material->set_flag(cs::material_flag::ignore_z, xqz);
-    material->modulate_color(0.8f, 0.3f, 0.0f);
-    material->modulate_alpha(1.0f);
+    material->modulate_color(clr.r_base(), clr.g_base(), clr.b_base());
+    material->modulate_alpha(clr.a_base());
     interfaces::model_render->forced_material_override(material);
 }
 
-void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::mat_render_context* render_ctx, const cs::draw_model_state& state,
-    const cs::model_render_info& info, mat3x4* bone_to_world)
+void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::mat_render_context* render_ctx,
+const cs::draw_model_state& state, const cs::model_render_info& info, mat3x4* bone_to_world)
 {
-    if (ecx->is_forced_material_override())
+    if (!local || ecx->is_forced_material_override())
         return original(ecx, render_ctx, state, info, bone_to_world);
 
     const auto model_name = interfaces::model_info->get_model_name(info.model);
     if (strstr(model_name, "models/player")) {
         const auto player = interfaces::entity_list->get<cs::player*>(info.entity_index);
-        if (player) {
-            override_material(true);
+        if (player && player->is_enemy()) {
+            override_material({ 200, 0, 50, 255 }, true);
             original(ecx, render_ctx, state, info, bone_to_world);
             ecx->forced_material_override(nullptr);
-            override_material(false);
+            override_material({ 0, 255, 170, 255 }, false);
         }
     }
 
@@ -227,29 +239,29 @@ void __fastcall hooks::draw_model_execute::fn(se::model_render* ecx, int, cs::ma
 
 void __fastcall hooks::lock_cursor::fn(se::surface* ecx, int)
 {
-    return menu::is_active ? ecx->unlock_cursor() : original(ecx);
+    return menu::is_open ? ecx->unlock_cursor() : original(ecx);
 }
 
 void __fastcall hooks::on_add_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle)
 {
-
-    auto unknown = static_cast<cs::unknown*>(handle_entity);
-    if (unknown && unknown->get_base_entity())
-        cache::add(unknown->get_base_entity());
+    if (ecx && handle_entity && handle.is_valid()) {
+        auto unknown = static_cast<cs::unknown*>(handle_entity);
+        if (unknown && unknown->get_base_entity())
+            cache::add(unknown->get_base_entity());
+    }
 
     return original(ecx, handle_entity, handle);
-
 }
 
 void __fastcall hooks::on_remove_entity::fn(se::entity_list* ecx, int, cs::handle_entity* handle_entity, cs::base_handle handle)
 {
-
-    auto unknown = static_cast<cs::unknown*>(handle_entity);
-    if (unknown && unknown->get_base_entity())
-        cache::remove(unknown->get_base_entity());
+    if (ecx && handle_entity && handle.is_valid()) {
+        auto unknown = static_cast<cs::unknown*>(handle_entity);
+        if (unknown && unknown->get_base_entity())
+            cache::remove(unknown->get_base_entity());
+    }
 
     return original(ecx, handle_entity, handle);
-
 }
 
 bool __fastcall hooks::fire_event_intern::fn(se::event_manager* ecx, int, cs::game_event* evt, bool server, bool client)

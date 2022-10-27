@@ -13,7 +13,7 @@ namespace cs {
     };
 
     struct cached_entity {
-        explicit cached_entity(base_entity* p, const entity_type t) noexcept
+        explicit cached_entity(base_entity* p, entity_type t) noexcept
             : ptr(p), type(t) { }
 
         cs::base_entity* ptr;
@@ -43,10 +43,16 @@ namespace cache {
         }
     }
 
+    inline void clear() noexcept
+    {
+        entities.clear();
+        players.clear();
+    }
+
     inline void add(cs::base_entity* entity) noexcept
     {
         const auto type = entity->get_entity_type();
-        if (entity->is_player())
+        if (type == cs::entity_type::player)
             players.emplace_back(static_cast<cs::player*>(entity));
         else
             entities.emplace_back(cs::cached_entity(entity, type));
@@ -55,18 +61,18 @@ namespace cache {
     inline void remove(cs::base_entity* entity) noexcept
     {
         const auto type = entity->get_entity_type();
-        if (entity->is_player()) {
-            auto it = std::ranges::find_if(entities, [entity](cs::cached_entity& e) {
-                return e.ptr == entity;
-            });
-            if (it != entities.cend())
-                entities.erase(it);
-        } else {
+        if (type == cs::entity_type::player) {
             auto it = std::ranges::find_if(players, [entity](cs::player* p) {
-                return p == static_cast<cs::player*>(entity);
+                return p == entity;
             });
             if (it != players.cend())
                 players.erase(it);
+        } else {
+            auto it = std::ranges::find_if(entities, [entity](const cs::cached_entity& e) {
+                return e.ptr == static_cast<cs::player*>(entity);
+            });
+            if (it != entities.cend())
+                entities.erase(it);
         }
     }
 
@@ -89,12 +95,12 @@ namespace cache {
     }
 
     void iterate_players(std::invocable<cs::player*> auto&& callback,
-                         bitfield<cs::player_filter> filter) noexcept
+                         bitfield<cs::player_filter> filter = { } /* = all */) noexcept
     {
         if (players.empty())
             return;
 
-        for (auto& [player, type] : players) {
+        for (auto player : players) {
             if (filter.is_set(cs::player_filter::dormant))
                 if (player->is_dormant())
                     continue;

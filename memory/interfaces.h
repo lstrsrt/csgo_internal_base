@@ -18,9 +18,10 @@ struct interface_holder {
     uintptr_t* real_vmt{ };
     std::unique_ptr<uintptr_t[]> replacement_vmt{ };
 
-    constexpr ptr operator->() noexcept { return instance; }
+    constexpr ptr operator->() const noexcept { return instance; }
+    constexpr void operator=(ptr rhs) noexcept { instance = rhs; }
+    constexpr operator bool() const noexcept { return instance; }
     constexpr operator ptr() noexcept { return instance; }
-    constexpr ptr operator=(ptr rhs) noexcept { return instance; }
 
     // Pass false to replace_vmt if you don't hook anything from the table or if get_vmt_length() is crashing
     template<bool replace_vmt = false>
