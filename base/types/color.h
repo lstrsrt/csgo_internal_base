@@ -13,6 +13,12 @@ struct clr4 {
     float g_base() const noexcept { return g / 255.f; }
     float b_base() const noexcept { return b / 255.f; }
     float a_base() const noexcept { return a / 255.f; }
+
+    static clr4 white(uint8_t a = 255) noexcept { return clr4(255, 255, 255, a); }
+    static clr4 black(uint8_t a = 255) noexcept { return clr4(0, 0, 0, a); }
+    static clr4 red(uint8_t a = 255) noexcept { return clr4(255, 0, 0, a); }
+    static clr4 green(uint8_t a = 255) noexcept { return clr4(0, 255, 0, a); }
+    static clr4 blue(uint8_t a = 255) noexcept { return clr4(0, 0, 255, a); }
 };
 
 struct clr3 {
