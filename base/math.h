@@ -108,7 +108,7 @@ namespace math {
             return std::uniform_int_distribution{ min, max }(engine);
         }
 
-        template<floating_point fp>
+        template<std::floating_point fp>
         inline fp get(fp min, fp max) noexcept
         {
             return std::uniform_real_distribution{ min, max }(engine);

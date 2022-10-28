@@ -6,8 +6,15 @@ struct clr4 {
     uint8_t r{ }, g{ }, b{ }, a{ };
 
     constexpr clr4() noexcept = default;
-    constexpr clr4(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
+
+    template<std::integral ix, std::integral ax>
+    constexpr clr4(ix r, ix g, ix b, ax a) noexcept
         : r(r), g(g), b(b), a(a) { }
+
+    template<std::floating_point fp>
+    constexpr clr4(fp r, fp g, fp b, fp a) noexcept
+        : r(static_cast<uint8_t>(r * 255)), g(static_cast<uint8_t>(g * 255)),
+          b(static_cast<uint8_t>(b * 255)), a(static_cast<uint8_t>(a * 255)) { }
 
     float r_base() const noexcept { return r / 255.f; }
     float g_base() const noexcept { return g / 255.f; }

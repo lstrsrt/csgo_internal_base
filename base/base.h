@@ -3,6 +3,7 @@
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wunused-value"
 #pragma clang diagnostic ignored "-Wpragma-once-outside-header"
+#pragma clang diagnostic ignored "-Wreorder-ctor"
 #endif
 
 #include <chrono>
