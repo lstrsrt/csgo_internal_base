@@ -4,9 +4,10 @@
 namespace render {
 
     namespace fonts {
-        inline hfont menu{ };
-        inline hfont tab{ };
-        inline hfont watermark{ };
+        inline h_font menu{ };
+        inline h_font tab{ };
+        inline h_font watermark{ };
+        inline h_font esp{ };
     }
 
     enum class text_flag {
@@ -24,11 +25,17 @@ namespace render {
 
     bool initialize() noexcept;
 
-    void create_font(hfont& font, std::string_view name, int height, int weight, bitfield<font_flag> flags = { }) noexcept;
-    void line(int x0, int y0, int x1, int y1, const clr4& clr = { 255, 255, 255, 255 }) noexcept;
-    /* Rectangle must be filled or outlined. */
-    void rectangle(int x0, int y0, int x1, int y1, bitfield<flag> flags = flag::outlined, const clr4& clr = { 255, 255, 255, 255 }) noexcept;
-    void outlined_circle(const d2& center_pos, int radius, int segments = 12, const clr4& clr = { 255, 255, 255, 255 }) noexcept;
-    void text(hfont font, const d2& pos, std::wstring_view str, bitfield<text_flag> flags = { }, const clr4& clr = { 255, 255, 255, 255 }) noexcept;
+    h_font create_font(std::string_view name, int height, int weight, bitfield<font_flag> flags = { }) noexcept;
+    d2 get_text_size(h_font font, std::wstring_view str) noexcept;
+    d2 get_text_size(h_font font, std::string_view str) noexcept;
+    void line(int x0, int y0, int x1, int y1, const clr4& clr = clr4::white()) noexcept;
+    void line(d2 pos, d2 size, const clr4& clr = clr4::white()) noexcept;
+    void filled_rect(int x0, int y0, int x1, int y1, const clr4& clr = clr4::white()) noexcept;
+    void filled_rect(d2 pos, d2 size, const clr4& clr = clr4::white()) noexcept;
+    void outlined_rect(int x0, int y0, int x1, int y1, const clr4& clr = clr4::white()) noexcept;
+    void outlined_rect(d2 pos, d2 size, const clr4& clr = clr4::white()) noexcept;
+    void outlined_circle(d2 center_pos, int radius, int segments = 12, const clr4& clr = clr4::white()) noexcept;
+    void text(h_font font, d2 pos, std::wstring_view str, bitfield<text_flag> flags = { }, const clr4& clr = clr4::white()) noexcept;
+    void text(h_font font, d2 pos, std::string_view str, bitfield<text_flag> flags = { }, const clr4& clr = clr4::white()) noexcept;
 
 }

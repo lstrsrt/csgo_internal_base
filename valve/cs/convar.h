@@ -64,6 +64,7 @@ struct convar : public command_base {
     float min{ };
     bool has_max{ };
     float max{ };
+    PAD(0x10)
     utl_vec<std::add_pointer_t<void(convar*, const char*, float)>> on_change_callbacks{ };
 };
 

@@ -1,135 +1,190 @@
-#include "menu.h"
+#include "controls.h"
 
-void menu::controls::checkbox(std::wstring_view text, bool& var, const d2& pos) noexcept
+void menu::controls::tab(std::wstring_view str, tab_id id) noexcept
 {
-    constexpr int box_size = 15;
-    clr3 fill_clr = inactive_ctrl_color;
-
-    render::rectangle(pos.x, pos.y, pos.x + box_size, pos.y + box_size, render::flag::outlined, { 0, 0, 0, 255 });
-
-    if (var)
-        fill_clr = accent_color;
-
-    if (input::is_hovering_item(pos, { box_size, box_size })) {
-        if (input::is_key_active({ VK_LBUTTON, input::key_type::toggle }))
-            var = !var;
-    }
-
-    render::rectangle(pos.x + 2, pos.y + 2, pos.x + box_size - 2, pos.y + box_size - 2, render::flag::filled, fill_clr.to_clr4());
-    render::text(render::fonts::menu, { pos.x + box_size + 5, pos.y }, text);
-}
-
-void menu::controls::tab(std::wstring_view text, tab_id id, const d2& pos) noexcept
-{
-    constexpr d2 region_size = { 90, 30 };
-    clr3 text_clr = { 255, 255, 255 };
-    clr3 line_clr = { 30, 30, 30 };
+    constexpr d2 region_size{ 90, 30 };
+    const d2 pos{ base_pos.x + region_size.x * static_cast<int>(id), base_pos.y };
+    clr4 text_clr{ 255, 255, 255, 255 };
+    clr4 line_clr{ 30, 30, 30, 255 };
 
     if (input::is_hovering_item(pos, region_size)) {
-        text_clr = accent_color;
+        text_clr = hover_color;
         if (input::is_key_active({ VK_LBUTTON, input::key_type::toggle }))
             cur_tab = id;
     }
 
-    if (cur_tab == id)
+    if (id == cur_tab)
         line_clr = text_clr = accent_color;
 
-    render::text(render::fonts::tab, { pos.x + 45, pos.y + 15 }, text, render::text_flag::centered, text_clr.to_clr4());
-    render::line(pos.x + 1, pos.y + 1, pos.x + region_size.x + 1, pos.y + 1, line_clr.to_clr4());
-    render::line(pos.x + 1, pos.y + 2, pos.x + region_size.x + 1, pos.y + 2, line_clr.to_clr4());
+    text(fonts::tab, { pos.x + static_cast<int>(region_size.x / 2), pos.y + static_cast<int>(region_size.y / 2) }, str,
+         text_flag::centered, text_clr);
+    line(pos.x + 1, pos.y + 1, pos.x + region_size.x + 1, pos.y + 1, line_clr);
 }
 
-void menu::controls::button(std::wstring_view text, std::function<void(void)> on_click, const d2& pos, const d2& size, bool bg) noexcept
+void menu::controls::checkbox(std::wstring_view str, bool& var) noexcept
 {
-    clr3 fill_clr = { 30, 30, 30 };
+    constexpr d2 box_size{ 16, 16 };
+    const d2 text_size = get_text_size(fonts::menu, str);
+    const d2 pos = calculate_position(ctrl_type::checkbox, fnv1a::hash(str));
+    clr4 fill_clr = inactive_color;
 
-    if (bg) {
-        render::rectangle(pos.x, pos.y, pos.x + size.x, pos.y + size.y);
-        fill_clr = inactive_ctrl_color;
+    outlined_rect(pos, box_size, clr4::black());
+
+    if (var)
+        fill_clr = accent_color;
+
+    if (input::is_hovering_item(pos, { box_size.x + text_size.x, box_size.y })) {
+        if (!var)
+            fill_clr = hover_color;
+        if (input::is_key_active({ VK_LBUTTON, input::key_type::toggle }))
+            var = !var;
     }
+
+    filled_rect(pos.x + 2, pos.y + 2, pos.x + box_size.x - 2, pos.y + box_size.y - 2, fill_clr);
+    text(fonts::menu, { pos.x + box_size.x + 5, pos.y }, str);
+}
+
+void menu::controls::button(std::wstring_view str, std::function<void(void)> callback, d2 size) noexcept
+{
+    const d2 pos = calculate_position(ctrl_type::button, fnv1a::hash(str));
+    clr4 fill_clr{ 30, 30, 30, 255 };
+    clr4 text_clr{ 255, 255, 255, 255 };
+
+    outlined_rect(pos, size);
+    fill_clr = inactive_color;
 
     if (input::is_hovering_item(pos, size)) {
-        if (!bg)
-            fill_clr = accent_color;
+        text_clr = hover_color;
         if (input::is_key_active({ VK_LBUTTON, input::key_type::toggle }))
-            on_click();
+            callback();
     }
 
-    render::rectangle(pos.x + 1, pos.y + 1, pos.x + size.x - 1, pos.y + size.y + 2, render::flag::filled, fill_clr.to_clr4());
-    render::text(render::fonts::menu, { pos.x + size.x / 2, pos.y + size.y / 2 }, text, render::text_flag::centered);
+    filled_rect(pos.x + 1, pos.y + 1, pos.x + size.x - 1, pos.y + size.y + 2, fill_clr);
+    text(fonts::menu, { pos.x + size.x / 2, pos.y + size.y / 2 }, str, text_flag::centered, text_clr);
 }
 
-void menu::controls::slider(std::wstring_view text, int& var, int min, int max, const d2& pos) noexcept
+void menu::controls::slider(std::wstring_view str, int& var, int min, int max) noexcept
 {
-    constexpr d2 region_size = { 100, 18 }; // 125?
-    const float scaled = abs(static_cast<float>(min) / static_cast<float>(region_size.x) - static_cast<float>(max) / static_cast<float>(region_size.x));
-    const int fill_width = std::clamp(region_size.x / (max - min) * (var - min), 0, region_size.x);
+    constexpr d2 region_size{ 120, 18 };
+    const d2 pos = calculate_position(ctrl_type::slider, fnv1a::hash(str));
+    const auto scaled = std::abs(static_cast<float>(min) / region_size.x - static_cast<float>(max) / region_size.x);
+    const auto fill_width = var / scaled - (min / scaled);
 
-    render::rectangle(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, render::flag::outlined, { 0, 0, 0, 255 });
-    render::rectangle(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, render::flag::filled, inactive_ctrl_color.to_clr4());
-    render::rectangle(pos.x + 2, pos.y + 2, pos.x + fill_width - 2, pos.y + region_size.y - 2, render::flag::filled, accent_color.to_clr4());
+    outlined_rect(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, clr4::black());
+    filled_rect(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, inactive_color);
+    filled_rect(pos.x + 2, pos.y + 2, pos.x + static_cast<int>(fill_width) - 2, pos.y + region_size.y - 2, accent_color);
 
     if (input::is_hovering_item(pos, region_size)) {
-        if (input::is_key_active({ VK_LBUTTON, input::key_type::hold }))
-            var = std::clamp(min + static_cast<int>((input::mouse_pos.x - pos.x) * scaled), min, max);
-    }
-
-    render::text(render::fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, std::to_wstring(var), render::text_flag::centered);
-    render::text(render::fonts::menu, { pos.x + region_size.x + 5, pos.y }, text);
-}
-
-void menu::controls::slider(std::wstring_view text, float& var, float min, float max, const d2& pos, int precision) noexcept
-{
-    constexpr d2 region_size = { 100, 18 }; // 125?
-    const float scalar = (max - min) / region_size.x;
-    const float fill_width = var / scalar - (min / scalar);
-
-    render::rectangle(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, render::flag::outlined, { 0, 0, 0, 255 });
-    render::rectangle(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, render::flag::filled, inactive_ctrl_color.to_clr4());
-    render::rectangle(pos.x + 2, pos.y + 2, pos.x + static_cast<int>(fill_width - 2), pos.y + region_size.y - 2, render::flag::filled, accent_color.to_clr4());
-
-    if (input::is_hovering_item(pos, region_size)) {
-        if (input::is_key_active({ VK_LBUTTON, input::key_type::hold }))
+        if (holding_lmb())
             var = static_cast<int>((static_cast<float>(input::mouse_pos.x - pos.x)) / region_size.x * (max - min) + min);
+    }
+
+    text(fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, std::to_wstring(var),
+                 text_flag::centered);
+    text(fonts::menu, { pos.x + region_size.x + 5, pos.y }, str);
+}
+
+void menu::controls::slider(std::wstring_view str, float& var, float min, float max, int precision) noexcept
+{
+    constexpr d2 region_size{ 120, 18 };
+    const d2 pos = calculate_position(ctrl_type::slider, fnv1a::hash(str));
+    const float scaled = std::abs(min / region_size.x - max / region_size.x);
+    const float fill_width = var / scaled - (min / scaled);
+
+    outlined_rect(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, clr4::black());
+    filled_rect(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, inactive_color);
+    filled_rect(pos.x + 2, pos.y + 2, pos.x + static_cast<int>(fill_width - 2), pos.y + region_size.y - 2, accent_color);
+
+    if (input::is_hovering_item(pos, region_size)) {
+        if (holding_lmb())
+            var = static_cast<float>(static_cast<float>(input::mouse_pos.x - pos.x) / region_size.x * (max - min) + min);
     }
 
     std::wostringstream stream{ };
     stream << std::fixed << std::setprecision(precision) << var;
 
-    render::text(render::fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, stream.str(), render::text_flag::centered);
-    render::text(render::fonts::menu, { pos.x + region_size.x + 5, pos.y }, text);
+    text(fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, stream.str(), text_flag::centered);
+    text(fonts::menu, { pos.x + region_size.x + 5, pos.y }, str);
 }
 
-void menu::controls::combo_box(std::wstring_view text, const std::vector<std::wstring_view>& options, int& var, const d2& pos) noexcept
+void menu::controls::multibox(std::wstring_view str, const std::vector<std::wstring_view>& names, std::vector<bool>& vars) noexcept
 {
+    constexpr d2 region_size{ 120, 18 };
+    const d2 picker_size{ 100, static_cast<int>(region_size.y * vars.size()) };
+    const d2 pos = calculate_position(ctrl_type::dropdown, fnv1a::hash(str));
+    clr4 item_color = { 255, 255, 255, 255 };
 
-    // TODO - doesn't select anything yet
+    outlined_rect(pos, region_size, clr4::black());
+    filled_rect(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, inactive_color);
 
-    constexpr d2 region_size = { 100, 18 };
-    const d2 picker_size{ 100, static_cast<int>(18 * options.size()) };
-    clr3 item_color = inactive_ctrl_color;
-
-    render::rectangle(pos.x, pos.y, pos.x + region_size.x, pos.y + region_size.y, render::flag::outlined, { 0, 0, 0, 255 });
-    render::rectangle(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, render::flag::filled, inactive_ctrl_color.to_clr4());
-    render::line(pos.x + 85, pos.y - 2, pos.x + 85, pos.y + region_size.y - 2, { 0, 0, 0, 255 });
-    // add triangle here...
-
-    static bool is_selected{ };
+    static bool is_active{ };
     if (input::is_hovering_item(pos, region_size)) {
+        item_color = hover_color;
         if (input::is_key_active({ VK_LBUTTON, input::key_type::toggle }))
-            is_selected = !is_selected;
+            is_active = !is_active;
     }
 
-    if (is_selected) {
-        for (size_t i{ }; i < options.size(); i++) {
-            render::text(render::fonts::menu, { pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i) }, options[i]);
-            if (input::is_hovering_item({ pos.x, pos.y + static_cast<int>(18 * i) }, region_size))
-                item_color = accent_color;
-            render::rectangle(pos.x + 2, pos.y + region_size.y + 2, pos.x + 2, pos.y + region_size.y + static_cast<int>(18 * i),
-                render::flag::filled, item_color.to_clr4());
+    bool empty{ true };
+    std::wstring selected{ };
+    int selected_amt{ };
+
+    for (size_t i{ }; i < vars.size(); i++) {
+        if (vars[i]) {
+            empty = false;
+            selected_amt++;
+            if (i != 0 && selected_amt > 1)
+                selected += L", ";
+            selected += names[i];
+            item_color = accent_color;
+        } else
+            item_color = { 255, 255, 255, 255 };
+
+        if (is_active) {
+            const int h = region_size.y * i;
+            if (input::is_hovering_item({ pos.x, pos.y + static_cast<int>(region_size.y * (i + 1)) }, region_size)) {
+                text(fonts::menu, { pos.x + 5, pos.y + region_size.y + h }, names[i], { }, hover_color);
+                if (input::is_key_active({ VK_LBUTTON, input::key_type::toggle }))
+                    vars[i] = !vars[i];
+            } else
+                text(fonts::menu, { pos.x + 5, pos.y + region_size.y + h }, names[i], { }, item_color);
         }
     }
 
-    render::text(render::fonts::menu, { pos.x + 5, pos.y + 2 }, std::to_wstring(var));
-    render::text(render::fonts::menu, { pos.x + region_size.x + 5, pos.y }, text);
+    if (selected.size() > 22) {
+        selected.resize(22);
+        selected += L"...";
+    }
+
+    text(fonts::menu, { pos.x + 5, pos.y + 2 }, empty ? L"None" : selected);
+    text(fonts::menu, { pos.x + region_size.x + 5, pos.y }, str);
+}
+
+d2 menu::controls::calculate_position(ctrl_type type, hash_t hash) noexcept
+{
+    /* TODO - when using multiple columns, x will not be constant anymore
+       and one map for every column will be needed */
+
+    constexpr size_t tab_count = static_cast<size_t>(tab_id::count);
+    constexpr size_t ctrl_count = static_cast<size_t>(ctrl_type::count);
+
+    constexpr std::array<int, ctrl_count> y_offsets{
+        20, // Checkbox
+        40, // Button
+        20, // Slider
+        20, // Dropdown
+    };
+
+    static std::array<std::unordered_map<hash_t, d2>, tab_count> all_items{ };
+    static std::array<int, tab_count> total_y_offsets{ };
+    static bool once = []() { std::ranges::fill(total_y_offsets, 34); return true; }();
+
+    auto& items = all_items[static_cast<size_t>(cur_tab)];
+    int& y_offset = total_y_offsets[static_cast<size_t>(cur_tab)];
+
+    if (items.find(hash) == items.cend()) {
+        items[hash] = { 10, y_offset };
+        y_offset += static_cast<int>(y_offsets[static_cast<size_t>(type)]);
+    }
+
+    return menu::base_pos + items.at(hash);
 }

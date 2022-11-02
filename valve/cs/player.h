@@ -118,18 +118,23 @@ struct player : public base_player {
 
     bool is_enemy(player* other = nullptr /* = local */) noexcept;
     bool get_info(player_info& info) noexcept;
+
+    inline bool is_alive() noexcept
+    {
+        return get_health() > 0 && get_life_state() == life_state::alive;
+    }
 };
 
 struct local_player {
-    player* local{ };
+    player* ptr{ };
     user_cmd* cur_cmd{ };
     angle view{ };
     bool in_game{ };
 
-    auto operator->() noexcept { return local; }
-    operator bool() noexcept { return local; }
-    operator base_player*() noexcept { return local; }
-    operator player*() noexcept { return local; }
+    auto operator->() noexcept { return ptr; }
+    operator bool() noexcept { return ptr; }
+    operator base_player*() noexcept { return ptr; }
+    operator player*() noexcept { return ptr; }
 
     bool update() noexcept;
     void reset() noexcept;

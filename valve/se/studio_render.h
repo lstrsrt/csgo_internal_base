@@ -40,11 +40,10 @@ struct studio_render {
 
     inline void set_color(const clr4& clr) noexcept
     {
-        color_modulation[0] = static_cast<float>(clr.r / 255.0f);
-        color_modulation[1] = static_cast<float>(clr.g / 255.0f);
-        color_modulation[2] = static_cast<float>(clr.b / 255.0f);
-
-        alpha_modulation = clr.a / 255.f;
+        color_modulation[0] = clr.r_base();
+        color_modulation[1] = clr.g_base();
+        color_modulation[2] = clr.b_base();
+        alpha_modulation = clr.a_base();
     }
 
     inline void set_material(cs::material* mat) noexcept

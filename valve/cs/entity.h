@@ -406,8 +406,7 @@ enum class entity_flag {
     godmode = (1 << 15)
 };
 
-enum class eflag
-{
+enum class eflag {
     dirty_abs_transform = (1 << 11),
     dirty_abs_velocity = (1 << 12),
     dirty_abs_ang_velocity = (1 << 13),
@@ -566,7 +565,6 @@ struct base_entity : public client_entity {
     VIRTUAL_FUNCTION(get_attachment, bool, 84, (int index, vec3* origin), (this, index, origin))
     VIRTUAL_FUNCTION(on_latch_interpolated_variables, void, 107, (bitfield<interpolation_flag> flags), (this, flags.raw()))
     VIRTUAL_FUNCTION(think, void, 138, (), (this))
-    VIRTUAL_FUNCTION(is_alive, bool, 156, (), (this))
     VIRTUAL_FUNCTION(is_player, bool, 158, (), (this))
     VIRTUAL_FUNCTION(is_weapon, bool, 166, (), (this))
     VIRTUAL_FUNCTION(get_active_weapon, weapon*, 268, (), (this))
@@ -626,8 +624,7 @@ struct base_animating : public base_entity {
     VIRTUAL_FUNCTION(update_dispatch_layer, void, 247, (anim_layer_t* layer, studio_hdr* hdr, int sequence), (this, layer, hdr, sequence))
 };
 
-struct base_view_model : base_animating
-{
+struct base_view_model : base_animating {
     NETVAR(get_model_index, int, "CBaseViewModel->m_nModelIndex")
     NETVAR(get_owner_handle, base_handle, "CBaseViewModel->m_hOwner")
     NETVAR(get_weapon_handle, base_handle, "CBaseViewModel->m_hWeapon")

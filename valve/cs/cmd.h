@@ -53,20 +53,20 @@ struct user_cmd {
 
     inline const crc32_t get_checksum() noexcept
     {
-        crc32_t ret{ 0xffffffff };
+        crc32_t ret{ std::numeric_limits<crc32_t>::max() };
 
-        crc32::process_data(ret, &number, sizeof(number));
-        crc32::process_data(ret, &tick_count, sizeof(tick_count));
-        crc32::process_data(ret, &view_angles, sizeof(view_angles));
-        crc32::process_data(ret, &aim_direction, sizeof(aim_direction));
-        crc32::process_data(ret, &move_direction, sizeof(move_direction));
-        crc32::process_data(ret, &buttons, sizeof(buttons));
-        crc32::process_data(ret, &impulse, sizeof(impulse));
-        crc32::process_data(ret, &weapon_select, sizeof(weapon_select));
-        crc32::process_data(ret, &weapon_subtype, sizeof(weapon_subtype));
-        crc32::process_data(ret, &random_seed, sizeof(random_seed));
-        crc32::process_data(ret, &mouse_dx, sizeof(mouse_dx));
-        crc32::process_data(ret, &mouse_dy, sizeof(mouse_dy));
+        crc32::process_data(ret, &number);
+        crc32::process_data(ret, &tick_count);
+        crc32::process_data(ret, &view_angles);
+        crc32::process_data(ret, &aim_direction);
+        crc32::process_data(ret, &move_direction);
+        crc32::process_data(ret, &buttons);
+        crc32::process_data(ret, &impulse);
+        crc32::process_data(ret, &weapon_select);
+        crc32::process_data(ret, &weapon_subtype);
+        crc32::process_data(ret, &random_seed);
+        crc32::process_data(ret, &mouse_dx);
+        crc32::process_data(ret, &mouse_dy);
 
         return (~ret);
     }

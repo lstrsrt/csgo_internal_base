@@ -6,9 +6,10 @@ inline namespace crypt {
 
     namespace crc32 {
 
-        inline void process_data(crc32_t& crc, const void* data, size_t len) noexcept
+        template<class ty, size_t len = sizeof(ty)>
+        void process_data(crc32_t& crc, const ty* data) noexcept
         {
-            static constexpr crc32_t lookup_table[256] = {
+            static constexpr crc32_t lookup_table[256]{
                 0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
                 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
                 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
@@ -76,7 +77,8 @@ inline namespace crypt {
             };
 
             auto* byte = reinterpret_cast<const uint8_t*>(data);
-            while (len--)
+            size_t n = len;
+            while (n--)
                 crc = (crc >> 8) ^ lookup_table[(crc & 0xff) ^ *byte++];
         }
 
