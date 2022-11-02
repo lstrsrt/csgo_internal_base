@@ -24,7 +24,7 @@ static void update_button_state(bitfield<cs::cmd_button>& cmd_buttons) noexcept
 
 void features::prediction::start(cs::user_cmd* cmd) noexcept
 {
-    if (!config::get<bool>(vars::prediction))
+    if (!cfg::get<bool>(vars::prediction))
         return;
 
     static bool once = []() {
@@ -83,7 +83,7 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
 
 void features::prediction::end() noexcept
 {
-    if (!config::get<bool>(vars::prediction))
+    if (!cfg::get<bool>(vars::prediction))
         return;
 
     interfaces::move_helper->set_host(nullptr);

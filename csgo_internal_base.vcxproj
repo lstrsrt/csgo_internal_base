@@ -86,7 +86,17 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\features\misc.cpp" />
     <ClCompile Include="core\features\prediction.cpp" />
+    <ClCompile Include="core\features\esp.cpp" />
     <ClCompile Include="core\hooks.cpp" />
+    <ClCompile Include="core\hooks\client_dll.cpp" />
+    <ClCompile Include="core\hooks\client_mode.cpp" />
+    <ClCompile Include="core\hooks\entity_list.cpp" />
+    <ClCompile Include="core\hooks\event_mgr.cpp" />
+    <ClCompile Include="core\hooks\model_render.cpp" />
+    <ClCompile Include="core\hooks\proxies.cpp" />
+    <ClCompile Include="core\hooks\surface.cpp" />
+    <ClCompile Include="core\hooks\vgui.cpp" />
+    <ClCompile Include="core\hooks\wnd_proc.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\main.cpp" />

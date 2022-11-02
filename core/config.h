@@ -8,7 +8,7 @@
 #include "../crypt/fnv1a.h"
 #include "input.h"
 
-namespace config {
+namespace cfg {
 
     enum class item_type {
         i32,

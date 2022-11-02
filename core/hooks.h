@@ -1,16 +1,19 @@
 #pragma once
 
-#include <minwindef.h>
+#include <Windows.h>
+
+#include "../valve/cs/cs.h"
+#include "../valve/se/se.h"
 
 #define DECLARE_HOOK(name, ret, base, ... /* args */) namespace name { \
 using ty = ret(__thiscall*)(base* ecx, __VA_ARGS__); \
 inline ty original; \
-inline ret __fastcall fn(base* ecx, int, __VA_ARGS__); \
+ret __fastcall fn(base* ecx, int, __VA_ARGS__); \
 }
 
 #define DECLARE_PROXY(name, prop_name) namespace name { \
 inline cs::recv_proxy_fn original{ }; \
-inline void proxy(cs::recv_proxy_data* data, void*, void*); \
+void proxy(cs::recv_proxy_data* data, void*, void*); \
 }
 
 namespace hooks {
@@ -19,6 +22,7 @@ namespace hooks {
     inline WNDPROC original_wnd_proc{ };
     extern LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+    DECLARE_HOOK(level_init_post_entity, void, se::client_dll)
     DECLARE_HOOK(level_shutdown, void, se::client_dll)
     DECLARE_HOOK(create_move_proxy, void, se::client_dll, int, float, bool)
     DECLARE_HOOK(frame_stage_notify, void, se::client_dll, cs::frame_stage)

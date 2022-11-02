@@ -1,6 +1,6 @@
 #include "config.h"
 
-void config::initialize() noexcept
+void cfg::initialize() noexcept
 {
     if (!std::filesystem::exists("csgo_internal_base"))
         std::filesystem::create_directory("csgo_internal_base");
@@ -13,7 +13,7 @@ void config::initialize() noexcept
     read(L"default.cfg");
 }
 
-void config::read(std::wstring_view name) noexcept
+void cfg::read(std::wstring_view name) noexcept
 {
     const auto index_from_hash = [](const hash_t name) {
         for (size_t i{ }; i < items.size(); i++) {
@@ -69,7 +69,7 @@ void config::read(std::wstring_view name) noexcept
     LOG_INFO(L"Read from {}.", name);
 }
 
-void config::write(std::wstring_view name) noexcept
+void cfg::write(std::wstring_view name) noexcept
 {
     std::fstream cfg{ path / name.data(), std::fstream::out | std::fstream::trunc };
     if (cfg.good()) {

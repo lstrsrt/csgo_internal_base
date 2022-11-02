@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 
 #include "memory.h"
 
@@ -12,7 +12,7 @@ namespace hooks {
     inline static std::add_pointer_t<bool(void*, void*, void*, bool)> hook_func{ };
     inline static std::add_pointer_t<void(void*, bool)> unhook_func;
 
-    inline std::unordered_map<void*, void*> hooked_fns{ };
+    inline std::map<void*, void*> hooked_fns{ };
 
     void initialize() noexcept;
     void end() noexcept;
@@ -45,11 +45,6 @@ namespace hooks {
             return;
 
         LOG_ERROR("Error while hooking function!");
-    }
-
-    inline void unset(void* hook) noexcept
-    {
-        unhook_func(hooked_fns[hook], false);
     }
 
 }

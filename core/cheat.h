@@ -18,7 +18,7 @@ namespace cheat {
         interfaces::initialize();
         netvars::initialize();
         hooks::initialize();
-        config::initialize();
+        cfg::initialize();
 
         LOG_SUCCESS("Cheat initialized. Last full build: {} {}", __DATE__, __TIME__);
     }

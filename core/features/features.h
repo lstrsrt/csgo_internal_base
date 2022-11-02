@@ -30,6 +30,26 @@ inline namespace features {
 
     namespace visuals {
 
+        namespace esp {
+
+            struct {
+                int left{ };
+                int top{ };
+                int right{ };
+                int bottom{ };
+                int width{ };
+                int height{ };
+                uint8_t alpha{ };
+            } inline box;
+
+            void run() noexcept;
+            void draw_box() noexcept;
+            void draw_name(std::string_view name) noexcept;
+            void draw_weapon(cs::weapon* weapon) noexcept;
+            void draw_health(int health) noexcept;
+            bool generate_box(cs::base_entity* entity, bool is_player) noexcept;
+
+        }
 
     }
 
