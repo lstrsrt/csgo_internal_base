@@ -50,9 +50,9 @@ void menu::run() noexcept
     case tab_id::skins:
         break;
     case tab_id::config:
-        button(L"Write default", []() { cfg::write(L"default.cfg"); }, { 100, 30 });
-        button(L"Read default", []() { cfg::read(L"default.cfg"); }, { 100, 30 });
-        button(L"Unhook", []() { cheat::should_unhook = true; }, { 55, 30 });
+        button(L"Write default", [] { cfg::write(L"default.cfg"); }, { 100, 30 });
+        button(L"Read default", [] { cfg::read(L"default.cfg"); }, { 100, 30 });
+        button(L"Unhook", [] { cheat::should_unhook = true; }, { 55, 30 });
         break;
     default:
         break;
@@ -75,7 +75,7 @@ void menu::draw_watermark() noexcept
     watermark_str += tm_str;
 
     /* -insecure */
-    static const bool insecure = []()
+    static const bool insecure = []
     {
         const auto peb = reinterpret_cast<PEB*>(__readfsdword(0x30));
         return wcsstr(peb->ProcessParameters->CommandLine.Buffer, L"-insecure");

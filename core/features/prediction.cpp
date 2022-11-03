@@ -27,7 +27,7 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
     if (!cfg::get<bool>(vars::prediction))
         return;
 
-    static bool once = []() {
+    static bool once = [] {
         seed = *dlls::client.find(PATTERN("8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04"))
             .offset(0x2).cast<int**>();
         player = *dlls::client.find(PATTERN("89 35 ? ? ? ? F3 0F 10 48 20"))

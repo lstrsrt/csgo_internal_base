@@ -4,7 +4,7 @@
 
 void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
 {
-    static bool once = []() { return render::initialize(); }();
+    static bool once = [] { return render::initialize(); }();
 
     if (ecx->static_transition_panel && (mode & cs::paint_mode::paint_ui_panels)) {
         interfaces::surface->start_drawing();

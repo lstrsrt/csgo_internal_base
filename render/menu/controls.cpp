@@ -176,7 +176,7 @@ d2 menu::controls::calculate_position(ctrl_type type, hash_t hash) noexcept
 
     static std::array<std::unordered_map<hash_t, d2>, tab_count> all_items{ };
     static std::array<int, tab_count> total_y_offsets{ };
-    static bool once = []() { std::ranges::fill(total_y_offsets, 34); return true; }();
+    static bool once = [] { std::ranges::fill(total_y_offsets, 34); return true; }();
 
     auto& items = all_items[static_cast<size_t>(cur_tab)];
     int& y_offset = total_y_offsets[static_cast<size_t>(cur_tab)];

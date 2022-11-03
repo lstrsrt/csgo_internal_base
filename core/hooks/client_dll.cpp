@@ -53,7 +53,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
 }
 
 __declspec(naked) void __fastcall hooks::create_move_proxy::fn(se::client_dll* ecx, int, int sequence_nr,
-                                                               float input_sample_time, bool is_active)
+    float input_sample_time, bool is_active)
 {
     __asm {
         push ebp
