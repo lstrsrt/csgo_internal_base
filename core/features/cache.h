@@ -42,14 +42,14 @@ namespace cache {
 
         for (int i{ 1 }; i < interfaces::entity_list->get_highest_index(); i++) {
             if (auto entity = interfaces::entity_list->get(i))
-                entities.emplace_back(cs::cached_entity(entity, entity->get_entity_type()));
+                entities.push_back(cs::cached_entity(entity, entity->get_entity_type()));
         }
     }
 
     inline void add(cs::base_entity* entity) noexcept
     {
         const auto type = entity->get_entity_type();
-        entities.emplace_back(cs::cached_entity(entity, type));
+        entities.push_back(cs::cached_entity(entity, type));
     }
 
     inline void remove(cs::base_entity* entity) noexcept

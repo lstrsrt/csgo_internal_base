@@ -8,14 +8,20 @@
 #include "../crypt/fnv1a.h"
 #include "address.h"
 
+struct dll;
+namespace dlls { inline std::vector<dll*> list; }
+
 struct dll {
     std::string name{ };
     uintptr_t base{ };
     uint32_t size{ };
     address create_interface{ }; // Only relevant to game DLLs
 
-    dll(const char* name) noexcept
-        : name(name) { }
+    explicit dll(const char* name) noexcept
+        : name(name)
+    {
+        dlls::list.push_back(this);
+    }
 
     template<size_t len> requires(len > 0)
     address find(std::array<int, len>&& pattern) const noexcept
@@ -72,8 +78,6 @@ struct dll {
 
 namespace dlls {
 
-    inline std::vector<dll*> list{ };
-
     inline dll client{ "client.dll" };
     inline dll datacache{ "datacache.dll" };
     inline dll engine{ "engine.dll" };
@@ -95,10 +99,6 @@ namespace dlls {
 
     inline void initialize() noexcept
     {
-        list = { &client, &datacache, &engine, &file_system, &game_overlay_renderer, &input_system,
-                 &localize, &material_system, &matchmaking, &server, &shader_api_dx9, &steam_api,
-                 &studio_render, &tier0, &vgui_mat_surface, &vgui2, &vphysics, &vstdlib };
-
         struct ldr_data_table_entry {
             LIST_ENTRY InMemoryOrderLinks;
             PAD(0x8);
