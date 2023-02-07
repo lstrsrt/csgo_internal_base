@@ -20,7 +20,7 @@ namespace hooks {
 
     inline HWND game_window{ };
     inline WNDPROC original_wnd_proc{ };
-    extern LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    extern LRESULT CALLBACK wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
     DECLARE_HOOK(level_init_post_entity, void, se::client_dll)
     DECLARE_HOOK(level_shutdown, void, se::client_dll)
@@ -31,8 +31,8 @@ namespace hooks {
     DECLARE_HOOK(on_add_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
     DECLARE_HOOK(on_remove_entity, void, se::entity_list, cs::handle_entity*, cs::base_handle)
     DECLARE_HOOK(fire_event_intern, bool, se::event_manager, cs::game_event*, bool, bool)
-    DECLARE_HOOK(draw_model_execute, void, se::model_render, cs::mat_render_context*,
-                 const cs::draw_model_state&, const cs::model_render_info&, mat3x4*)
+    DECLARE_HOOK(draw_model, void, se::studio_render, cs::draw_model_results*,
+        const cs::draw_model_info&, mat3x4*, float*, float*, const vec3&, int)
     DECLARE_HOOK(lock_cursor, void, se::surface)
     DECLARE_HOOK(paint, void, se::vgui, cs::paint_mode)
 

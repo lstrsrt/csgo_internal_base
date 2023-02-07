@@ -5,7 +5,6 @@
 namespace cs {
 
     struct key_values {
-
         void* operator new[](size_t alloc_size);
         void operator delete[](void* memory);
 

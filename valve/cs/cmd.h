@@ -51,7 +51,7 @@ struct user_cmd {
     bool has_been_predicted{ };
     PAD(0x18)
 
-    inline const crc32_t get_checksum() noexcept
+    inline crc32_t get_checksum() const noexcept
     {
         crc32_t ret{ std::numeric_limits<crc32_t>::max() };
 
@@ -68,7 +68,7 @@ struct user_cmd {
         crc32::process_data(ret, &mouse_dx);
         crc32::process_data(ret, &mouse_dy);
 
-        return (~ret);
+        return ~ret;
     }
 };
 

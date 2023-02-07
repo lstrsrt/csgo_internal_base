@@ -117,7 +117,7 @@ namespace math {
         template<enumerator en>
         inline en get(en min, en max) noexcept
         {
-            return static_cast<en>(get(util::to_underlying(min), util::to_underlying(max)));
+            return static_cast<en>(get(std::to_underlying(min), std::to_underlying(max)));
         }
 
     }

@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "../base/debug.h"
+
 struct address {
     uintptr_t value{ };
 
@@ -16,7 +18,7 @@ struct address {
     address(void* value) noexcept
         : value(reinterpret_cast<uintptr_t>(value)) { }
     address(std::nullptr_t value) noexcept
-        : value(reinterpret_cast<uintptr_t>(value)) { }
+        : value(0) { }
 
     constexpr operator bool() const noexcept
     {
@@ -31,6 +33,7 @@ struct address {
     template<class ty>
     constexpr ty cast() noexcept
     {
+        ASSERT(value != 0);
         return reinterpret_cast<ty>(value);
     }
 
@@ -43,12 +46,14 @@ struct address {
     template<class ty>
     ty& dereference() noexcept
     {
+        ASSERT(value != 0);
         return *reinterpret_cast<ty*>(value);
     }
 
     template<class ty>
     ty absolute(ptrdiff_t rel_offset = 0x1, ptrdiff_t abs_offset = 0x0) noexcept
     {
+        ASSERT(value != 0);
         const auto jmp = value + rel_offset;
         const auto target = *reinterpret_cast<int32_t*>(jmp);
         if (target)

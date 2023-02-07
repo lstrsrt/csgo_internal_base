@@ -46,14 +46,6 @@ struct studio_render {
         alpha_modulation = clr.a_base();
     }
 
-    inline void set_material(cs::material* mat) noexcept
-    {
-        forced_material_type = cs::override_type::normal;
-        forced_material[0] = mat;
-        forced_material_index[0] = -1;
-        forced_material_index_count = 0;
-    }
-
 };
 
 }

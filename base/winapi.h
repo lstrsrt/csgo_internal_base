@@ -1,14 +1,14 @@
 #pragma once
 
 #include <filesystem>
-#include <functional>
+namespace fs = std::filesystem;
 #include <string_view>
 #include <Windows.h>
 #include <TlHelp32.h>
 
 struct dll;
 
-namespace winapi {
+namespace win {
 
     // Only usable for handles closed via CloseHandle()!
     struct scoped_handle {
@@ -55,16 +55,16 @@ namespace winapi {
         }
     };
 
-    inline bool get_module_path(HMODULE hmod, std::filesystem::path& path) noexcept
+    inline bool get_module_path(HMODULE mod, fs::path& path) noexcept
     {
         WCHAR tmp[MAX_PATH]{ };
         bool ret{ };
-        if ((ret = GetModuleFileNameW(hmod, tmp, MAX_PATH)) != 0)
+        if ((ret = GetModuleFileNameW(mod, tmp, MAX_PATH)) != 0)
             path.assign(tmp);
         return ret;
     }
 
-    inline void iterate_processes(std::function<void(PROCESSENTRY32W&)> callback) noexcept
+    inline void iterate_processes(std::invocable<PROCESSENTRY32W&> auto&& callback) noexcept
     {
         scoped_handle snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         PROCESSENTRY32W entry{ sizeof(entry) };

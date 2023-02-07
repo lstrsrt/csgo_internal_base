@@ -25,8 +25,12 @@ namespace input {
     };
 
     struct keybind {
-        uint32_t code;
-        key_type type;
+        uint32_t code{ };
+        key_type type{ };
+
+        constexpr keybind() noexcept = default;
+        constexpr keybind(uint32_t code, key_type type) noexcept
+            : code(code), type(type) { }
     };
 
     inline std::array<key_state, 255u> key_states{ };

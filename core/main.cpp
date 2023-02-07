@@ -2,7 +2,7 @@
 
 static DWORD WINAPI on_attach(LPVOID);
 
-BOOL APIENTRY DllMain(HMODULE instance, DWORD call_reason, LPVOID reserved)
+BOOL APIENTRY DllMain(HMODULE instance, DWORD call_reason, LPVOID)
 {
     if (call_reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(instance);

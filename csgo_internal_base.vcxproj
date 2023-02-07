@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\base.h" />
+    <ClInclude Include="base\debug.h" />
     <ClInclude Include="base\logger.h" />
     <ClInclude Include="base\math.h" />
     <ClInclude Include="base\types\angle.h" />
@@ -22,7 +23,6 @@
     <ClInclude Include="base\types\matrix.h" />
     <ClInclude Include="base\types\pattern.h" />
     <ClInclude Include="base\types\vector.h" />
-    <ClInclude Include="base\util.h" />
     <ClInclude Include="base\winapi.h" />
     <ClInclude Include="core\config.h" />
     <ClInclude Include="core\cheat.h" />
@@ -92,8 +92,8 @@
     <ClCompile Include="core\hooks\client_mode.cpp" />
     <ClCompile Include="core\hooks\entity_list.cpp" />
     <ClCompile Include="core\hooks\event_mgr.cpp" />
-    <ClCompile Include="core\hooks\model_render.cpp" />
     <ClCompile Include="core\hooks\proxies.cpp" />
+    <ClCompile Include="core\hooks\studio_render.cpp" />
     <ClCompile Include="core\hooks\surface.cpp" />
     <ClCompile Include="core\hooks\vgui.cpp" />
     <ClCompile Include="core\hooks\wnd_proc.cpp" />
@@ -159,7 +159,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_HAS_EXCEPTIONS=0;WIN32;WIN32_LEAN_AND_MEAN;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -180,7 +180,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_HAS_EXCEPTIONS=0;WIN32;WIN32_LEAN_AND_MEAN;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

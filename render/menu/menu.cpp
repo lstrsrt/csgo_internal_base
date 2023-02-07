@@ -25,25 +25,23 @@ void menu::run() noexcept
     static float float_slider{ };
     static int int_slider{ };
     static bool check{ };
-    static std::vector multi{ false, false, false, false };
-    static int test{ };
-    static int test2{ };
 
     switch (cur_tab) {
     case tab_id::aimbot:
         checkbox(L"Checkbox", check);
         slider(L"Int slider", int_slider, 0, 100);
         slider(L"Float slider", float_slider, -20.f, 20.f, 2);
-        listbox(L"Listbox", { L"One", L"Two", L"Three" }, test);
-        multibox(L"Multibox", { L"First", L"Second", L"Third", L"Fourth" }, multi);
+        listbox(L"Listbox", { L"One", L"Two", L"Three" }, cfg::get<int>(vars::test_multi));
+        multibox(L"Multibox", { L"First", L"Second", L"Third", L"Fourth" }, cfg::get<std::vector<bool>>(vars::test_vec));
         break;
-    case tab_id::visuals:
+    case tab_id::visuals: {
         checkbox(L"Radar reveal", cfg::get<bool>(vars::radar_reveal));
         checkbox(L"ESP", cfg::get<bool>(vars::esp));
         slider(L"FOV", cfg::get<float>(vars::fov), 30.0f, 130.0f);
         slider(L"Viewmodel FOV", cfg::get<float>(vars::viewmodel_fov), 20.0f, 150.0f);
         checkbox(L"Disable postprocessing", cfg::get<bool>(vars::disable_postprocessing));
         break;
+    }
     case tab_id::misc:
         checkbox(L"Infinite crouch", cfg::get<bool>(vars::infinite_crouch));
         break;
@@ -77,7 +75,7 @@ void menu::draw_watermark() noexcept
     /* -insecure */
     static const bool insecure = []
     {
-        const auto peb = reinterpret_cast<PEB*>(__readfsdword(0x30));
+        const auto peb = reinterpret_cast<const PEB*>(__readfsdword(0x30));
         return wcsstr(peb->ProcessParameters->CommandLine.Buffer, L"-insecure");
     }();
 

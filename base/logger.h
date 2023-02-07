@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+namespace ch = std::chrono;
 #include <format>
 #include <fstream>
 #include <iostream>
@@ -25,8 +26,7 @@ namespace logger {
     inline HANDLE console{ };
     inline std::wstring log_name{ };
 
-    enum class level
-    {
+    enum class level {
         success,
         info,
         error,
@@ -36,19 +36,10 @@ namespace logger {
     // Use the LOG macros instead of accessing these directly
 
     template<level lvl, class... va_args>
-    void add(std::string_view fmt, const va_args&... args) noexcept
+    void add(std::string_view fmt, va_args&&... args) noexcept
     {
     #ifdef _DEBUG
-        std::string msg{ };
-        if constexpr (sizeof...(args) > 0)
-            msg = std::vformat(fmt, std::make_format_args(args...));
-        else
-            msg = fmt;
-
         if constexpr (lvl != level::raw) {
-            const auto time = std::chrono::system_clock::to_time_t(
-                              std::chrono::system_clock::now());
-
             std::cout << "[ ";
             switch (lvl) {
             case level::success:
@@ -66,34 +57,32 @@ namespace logger {
             }
 
             SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-            tm buf{ };
-            localtime_s(&buf, &time);
-            std::cout << " ] " << std::put_time(&buf, "[%T] ");
+            const auto time = ch::system_clock::to_time_t(ch::system_clock::now());
+            std::tm tm{ };
+            localtime_s(&tm, &time);
+            std::cout << " ] " << std::put_time(&tm, "[%T] ");
         }
 
-        std::cout << msg << std::endl;
+        static std::fstream out_file{ log_name, std::fstream::out | std::fstream::app };
 
-        std::fstream out{ log_name, std::fstream::out | std::fstream::app };
-        if (out.good()) {
-            out << msg << '\n';
-            out.flush();
+        if constexpr (sizeof...(args) > 0) {
+            const auto& str = std::vformat(fmt, std::make_format_args(std::forward<decltype(args)>(args)...));
+            std::cout << str << std::endl;
+            if (out_file)
+                out_file << str << std::endl;
+        } else {
+            std::cout << fmt << std::endl;
+            if (out_file)
+                out_file << fmt << std::endl;
         }
     #endif
     }
 
     template<level lvl, class... va_args>
-    void add(std::wstring_view fmt, const va_args&... args) noexcept
+    void add(std::wstring_view fmt, va_args&&... args) noexcept
     {
     #ifdef _DEBUG
-        std::wstring msg{ };
-        if constexpr (sizeof...(args) > 0)
-            msg = std::vformat(fmt, std::make_wformat_args(args...));
-        else
-            msg = fmt;
-
         if constexpr (lvl != level::raw) {
-            const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
             std::wcout << L"[ ";
             switch (lvl) {
             case level::success:
@@ -111,17 +100,23 @@ namespace logger {
             }
 
             SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-            tm buf{ };
-            localtime_s(&buf, &time);
-            std::wcout << L" ] " << std::put_time(&buf, L"[%T] ");
+            const auto time = ch::system_clock::to_time_t(ch::system_clock::now());
+            std::tm tm{ };
+            localtime_s(&tm, &time);
+            std::wcout << L" ] " << std::put_time(&tm, L"[%T] ");
         }
 
-        std::wcout << msg << std::endl;
+        static std::wfstream out_file{ log_name, std::wfstream::out | std::wfstream::app };
 
-        std::wfstream out{ log_name, std::wfstream::out | std::wfstream::app };
-        if (out.good()) {
-            out << msg << '\n';
-            out.flush();
+        if constexpr (sizeof...(args) > 0) {
+            const auto& str = std::vformat(fmt, std::make_wformat_args(std::forward<decltype(args)>(args)...));
+            std::wcout << str << std::endl;
+            if (out_file)
+                out_file << str << std::endl;
+        } else {
+            std::wcout << fmt << std::endl;
+            if (out_file)
+                out_file << fmt << std::endl;
         }
     #endif
     }
@@ -138,10 +133,9 @@ namespace logger {
         console = GetStdHandle(STD_OUTPUT_HANDLE);
 
         log_name = log_filename;
-        winapi::scoped_handle f =
-            CreateFileW(log_name.c_str(), 0, 0, nullptr, CREATE_NEW, 0, nullptr);
+        win::scoped_handle f = CreateFileW(log_name.c_str(), 0, 0, nullptr, CREATE_NEW, 0, nullptr);
 
-        LOG_INFO("Initialized logger.");
+        LOG_INFO("Logger initialized.");
     #endif
     }
 

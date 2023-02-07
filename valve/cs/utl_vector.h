@@ -5,6 +5,8 @@ namespace cs {
 template<class ty>
 struct utl_vec {
     ty* data{ };
+    int alloc_count{ };
+    int grow_size{ };
     int size{ };
     ty* elements{ };
 

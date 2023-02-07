@@ -1,12 +1,15 @@
 #pragma once
 
-#include <any>
 #include <filesystem>
-#include <unordered_map>
+namespace fs = std::filesystem;
+#include <variant>
 
 #include "../base/base.h"
 #include "../crypt/fnv1a.h"
 #include "input.h"
+
+template<class ty, class... ts>
+concept any_of = (std::same_as<ty, ts> || ...);
 
 namespace cfg {
 
@@ -20,45 +23,41 @@ namespace cfg {
         keybind
     };
 
+    template<class ty>
+    concept configurable = any_of<ty, int, float, bool, clr3, clr4, std::vector<bool>, keybind>;
+
     struct item {
-        std::any var{ };
+        std::variant<int, float, bool, clr3, clr4, std::vector<bool>, keybind> var{ };
         hash_t name{ };
         item_type type{ };
 
-        template<typename ty>
+        constexpr item(configurable auto&& preset, hash_t name, item_type type) noexcept
+            : var(preset), name(name), type(type) { }
+
+        template<configurable ty>
         ty& get() noexcept
         {
-            return *static_cast<ty*>(std::any_cast<ty>(&var));
+            return std::get<ty>(var);
         }
     };
 
-    inline std::vector<item> items{ }; // Currently used variables
-    inline std::vector<std::string> list{ }; // Config names
-    inline std::filesystem::path path{ };
-    const inline std::unordered_map<std::string, item_type> type_table{
-        { "i32", item_type::i32 },
-        { "f32", item_type::f32 },
-        { "bool", item_type::boolean },
-        { "c3", item_type::clr3 },
-        { "c4", item_type::clr4 },
-        { "vec", item_type::bool_vec },
-        { "key", item_type::keybind }
-    };
+    inline std::vector<item> items{ };
+    inline fs::path path{ };
 
     void initialize() noexcept;
     void read(std::wstring_view name) noexcept;
     void write(std::wstring_view name) noexcept;
 
-    inline size_t add_item(const item&& it) noexcept
+    inline size_t add_item(item&& it) noexcept
     {
         items.push_back(it);
         return items.size() - 1;
     }
 
     template<class ty>
-    ty& get(const size_t index) noexcept
+    ty& get(size_t idx) noexcept
     {
-        return items[index].get<ty>();
+        return items[idx].get<ty>();
     }
 
 }

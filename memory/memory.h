@@ -11,7 +11,7 @@
 
 namespace memory {
 
-    template<class ty, int i, typename... va_args>
+    template<class ty, int i, class... va_args>
     inline ty call_virtual(void* base, va_args... args) noexcept
     {
         return (*static_cast<ty(__thiscall***)(void*, va_args...)>(base))[i](base, args...);
@@ -33,7 +33,7 @@ namespace memory {
         if (!addr)
             return false;
 
-        MEMORY_BASIC_INFORMATION info{};
+        MEMORY_BASIC_INFORMATION info{ };
         VirtualQuery(addr, &info, sizeof(info));
 
         return info.State & MEM_COMMIT && !(info.Protect & PAGE_NOACCESS);

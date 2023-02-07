@@ -11,6 +11,13 @@ enum class convar_flag {
     cheat = (1 << 14)
 };
 
+struct convar_value {
+    char* string{ };
+    int string_length{ };
+    float float_value{ };
+    int int_value;
+};
+
 struct command_base {
     VIRTUAL_FUNCTION(is_flag_set, bool, 2, (convar_flag flag), (this, flag))
     VIRTUAL_FUNCTION(add_flags, void, 3, (convar_flag flags), (this, flags))
@@ -18,19 +25,19 @@ struct command_base {
     VIRTUAL_FUNCTION(get_next, command_base*, 9, (), (this))
 };
 
-struct convar : public command_base {
+struct convar : command_base {
     VIRTUAL_FUNCTION(get_name, const char*, 5, (), (this))
     VIRTUAL_FUNCTION(get_base_name, const char*, 6, (), (this))
 
     auto get_float() noexcept
     {
-        auto xored = *reinterpret_cast<uintptr_t*>(&parent->float_value) ^ reinterpret_cast<uintptr_t>(this);
+        auto xored = *reinterpret_cast<uintptr_t*>(&parent->original.float_value) ^ reinterpret_cast<uintptr_t>(this);
         return *reinterpret_cast<float*>(&xored);
     }
 
     auto get_int() noexcept
     {
-        return static_cast<int>(parent->int_value ^ reinterpret_cast<uintptr_t>(this));
+        return static_cast<int>(parent->original.int_value ^ reinterpret_cast<uintptr_t>(this));
     }
 
     auto get_bool() noexcept
@@ -40,7 +47,7 @@ struct convar : public command_base {
 
     auto get_string() noexcept
     {
-        return parent->string ? parent->string : "";
+        return parent->original.string ? parent->original.string : "";
     }
 
     VIRTUAL_FUNCTION(set_value, void, 14, (const char* value), (this, value))
@@ -55,16 +62,13 @@ struct convar : public command_base {
     bitfield<convar_flag> flags{ };
     PAD(0x4)
     convar* parent{ };
-    const char* default_value{ };
-    char* string{ };
-    int string_length{ };
-    float float_value{ };
-    int int_value;
-    bool has_min{ };
+    char* default_value{ };
+    convar_value original{ };
+    convar_value backup{ };
+    int has_min{ };
     float min{ };
-    bool has_max{ };
+    int has_max{ };
     float max{ };
-    PAD(0x10)
     utl_vec<std::add_pointer_t<void(convar*, const char*, float)>> on_change_callbacks{ };
 };
 

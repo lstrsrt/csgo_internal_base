@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <Windows.h>
 #include <winternl.h>
 
@@ -14,7 +14,7 @@ namespace dlls { inline std::vector<dll*> list; }
 struct dll {
     std::string name{ };
     uintptr_t base{ };
-    uint32_t size{ };
+    size_t size{ };
     address create_interface{ }; // Only relevant to game DLLs
 
     explicit dll(const char* name) noexcept
@@ -58,7 +58,7 @@ struct dll {
         }();
 
         if (!nt_optional_hdr)
-            return nullptr;
+            return address();
 
         const auto dir_addr = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(
             base + nt_optional_hdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
@@ -72,7 +72,7 @@ struct dll {
                 return address(base + functions[ordinals[i]]);
         }
 
-        return nullptr;
+        return address();
     }
 };
 
@@ -110,27 +110,25 @@ namespace dlls {
             PAD(0x7c);
         };
 
-        std::unordered_map<hash_t, ldr_data_table_entry*> dlls{ };
+        std::unordered_map<hash_t, ldr_data_table_entry*> loaded{ };
 
-        const auto peb = reinterpret_cast<PEB*>(__readfsdword(0x30));
+        const auto peb = reinterpret_cast<const PEB*>(__readfsdword(0x30));
         auto cur = CONTAINING_RECORD(peb->Ldr->InMemoryOrderModuleList.Flink,
                                      ldr_data_table_entry,
                                      InMemoryOrderLinks);
 
         while (cur->BaseDllName.Length) {
-            dlls.insert_or_assign(fnv1a::hash(cur->BaseDllName.Buffer), cur);
+            loaded.insert_or_assign(fnv1a::hash(cur->BaseDllName.Buffer), cur);
             LOG_INFO(L"Found module {} at {}", cur->BaseDllName.Buffer, cur->DllBase);
             cur = reinterpret_cast<ldr_data_table_entry*>(cur->InMemoryOrderLinks.Flink);
         }
 
         for (auto entry : list) {
-            const auto res = dlls.find(fnv1a::hash(entry->name));
-            if (res != dlls.cend()) {
-                const auto dll = res->second;
-                entry->base = reinterpret_cast<uintptr_t>(dll->DllBase);
-                entry->size = dll->SizeOfImage;
-            } else
-                LOG_ERROR("Did not find module {}!", entry->name);
+            const auto res = loaded.find(fnv1a::hash(entry->name));
+            ASSERT_MSG(res != loaded.cend(), "DLL not loaded yet?");
+            const auto dll = res->second;
+            entry->base = reinterpret_cast<uintptr_t>(dll->DllBase);
+            entry->size = dll->SizeOfImage;
         }
     }
 

@@ -14,7 +14,7 @@ inline h_user user{ };
 struct id {
     union {
         struct {
-            uint32_t acc : 32; // account id
+            uint32_t acc_id : 32;
             uint32_t acc_instance : 20;
             uint32_t acc_type : 4;
             int32_t universe : 8;

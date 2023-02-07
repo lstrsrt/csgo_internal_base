@@ -2,6 +2,12 @@
 
 using hash_t = uint_fast32_t;
 
+template<class ty>
+concept string_like = requires(ty t) {
+    t.data();
+    t.substr();
+};
+
 inline namespace crypt {
 
     namespace fnv1a {

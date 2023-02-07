@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "menu.h"
 
 namespace menu::controls {

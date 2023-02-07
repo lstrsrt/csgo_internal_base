@@ -87,7 +87,6 @@ void visuals::esp::draw_weapon(cs::weapon* weapon) noexcept
         return;
 
     const auto wname = interfaces::localize->find_safe(info->weapon_name);
-    const d2 size = render::get_text_size(render::fonts::esp, wname);
     render::text(render::fonts::esp, { box.left + box.width / 2, box.bottom },
                  wname, render::text_flag::centered_x, { 255, 255, 255, box.alpha });
 }

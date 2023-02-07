@@ -211,3 +211,29 @@ struct vec3 {
 struct vec4 {
     float x{ }, y{ }, z{ }, w{ };
 };
+
+#include <format>
+
+template<>
+struct std::formatter<vec2> : std::formatter<std::string> {
+    auto format(vec2 v, format_context& ctx)
+    {
+        return formatter<string>::format(std::format("[{}, {}]", v.x, v.y), ctx);
+    }
+};
+
+template<>
+struct std::formatter<vec3> : std::formatter<std::string> {
+    auto format(vec3 v, format_context& ctx)
+    {
+        return formatter<string>::format(std::format("[{}, {}, {}]", v.x, v.y, v.z), ctx);
+    }
+};
+
+template<>
+struct std::formatter<vec4> : std::formatter<std::string> {
+    auto format(vec4 v, format_context& ctx)
+    {
+        return formatter<string>::format(std::format("[{}, {}, {}, {}]", v.x, v.y, v.z, v.w), ctx);
+    }
+};

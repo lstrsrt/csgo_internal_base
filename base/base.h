@@ -13,7 +13,6 @@ using namespace std::chrono_literals;
 #include <thread>
 
 #include "logger.h"
-#include "util.h"
 #include "types/angle.h"
 #include "types/bitfield.h"
 #include "types/color.h"

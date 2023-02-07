@@ -167,3 +167,13 @@ struct angle {
         *this /= length();
     }
 };
+
+#include <format>
+
+template<>
+struct std::formatter<angle> : std::formatter<std::string> {
+    auto format(angle a, format_context& ctx)
+    {
+        return formatter<string>::format(std::format("[{}, {}, {}]", a.x, a.y, a.z), ctx);
+    }
+};
