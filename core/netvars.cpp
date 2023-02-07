@@ -13,8 +13,7 @@ void netvars::initialize() noexcept
     LOG_INFO("Netvars initialized.");
 }
 
-void netvars::dump_table(std::string_view base_class, cs::recv_table* table,
-                         const uint32_t offset) noexcept
+void netvars::dump_table(std::string_view base_class, cs::recv_table* table, ptrdiff_t offset) noexcept
 {
     for (int i{ }; i < table->prop_amt; i++) {
         const auto prop = &table->props[i];
@@ -53,7 +52,7 @@ void netvars::unset_proxy(hash_t name, cs::recv_proxy_fn original) noexcept
     prop->proxy_fn = original;
 }
 
-uint32_t netvars::get_datamap_offset(cs::datamap* map, const hash_t field_name) noexcept
+ptrdiff_t netvars::get_datamap_offset(cs::datamap* map, hash_t field_name) noexcept
 {
     while (map) {
         for (int i{ }; i < map->data_fields_count; i++) {

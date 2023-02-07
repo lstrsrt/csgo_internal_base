@@ -74,7 +74,7 @@ void cfg::read(std::wstring_view name) noexcept
             case "key"_hash: {
                 auto& key = cur_item.get<keybind>();
                 stream >> key.code;
-                int type{};
+                int type{ };
                 stream >> type;
                 key.type = static_cast<input::key_type>(type);
                 break;

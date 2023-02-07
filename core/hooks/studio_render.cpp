@@ -10,11 +10,11 @@ static auto create_material() noexcept
     kv->load_from_buffer("default.vmt", R"#("VertexLitGeneric" {
         "$basetexture"  "vgui/white_additive"
         "$ignorez"      "0"
-        "$model"		"1"
-        "$flat"			"0"
-        "$nocull"		"1"
+        "$model"	"1"
+        "$flat"		"0"
+        "$nocull"	"1"
         "$halflambert"	"1"
-        "$nofog"		"1"
+        "$nofog"	"1"
         "$wireframe"	"0"
     })#");
 

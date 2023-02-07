@@ -70,8 +70,9 @@ namespace win {
         PROCESSENTRY32W entry{ sizeof(entry) };
 
         if (Process32FirstW(snapshot, &entry)) {
-            while (Process32NextW(snapshot, &entry))
+            do
                 callback(entry);
+            while (Process32NextW(snapshot, &entry));
         }
     }
 

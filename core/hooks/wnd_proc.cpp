@@ -15,8 +15,5 @@ LRESULT CALLBACK hooks::wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpara
 
     interfaces::input_system->enable_input(!menu::is_open);
 
-    if (menu::is_open)
-        return TRUE;
-
-    return CallWindowProcA(original_wnd_proc, wnd, msg, wparam, lparam);
+    return menu::is_open ? TRUE : CallWindowProcA(original_wnd_proc, wnd, msg, wparam, lparam);
 }

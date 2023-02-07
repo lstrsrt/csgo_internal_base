@@ -20,8 +20,8 @@ angle math::calculate_angle(const vec3& src, const vec3& dest, const angle& view
 {
     auto delta = src - dest;
     angle res{ };
-    res.x = rad_to_deg(atan(delta.z / hypot(delta.x, delta.y))) - view.x;
-    res.y = rad_to_deg(atan(delta.y / delta.x)) - view.y;
+    res.x = rad_to_deg(::math::atan(delta.z / std::hypotf(delta.x, delta.y))) - view.x;
+    res.y = rad_to_deg(::math::atan(delta.y / delta.x)) - view.y;
 
     if (delta.x >= 0.0f)
         res.y += 180.0f;

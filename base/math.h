@@ -45,12 +45,12 @@ namespace math {
 
     inline float sind(float x) noexcept
     {
-        return sin(deg_to_rad(x));
+        return ::math::sin(deg_to_rad(x));
     }
 
     inline float cosd(float x) noexcept
     {
-        return cos(deg_to_rad(x));
+        return ::math::cos(deg_to_rad(x));
     }
 
     inline float asin(float x) noexcept
