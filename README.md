@@ -1,5 +1,5 @@
 # csgo_internal_base
-Just another internal cheat base for CS:GO. Currently unfinished.
+Just another internal cheat base for CS:GO.
 
 ## Features
 * All the necessary Valve interfaces, structs and classes
@@ -9,6 +9,4 @@ Just another internal cheat base for CS:GO. Currently unfinished.
 * Config system
 * Compile time pattern string conversion
 * Zero external dependencies
-* Basic cheat features: engine prediction, infinite crouch, FOV changer, some other stuff
-
-Keep in mind that although this base has most CS related things implemented, it's missing some features (most notably string encryption) which will be added later on.
+* Basic cheat features: ESP, chams, engine prediction and some other stuff
