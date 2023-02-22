@@ -38,15 +38,21 @@ namespace bitfield_ops {
     }
 
     template<enumerator en>
-    inline en& operator|=(en& lhs, en rhs) noexcept
+    en& operator|=(en& lhs, en rhs) noexcept
     {
         return lhs = static_cast<en>(std::to_underlying(lhs) | std::to_underlying(rhs));
     }
 
     template<enumerator en>
-    inline en& operator&=(en& lhs, en rhs) noexcept
+    en& operator&=(en& lhs, en rhs) noexcept
     {
         return lhs = static_cast<en>(std::to_underlying(lhs) &= std::to_underlying(rhs));
+    }
+
+    template<enumerator en>
+    constexpr bool has_bit(en lhs, en rhs) noexcept
+    {
+        return operator&(lhs, rhs) != static_cast<en>(0);
     }
 
 }

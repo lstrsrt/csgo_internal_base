@@ -6,11 +6,6 @@
 
 #include "base.h"
 
-struct w2s_result {
-    vec2 screen{ };
-    bool successful{ };
-};
-
 namespace math {
 
     static constexpr auto pi = std::numbers::pi_v<float>;
@@ -96,7 +91,7 @@ namespace math {
     angle calculate_angle(const vec3& src, const vec3& dest, const angle& view) noexcept;
     void angle_to_vectors(const angle& src, vec3* forward = nullptr, vec3* right = nullptr,
                           vec3* up = nullptr) noexcept;
-    w2s_result world_to_screen(const vec3& world) noexcept;
+    bool world_to_screen(const vec3& world, vec2& screen) noexcept;
 
     namespace random {
 

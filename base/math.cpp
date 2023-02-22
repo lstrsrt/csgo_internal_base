@@ -13,21 +13,27 @@ float math::ticks_to_time(int ticks) noexcept
 
 vec3 math::lerp_vector(const vec3& a, const vec3& b, float fraction) noexcept
 {
-    return (a * (1.0f - fraction)) + (b * fraction);
+    return vec3{
+        std::lerp(a.x, b.x, fraction),
+        std::lerp(a.y, b.y, fraction),
+        std::lerp(a.z, b.z, fraction)
+    };
 }
 
 angle math::calculate_angle(const vec3& src, const vec3& dest, const angle& view) noexcept
 {
-    auto delta = src - dest;
-    angle res{ };
-    res.x = rad_to_deg(::math::atan(delta.z / std::hypotf(delta.x, delta.y))) - view.x;
-    res.y = rad_to_deg(::math::atan(delta.y / delta.x)) - view.y;
+    const vec3 delta = src - dest;
+    angle res{
+        rad_to_deg(::math::atan(delta.z / std::hypotf(delta.x, delta.y))) - view.x,
+        rad_to_deg(::math::atan(delta.y / delta.x)) - view.y,
+        0.0f
+    };
 
     if (delta.x >= 0.0f)
         res.y += 180.0f;
 
-    res.normalize();
     res.clamp();
+    res.normalize();
     return res;
 }
 
@@ -64,25 +70,19 @@ void math::angle_to_vectors(const angle& src, vec3* forward, vec3* right, vec3* 
     }
 }
 
-w2s_result math::world_to_screen(const vec3& world) noexcept
+bool math::world_to_screen(const vec3& world, vec2& screen) noexcept
 {
-    w2s_result ret{ };
-
     const auto& matrix = interfaces::engine->world_to_screen_matrix();
-    const float width = matrix[3][0] * world.x + matrix[3][1] *
-        world.y + matrix[3][2] * world.z + matrix[3][3];
-    const d2 screen_size = interfaces::engine->get_screen_size();
+    const float width = matrix[3][0] * world.x + matrix[3][1] * world.y + matrix[3][2] * world.z + matrix[3][3];
 
-    if (width > 0.001f)
-        ret.successful = true;
+    if (width < 0.001f)
+        return false;
 
     const float inverse = 1.0f / width;
-    ret.screen.x = (matrix[0][0] * world.x + matrix[0][1] *
-                    world.y + matrix[0][2] * world.z + matrix[0][3]) * inverse;
-    ret.screen.y = (matrix[1][0] * world.x + matrix[1][1] *
-                    world.y + matrix[1][2] * world.z + matrix[1][3]) * inverse;
-    ret.screen.x = (screen_size.x / 2.0f) + (ret.screen.x * screen_size.x) / 2.0f;
-    ret.screen.y = (screen_size.y / 2.0f) - (ret.screen.y * screen_size.y) / 2.0f;
+    const d2 screen_size = interfaces::engine->get_screen_size();
+    screen = { screen_size.x / 2.0f, screen_size.y / 2.0f };
+    screen.x *= 1.0f + (matrix[0][0] * world.x + matrix[0][1] * world.y + matrix[0][2] * world.z + matrix[0][3]) * inverse;
+    screen.y *= 1.0f - (matrix[1][0] * world.x + matrix[1][1] * world.y + matrix[1][2] * world.z + matrix[1][3]) * inverse;
 
-    return ret;
+    return true;
 }

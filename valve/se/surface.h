@@ -28,9 +28,9 @@ enum class font_flag {
 
 using vpanel = uint32_t;
 
-enum paint_mode {
-    paint_ui_panels = (1 << 0),
-    paint_ingame_panels = (1 << 1)
+enum class paint_mode {
+    ui_panels = (1 << 0),
+    ingame_panels = (1 << 1)
 };
 
 enum class vgui_panel {

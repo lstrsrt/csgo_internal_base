@@ -47,12 +47,12 @@ bool visuals::esp::generate_box(cs::base_entity* entity, bool is_player) noexcep
     const auto& coordinate_frame = entity->get_coordinate_frame();
 
     for (size_t i{ }; i < points.size(); i++) {
-        auto res = math::world_to_screen(points[i].transform(coordinate_frame));
-        if (!res.successful)
+        vec2 screen;
+        if (!math::world_to_screen(points[i].transform(coordinate_frame), screen))
             return false;
 
-        int x = static_cast<int>(res.screen.x);
-        int y = static_cast<int>(res.screen.y);
+        const int x = static_cast<int>(screen.x);
+        const int y = static_cast<int>(screen.y);
         left = std::min(left, x);
         top = std::min(top, y);
         right = std::max(right, x);

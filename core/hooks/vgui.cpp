@@ -6,7 +6,7 @@ void __fastcall hooks::paint::fn(se::vgui* ecx, int, cs::paint_mode mode)
 {
     [[maybe_unused]] static bool once = [] { return render::initialize(); }();
 
-    if (ecx->static_transition_panel && (mode & cs::paint_mode::paint_ui_panels)) {
+    if (ecx->static_transition_panel && has_bit(mode, cs::paint_mode::ui_panels)) {
         interfaces::surface->start_drawing();
 
         visuals::esp::run();

@@ -73,7 +73,7 @@ namespace cache {
         }
 
         auto view = entities | std::views::filter([t = types.value()](const cs::cached_entity& e) {
-            return (e.type & t) != static_cast<cs::entity_type>(0);
+            return has_bit(e.type, t);
         });
 
         for (auto& a : view)
@@ -85,7 +85,7 @@ namespace cache {
     {
         iterate_entities([callback, filter](cs::base_entity* entity)
         {
-            auto player = reinterpret_cast<cs::player*>(entity);
+            auto player = static_cast<cs::player*>(entity);
 
             if (filter.is_set(cs::player_filter::dormant))
                 if (player->is_dormant())
