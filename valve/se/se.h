@@ -11,6 +11,7 @@
 #include "localize.h"
 #include "matchmaking.h"
 #include "material_system.h"
+#include "net.h"
 #include "server.h"
 #include "studio_render.h"
 #include "tier0.h"

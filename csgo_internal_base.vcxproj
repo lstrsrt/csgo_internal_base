@@ -71,7 +71,7 @@
     <ClInclude Include="valve\se\tier0.h" />
     <ClInclude Include="valve\se\input_system.h" />
     <ClInclude Include="valve\se\localize.h" />
-    <ClInclude Include="valve\cs\net.h" />
+    <ClInclude Include="valve\se\net.h" />
     <ClInclude Include="valve\se\server.h" />
     <ClInclude Include="valve\se\vgui2.h" />
     <ClInclude Include="valve\se\studio_render.h" />

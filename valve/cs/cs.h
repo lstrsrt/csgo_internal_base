@@ -13,7 +13,6 @@
 #include "leaf_system.h"
 #include "material.h"
 #include "model.h"
-#include "net.h"
 #include "player.h"
 #include "studio.h"
 #include "trace.h"
