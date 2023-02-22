@@ -30,7 +30,7 @@ void __fastcall hooks::draw_model::fn(se::studio_render* ecx, int, cs::draw_mode
     if (!info.client_entity || ecx->is_forced_material_override())
         return original(ecx, results, info, bone_to_world, flex_weights, flex_delayed_weights, origin, flags);
 
-    bool clear{};
+    bool clear{ };
     const auto draw_chams = [&](const clr4& clr, bool occluded)
     {
         static auto material = create_material();
@@ -44,7 +44,7 @@ void __fastcall hooks::draw_model::fn(se::studio_render* ecx, int, cs::draw_mode
     auto unknown = info.client_entity->get_client_unknown();
     const auto class_id = unknown->get_networkable()->get_client_class()->id;
     if (class_id == cs::class_id::cs_player &&
-        reinterpret_cast<cs::player*>(unknown->get_base_entity())->is_enemy()) {
+        static_cast<cs::player*>(unknown->get_base_entity())->is_enemy()) {
         draw_chams({ 75, 75, 200, 255 }, true);
         draw_chams({ 200, 60, 60, 255 }, false);
     }

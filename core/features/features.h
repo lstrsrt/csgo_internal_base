@@ -47,7 +47,7 @@ inline namespace features {
             void draw_name(std::string_view name) noexcept;
             void draw_weapon(cs::weapon* weapon) noexcept;
             void draw_health(int health) noexcept;
-            bool generate_box(cs::base_entity* entity, bool is_player) noexcept;
+            bool generate_box(cs::base_entity* entity) noexcept;
 
         }
 

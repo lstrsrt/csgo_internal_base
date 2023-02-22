@@ -3,7 +3,6 @@
 #include <d3d9.h>
 
 #include "../valve/se/se.h"
-#include "../valve/cs/net.h"
 
 namespace interfaces {
 
@@ -37,7 +36,7 @@ struct interface_holder {
             const auto len = memory::get_vmt_length(real_vmt) + dynamic_cast_info_len;
             replacement_vmt = std::make_unique<uintptr_t[]>(len);
             std::ranges::copy(real_vmt - dynamic_cast_info_len, real_vmt + len - dynamic_cast_info_len, replacement_vmt.get());
-			
+
             *reinterpret_cast<uintptr_t**>(instance) = replacement_vmt.get() + dynamic_cast_info_len;
 
             interfaces::hooked_tables.push_back(this);

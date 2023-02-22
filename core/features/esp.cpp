@@ -3,11 +3,11 @@
 #include "../../base/math.h"
 #include "../../render/render.h"
 
-bool visuals::esp::generate_box(cs::base_entity* entity, bool is_player) noexcept
+bool visuals::esp::generate_box(cs::base_entity* entity) noexcept
 {
-    const uint8_t alpha = is_player ? [entity]() -> uint8_t
+    const uint8_t alpha = [entity]() -> uint8_t
     {
-        if (entity->is_dormant() && static_cast<cs::player*>(entity)->is_alive()) {
+        if (entity->is_dormant()) {
             float delta = interfaces::globals->cur_time - entity->get_simulation_time();
             if (delta > 8.0f)
                 return 0;
@@ -20,7 +20,7 @@ bool visuals::esp::generate_box(cs::base_entity* entity, bool is_player) noexcep
             }
         }
         return 255;
-    }() : 255;
+    }();
 
     if (!alpha)
         return false;
@@ -123,7 +123,7 @@ void visuals::esp::run() noexcept
         if (entity->get_owner_entity_handle().is_valid())
             return;
 
-        if (!generate_box(entity, false))
+        if (!generate_box(entity))
             return;
 
         draw_box();
@@ -133,7 +133,7 @@ void visuals::esp::run() noexcept
     cs::player_info info{ };
     cache::iterate_players([&info](cs::player* player)
     {
-        if (!generate_box(player->get_base_entity(), true))
+        if (!generate_box(player->get_base_entity()))
             return;
 
         draw_box();
