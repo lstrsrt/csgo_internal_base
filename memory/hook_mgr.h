@@ -29,8 +29,9 @@ namespace hooks {
     template<size_t len>
     void set(dll& dll, std::array<int, len>&& sig, void* hook, void** original) noexcept
     {
-        const auto target = dll.find<len>(std::move(sig));
+        auto target = dll.find<len>(std::move(sig));
         ASSERT(target);
+        ASSERT(dll.is_within_section(target, ".text"_hash));
         hooked_fns[hook] = target;
         if (!hook_func(target, hook, original, false))
             LOG_ERROR("Error while hooking function!"); /* Not fatal, but we should warn about it */

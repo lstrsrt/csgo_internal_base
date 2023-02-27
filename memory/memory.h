@@ -11,14 +11,31 @@
 
 namespace memory {
 
+    struct virtual_protect {
+        LPVOID address{ };
+        SIZE_T size{ };
+        DWORD flags{ };
+
+        explicit virtual_protect(LPVOID address, SIZE_T size, DWORD flags) noexcept
+            : address(address), size(size)
+        {
+            VirtualProtect(address, size, flags, &flags);
+        }
+
+        ~virtual_protect()
+        {
+            VirtualProtect(address, size, flags, &flags);
+        }
+    };
+
     template<class ty, int i, class... va_args>
-    inline ty call_virtual(void* base, va_args... args) noexcept
+    ty call_virtual(void* base, va_args... args) noexcept
     {
         return (*static_cast<ty(__thiscall***)(void*, va_args...)>(base))[i](base, args...);
     }
 
     template<class ty = address>
-    inline ty get_virtual(void* base, int index) noexcept
+    ty get_virtual(void* base, int index) noexcept
     {
         return (*static_cast<ty**>(base))[index];
     }
@@ -28,13 +45,14 @@ namespace memory {
         return address(reinterpret_cast<uintptr_t>(_AddressOfReturnAddress()) - sizeof(uintptr_t));
     }
 
-    inline bool is_address_valid(void* addr) noexcept
+    inline bool is_address_valid(address addr) noexcept
     {
         if (!addr)
             return false;
 
         MEMORY_BASIC_INFORMATION info{ };
-        VirtualQuery(addr, &info, sizeof(info));
+        if (!VirtualQuery(addr, &info, sizeof(info)))
+            return false;
 
         return info.State & MEM_COMMIT && !(info.Protect & PAGE_NOACCESS);
     }
@@ -50,6 +68,24 @@ namespace memory {
             ++length;
 
         return length;
+    }
+
+    template<class ty>
+    bool read(address addr, ty& data, SIZE_T size = sizeof(ty)) noexcept
+    {
+        return ReadProcessMemory(HANDLE(-1), addr, &data, size, nullptr);
+    }
+
+    template<class ty>
+    bool write(address addr, ty& data, SIZE_T size = sizeof(ty)) noexcept
+    {
+        return WriteProcessMemory(HANDLE(-1), addr, &data, size, nullptr);
+    }
+
+    inline bool protect(address addr, DWORD flags, SIZE_T size) noexcept
+    {
+        DWORD _;
+        return VirtualProtect(addr, size, flags, &_);
     }
 
 }

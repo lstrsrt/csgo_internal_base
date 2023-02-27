@@ -20,15 +20,8 @@ struct address {
     address(std::nullptr_t value) noexcept
         : value(0) { }
 
-    constexpr operator bool() const noexcept
-    {
-        return value != 0;
-    }
-
-    operator void*() const noexcept
-    {
-        return reinterpret_cast<void*>(value);
-    }
+    operator bool() const noexcept { return value != 0; }
+    operator void*() noexcept { return reinterpret_cast<void*>(value); }
 
     template<class ty>
     constexpr ty cast() noexcept

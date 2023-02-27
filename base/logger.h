@@ -67,13 +67,13 @@ namespace logger {
 
         if constexpr (sizeof...(args) > 0) {
             const auto& str = std::vformat(fmt, std::make_format_args(std::forward<decltype(args)>(args)...));
-            std::cout << str << std::endl;
+            std::cout << str << '\n';
             if (out_file)
-                out_file << str << std::endl;
+                out_file << str << '\n';
         } else {
-            std::cout << fmt << std::endl;
+            std::cout << fmt << '\n';
             if (out_file)
-                out_file << fmt << std::endl;
+                out_file << fmt << '\n';
         }
     #endif
     }
@@ -110,19 +110,18 @@ namespace logger {
 
         if constexpr (sizeof...(args) > 0) {
             const auto& str = std::vformat(fmt, std::make_wformat_args(std::forward<decltype(args)>(args)...));
-            std::wcout << str << std::endl;
+            std::wcout << str << '\n';
             if (out_file)
-                out_file << str << std::endl;
+                out_file << str << '\n';
         } else {
-            std::wcout << fmt << std::endl;
+            std::wcout << fmt << '\n';
             if (out_file)
-                out_file << fmt << std::endl;
+                out_file << fmt << '\n';
         }
     #endif
     }
 
-    inline void initialize(std::wstring_view console_title, std::wstring_view log_filename)
-        noexcept
+    inline void initialize(std::wstring_view console_title, std::wstring_view log_filename) noexcept
     {
     #ifdef _DEBUG
         AllocConsole();

@@ -11,7 +11,7 @@ void hooks::initialize() noexcept
 
     ASSERT(creation_params.hFocusWindow);
     game_window = creation_params.hFocusWindow;
-    original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLong(game_window, GWLP_WNDPROC, reinterpret_cast<LONG>(wnd_proc)));
+    original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc)));
 
     hook_func = dlls::game_overlay_renderer.find(PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
     unhook_func = dlls::game_overlay_renderer.find(PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
@@ -34,6 +34,8 @@ void hooks::initialize() noexcept
 
     LOG_INFO("Hooks initialized.");
 
+    auto example = dlls::client.get_import(dlls::tier0, "DevMsg"_hash);
+
     cache::initialize();
 }
 
@@ -47,5 +49,5 @@ void hooks::end() noexcept
 
     netvars::unset_proxy("CBaseEntity->m_bSpotted"_hash, spotted::original);
 
-    SetWindowLong(game_window, GWLP_WNDPROC, reinterpret_cast<LONG>(original_wnd_proc));
+    SetWindowLongPtr(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_wnd_proc));
 }

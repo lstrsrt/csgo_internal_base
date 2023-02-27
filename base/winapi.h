@@ -33,28 +33,6 @@ namespace win {
         }
     };
 
-    struct virtual_protect {
-        LPVOID address{ };
-        SIZE_T size{ };
-        DWORD flags{ };
-
-        explicit virtual_protect(LPVOID address, SIZE_T size, DWORD flags) noexcept
-            : address(address), size(size)
-        {
-            VirtualProtect(address, size, flags, &flags);
-        }
-        explicit virtual_protect(LPVOID address, DWORD flags) noexcept
-            : address(address), size(sizeof(address))
-        {
-            VirtualProtect(address, size, flags, &flags);
-        }
-
-        ~virtual_protect()
-        {
-            VirtualProtect(address, size, flags, &flags);
-        }
-    };
-
     inline bool get_module_path(HMODULE mod, fs::path& path) noexcept
     {
         WCHAR tmp[MAX_PATH]{ };
