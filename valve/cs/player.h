@@ -7,9 +7,9 @@
 
 namespace cs {
 
-constexpr int max_players = 64;
-constexpr int multiplayer_backup = 150;
-constexpr int tick_never_think = -1;
+static constexpr int max_players = 64;
+static constexpr int multiplayer_backup = 150;
+static constexpr int tick_never_think = -1;
 
 struct studio_hdr;
 

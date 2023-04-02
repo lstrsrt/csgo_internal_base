@@ -70,7 +70,6 @@ struct dll {
     IMAGE_SECTION_HEADER* get_section(hash_t hash) const noexcept;
     bool is_within_section(address addr, hash_t section_hash) const noexcept;
     bool is_within_section(address addr, IMAGE_SECTION_HEADER* section) const noexcept;
-
 };
 
 namespace dlls {

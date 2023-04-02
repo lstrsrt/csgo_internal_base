@@ -11,7 +11,7 @@
 
 namespace cs {
 
-constexpr int invalid_handle = -1;
+static constexpr int invalid_handle = -1;
 
 struct base_entity;
 struct model;

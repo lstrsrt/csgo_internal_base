@@ -22,7 +22,7 @@ static void update_button_state(bitfield<cs::cmd_button>& cmd_buttons) noexcept
     local->get_button_released() = buttons_changed & (~buttons->raw());
 }
 
-void features::prediction::start(cs::user_cmd* cmd) noexcept
+void prediction::start(cs::user_cmd* cmd) noexcept
 {
     if (!cfg::get<bool>(vars::prediction))
         return;
@@ -82,7 +82,7 @@ void features::prediction::start(cs::user_cmd* cmd) noexcept
     interfaces::prediction->is_first_time_predicted = backup.is_first_time_predicted;
 }
 
-void features::prediction::end() noexcept
+void prediction::end() noexcept
 {
     if (!cfg::get<bool>(vars::prediction))
         return;
