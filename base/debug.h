@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #if __has_include(<stacktrace>) && _HAS_CXX23
 #define HAS_STACKTRACE
 #include <stacktrace>
@@ -31,7 +30,7 @@ static void dbg_fail(std::string_view fn, std::string_view msg = "") noexcept
 #ifdef HAS_STACKTRACE
     print_trace();
 #endif
-    assert(false);
+    __debugbreak();
 #else
     std::abort();
 #endif
