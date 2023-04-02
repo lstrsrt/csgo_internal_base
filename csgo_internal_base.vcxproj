@@ -36,6 +36,8 @@
     <ClInclude Include="crypt\fnv1a.h" />
     <ClInclude Include="crypt\xorstr.h" />
     <ClInclude Include="memory\address.h" />
+    <ClInclude Include="memory\detour.h" />
+    <ClInclude Include="memory\disasm\disasm.hh" />
     <ClInclude Include="memory\dll.h" />
     <ClInclude Include="memory\memory.h" />
     <ClInclude Include="memory\interfaces.h" />
@@ -100,6 +102,8 @@
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\main.cpp" />
+    <ClCompile Include="memory\detour.cpp" />
+    <ClCompile Include="memory\disasm\disasm.cc" />
     <ClCompile Include="memory\dll.cpp" />
     <ClCompile Include="memory\interfaces.cpp" />
     <ClCompile Include="render\menu\controls.cpp" />

@@ -18,18 +18,16 @@ namespace win {
             : handle(handle) { }
         ~scoped_handle()
         {
-            if (handle)
+            if (is_valid())
                 CloseHandle(handle);
         }
 
-        operator bool() noexcept
+        operator bool() noexcept { return is_valid(); }
+        operator HANDLE() noexcept { return handle; }
+
+        bool is_valid() const noexcept
         {
             return handle != nullptr && handle != INVALID_HANDLE_VALUE;
-        }
-
-        operator HANDLE() noexcept
-        {
-            return handle;
         }
     };
 

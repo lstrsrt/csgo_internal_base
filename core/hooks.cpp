@@ -13,9 +13,6 @@ void hooks::initialize() noexcept
     game_window = creation_params.hFocusWindow;
     original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc)));
 
-    hook_func = dlls::game_overlay_renderer.find(PATTERN("55 8B EC 51 8B 45 10 C7")).cast<decltype(hook_func)>();
-    unhook_func = dlls::game_overlay_renderer.find(PATTERN("E8 ? ? ? ? 83 C4 08 FF 15")).absolute<decltype(unhook_func)>();
-
     SET_VT_HOOK(interfaces::client, level_init_post_entity, 6);
     SET_VT_HOOK(interfaces::client, level_shutdown, 7);
     SET_VT_HOOK(interfaces::client, frame_stage_notify, 37);
@@ -45,7 +42,7 @@ void hooks::end() noexcept
         static_cast<interface_holder<void*>*>(a)->restore();
 
     for (auto& a : hooked_fns)
-        unhook_func(a.second, false);
+        a.second.remove();
 
     netvars::unset_proxy("CBaseEntity->m_bSpotted"_hash, spotted::original);
 

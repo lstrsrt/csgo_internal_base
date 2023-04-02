@@ -3,6 +3,7 @@
 #include <map>
 
 #include "memory.h"
+#include "detour.h"
 #include "../base/debug.h"
 
 #define SET_SIG_HOOK(dll, sig, name) set(dll, PATTERN(sig), reinterpret_cast<void*>(name::fn), reinterpret_cast<void**>(&name::original))
@@ -10,10 +11,7 @@
 
 namespace hooks {
 
-    inline std::add_pointer_t<bool(void*, void*, void*, bool)> hook_func{ };
-    inline std::add_pointer_t<void(void*, bool)> unhook_func{ };
-
-    inline std::map<void*, void*> hooked_fns{ }; /* Only contains signature hooks */
+    inline std::map<uintptr_t, detour::hook> hooked_fns{ }; /* Only contains signature hooks */
 
     void initialize() noexcept;
     void end() noexcept;
@@ -32,8 +30,10 @@ namespace hooks {
         auto target = dll.find<len>(std::move(sig));
         ASSERT(target);
         ASSERT(dll.is_within_section(target, ".text"_hash));
-        hooked_fns[hook] = target;
-        if (!hook_func(target, hook, original, false))
+        detour::hook hk{ target, hook, original };
+        if (hk.set())
+            hooked_fns.emplace(reinterpret_cast<uintptr_t>(hook), std::move(hk));
+        else
             LOG_ERROR("Error while hooking function!"); /* Not fatal, but we should warn about it */
     }
 

@@ -11,13 +11,31 @@
 
 namespace memory {
 
+    struct virtual_alloc {
+        LPVOID address{ };
+        bool free{ };
+
+        explicit virtual_alloc(SIZE_T size, DWORD flags) noexcept
+        {
+            address = VirtualAlloc(nullptr, size, MEM_RESERVE | MEM_COMMIT, flags);
+            if (address)
+                free = true;
+        }
+
+        ~virtual_alloc()
+        {
+            if (free)
+                VirtualFree(address, 0, MEM_RELEASE);
+        }
+    };
+
     struct virtual_protect {
         LPVOID address{ };
         SIZE_T size{ };
         DWORD flags{ };
 
-        explicit virtual_protect(LPVOID address, SIZE_T size, DWORD flags) noexcept
-            : address(address), size(size)
+        explicit virtual_protect(LPVOID addr, SIZE_T size, DWORD flags) noexcept
+            : address(addr), size(size)
         {
             VirtualProtect(address, size, flags, &flags);
         }
@@ -86,6 +104,11 @@ namespace memory {
     {
         DWORD _;
         return VirtualProtect(addr, size, flags, &_);
+    }
+
+    inline bool query(address addr, MEMORY_BASIC_INFORMATION& mem_info) noexcept
+    {
+        return VirtualQuery(addr, &mem_info, sizeof(mem_info));
     }
 
 }
