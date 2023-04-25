@@ -61,7 +61,7 @@ IMAGE_SECTION_HEADER* dll::get_section(hash_t hash) const noexcept
     if (!section)
         return nullptr;
 
-    for (WORD i{ }; i <= nt_hdrs->FileHeader.NumberOfSections; i++, section++) {
+    for (WORD i{ }; i < nt_hdrs->FileHeader.NumberOfSections; i++, section++) {
         const auto name = reinterpret_cast<const char*>(section->Name);
         if (fnv1a::hash(name) == hash)
             return section;
