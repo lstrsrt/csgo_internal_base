@@ -121,7 +121,7 @@ namespace dlls {
 
         for (auto entry : list) {
             const auto res = loaded.find(fnv1a::hash(entry->name));
-            ASSERT_MSG(res != loaded.cend(), "DLL not loaded yet?");
+            VERIFY_MSG(res != loaded.cend(), "DLL not loaded yet?");
             const auto dll = res->second;
             entry->base = reinterpret_cast<uintptr_t>(dll->DllBase);
             entry->size = dll->SizeOfImage;

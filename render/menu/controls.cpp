@@ -4,7 +4,7 @@ void menu::controls::tab(std::wstring_view str, tab_id id) noexcept
 {
     constexpr d2 region_size{ 90, 30 };
     const d2 pos{ base_pos.x + region_size.x * static_cast<int>(id), base_pos.y };
-    clr4 text_clr{ 255, 255, 255, 255 };
+    clr4 text_clr = clr4::white();
     clr4 line_clr{ 30, 30, 30, 255 };
 
     if (input::is_hovering_item(pos, region_size)) {
@@ -79,8 +79,7 @@ void menu::controls::slider(std::wstring_view str, int& var, int min, int max) n
             var = static_cast<int>((static_cast<float>(input::mouse_pos.x - pos.x)) / region_size.x * (max - min) + min);
     }
 
-    text(fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, std::to_wstring(var),
-                 text_flag::centered);
+    text(fonts::menu, { pos.x + region_size.x / 2, pos.y + region_size.y / 2 }, std::to_wstring(var), text_flag::centered);
     text(fonts::menu, { pos.x + region_size.x + 5, pos.y }, str);
 }
 
@@ -112,7 +111,7 @@ void menu::controls::multibox(std::wstring_view str, const std::vector<std::wstr
     constexpr d2 region_size{ 120, 18 };
     const d2 picker_size{ 100, static_cast<int>(region_size.y * vars.size()) };
     const d2 pos = calculate_position(ctrl_type::dropdown, fnv1a::hash(str));
-    clr4 item_color = { 255, 255, 255, 255 };
+    clr4 item_color = clr4::white();
 
     outlined_rect(pos, region_size, clr4::black());
     filled_rect(pos.x + 2, pos.y + 2, pos.x + region_size.x - 2, pos.y + region_size.y - 2, inactive_color);
@@ -137,7 +136,7 @@ void menu::controls::multibox(std::wstring_view str, const std::vector<std::wstr
             selected += names[i];
             item_color = accent_color;
         } else
-            item_color = { 255, 255, 255, 255 };
+            item_color = clr4::white();
 
         if (is_active) {
             const int h = region_size.y * i;

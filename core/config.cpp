@@ -21,7 +21,7 @@ void cfg::read(std::wstring_view name) noexcept
             if (items[i].name == name)
                 return i;
         }
-        ASSERT(false);
+        VERIFY(false);
         return std::numeric_limits<hash_t>::max();
     };
 

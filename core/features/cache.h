@@ -54,7 +54,7 @@ namespace cache {
 
     inline void remove(cs::base_entity* entity) noexcept
     {
-        auto it = std::ranges::find_if(entities, [entity](auto& e) { return e.ptr == entity; });
+        auto it = std::ranges::find(entities, entity, &cs::cached_entity::ptr);
         if (it != entities.cend())
             entities.erase(it);
     }

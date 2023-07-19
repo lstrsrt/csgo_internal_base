@@ -19,7 +19,7 @@ namespace hooks {
     template<class ty, class fn>
     void set(interface_holder<ty*>& vmt, int index, void* hook, fn& original) noexcept
     {
-        ASSERT_MSG(vmt.replacement_vmt, "Trying to set hook with replace_vmt = false!");
+        VERIFY_MSG(vmt.replacement_vmt, "Trying to set hook with replace_vmt = false!");
         vmt.replacement_vmt[index + 1] = reinterpret_cast<uintptr_t>(hook);
         original = reinterpret_cast<fn>(vmt.real_vmt[index]);
     }
@@ -28,8 +28,8 @@ namespace hooks {
     void set(dll& dll, std::array<int, len>&& sig, void* hook, void** original) noexcept
     {
         auto target = dll.find<len>(std::move(sig));
-        ASSERT(target);
-        ASSERT(dll.is_within_section(target, ".text"_hash));
+        VERIFY(target);
+        VERIFY(dll.is_within_section(target, ".text"_hash));
         detour::hook hk{ target, hook, original };
         if (hk.set())
             hooked_fns.emplace(reinterpret_cast<uintptr_t>(hook), std::move(hk));

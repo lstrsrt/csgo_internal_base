@@ -86,8 +86,7 @@
   <ItemGroup>
     <ClCompile Include="base\math.cpp" />
     <ClCompile Include="core\config.cpp" />
-    <ClCompile Include="core\features\misc.cpp" />
-    <ClCompile Include="core\features\prediction.cpp" />
+    <ClCompile Include="core\features\chams.cpp" />
     <ClCompile Include="core\features\esp.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\hooks\client_dll.cpp" />
@@ -170,6 +169,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>false</ExceptionHandling>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,6 +193,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

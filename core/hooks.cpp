@@ -9,7 +9,7 @@ void hooks::initialize() noexcept
     D3DDEVICE_CREATION_PARAMETERS creation_params{ };
     interfaces::dx9_device->GetCreationParameters(&creation_params);
 
-    ASSERT(creation_params.hFocusWindow);
+    VERIFY(creation_params.hFocusWindow);
     game_window = creation_params.hFocusWindow;
     original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(game_window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc)));
 

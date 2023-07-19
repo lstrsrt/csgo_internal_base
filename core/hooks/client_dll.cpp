@@ -42,9 +42,7 @@ static void __stdcall create_move(int sequence_nr, float input_sample_time, bool
     if (cfg::get<bool>(vars::infinite_crouch))
         cmd->buttons.set(cs::cmd_button::bullrush);
 
-    prediction::start(cmd);
     // aimbot::run(cmd);
-    prediction::end();
 
     local.view = cmd->view_angles;
 

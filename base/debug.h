@@ -20,7 +20,7 @@ static void print_trace() noexcept
 #ifdef NDEBUG
 [[noreturn]]
 #endif
-static void dbg_fail(std::string_view fn, std::string_view msg = "") noexcept
+static void fail(std::string_view fn, std::string_view msg = "") noexcept
 {
 #ifdef _DEBUG
     if (msg.empty())
@@ -41,5 +41,5 @@ static void dbg_fail(std::string_view fn, std::string_view msg = "") noexcept
 #else
 #define FUNCTION_NAME __FUNCTION__
 #endif
-#define ASSERT(expr) do { if (!(expr)) dbg_fail(FUNCTION_NAME); } while (false)
-#define ASSERT_MSG(expr, msg) do { if (!(expr)) dbg_fail(FUNCTION_NAME, msg); } while (false)
+#define VERIFY(expr) do { if (!(expr)) fail(FUNCTION_NAME); } while (false)
+#define VERIFY_MSG(expr, msg) do { if (!(expr)) fail(FUNCTION_NAME, msg); } while (false)

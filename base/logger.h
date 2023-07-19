@@ -33,6 +33,36 @@ namespace logger {
         raw
     };
 
+    template<level lvl>
+    void print_log_level() noexcept
+    {
+        std::cout << "[ ";
+        switch (lvl) {
+        case level::success:
+            SetConsoleTextAttribute(console, FOREGROUND_GREEN);
+            std::cout << '+';
+            break;
+        case level::info:
+            SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+            std::cout << '*';
+            break;
+        case level::error:
+            SetConsoleTextAttribute(console, FOREGROUND_RED);
+            std::cout << '!';
+            break;
+        }
+        SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        std::cout << " ] ";
+    }
+
+    inline void print_time() noexcept
+    {
+        const auto time = ch::system_clock::to_time_t(ch::system_clock::now());
+        std::tm tm{ };
+        localtime_s(&tm, &time);
+        std::cout << std::put_time(&tm, "[%T] ");
+    }
+
     // Use the LOG macros instead of accessing these directly
 
     template<level lvl, class... va_args>
@@ -40,30 +70,11 @@ namespace logger {
     {
     #ifdef _DEBUG
         if constexpr (lvl != level::raw) {
-            std::cout << "[ ";
-            switch (lvl) {
-            case level::success:
-                SetConsoleTextAttribute(console, FOREGROUND_GREEN);
-                std::cout << '+';
-                break;
-            case level::info:
-                SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-                std::cout << '*';
-                break;
-            case level::error:
-                SetConsoleTextAttribute(console, FOREGROUND_RED);
-                std::cout << '!';
-                break;
-            }
-
-            SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-            const auto time = ch::system_clock::to_time_t(ch::system_clock::now());
-            std::tm tm{ };
-            localtime_s(&tm, &time);
-            std::cout << " ] " << std::put_time(&tm, "[%T] ");
+            print_log_level<lvl>();
+            print_time();
         }
 
-        static std::fstream out_file{ log_name, std::fstream::out | std::fstream::app };
+        static std::ofstream out_file{ log_name, std::ios::out | std::ios::app };
 
         if constexpr (sizeof...(args) > 0) {
             const auto& str = std::vformat(fmt, std::make_format_args(std::forward<decltype(args)>(args)...));
@@ -83,30 +94,11 @@ namespace logger {
     {
     #ifdef _DEBUG
         if constexpr (lvl != level::raw) {
-            std::wcout << L"[ ";
-            switch (lvl) {
-            case level::success:
-                SetConsoleTextAttribute(console, FOREGROUND_GREEN);
-                std::wcout << L'+';
-                break;
-            case level::info:
-                SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-                std::wcout << L'*';
-                break;
-            case level::error:
-                SetConsoleTextAttribute(console, FOREGROUND_RED);
-                std::wcout << L'!';
-                break;
-            }
-
-            SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-            const auto time = ch::system_clock::to_time_t(ch::system_clock::now());
-            std::tm tm{ };
-            localtime_s(&tm, &time);
-            std::wcout << L" ] " << std::put_time(&tm, L"[%T] ");
+            print_log_level<lvl>();
+            print_time();
         }
 
-        static std::wfstream out_file{ log_name, std::wfstream::out | std::wfstream::app };
+        static std::wofstream out_file{ log_name, std::ios::out | std::ios::app };
 
         if constexpr (sizeof...(args) > 0) {
             const auto& str = std::vformat(fmt, std::make_wformat_args(std::forward<decltype(args)>(args)...));

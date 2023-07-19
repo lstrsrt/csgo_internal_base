@@ -104,12 +104,12 @@ static auto get_interface_regs(dll& dll) noexcept
 {
     if (!dll.create_interface) {
         dll.create_interface = dll.get_export("CreateInterface"_hash);
-        ASSERT(dll.create_interface);
+        VERIFY(dll.create_interface);
     }
 
     // Follow jmp instruction inside function to get to CreateInterfaceInternal(), where the global interface list is moved into ESI.
     const auto reg_list = **dll.create_interface.absolute<se::interface_reg***>(0x5, 0x6);
-    ASSERT(reg_list);
+    VERIFY(reg_list);
     return reg_list;
 }
 
@@ -133,7 +133,7 @@ static void find_interface(interface_holder<ty*>& ptr, dll& dll, std::string_vie
             return;
         }
     }
-    ASSERT(false);
+    VERIFY(false);
 }
 
 template<bool replace_vmt, class ty>
